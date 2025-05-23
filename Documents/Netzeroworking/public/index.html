@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <!-- Cấu hình cho iOS -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Appointment App">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+
+  <!-- Màu thanh trạng thái trình duyệt -->
+  <!-- <meta name="theme-color" content="#ffffff"> -->
+   <!-- Màu thanh trạng thái trình duyệt (Chrome Android) -->
+  <meta name="theme-color" content="#ffffff"> <!-- transparent -->
+  <!-- Màu thanh trạng thái khi ứng dụng web trên iOS (Safari) -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <title>Net Zero Working</title>
+  <meta property="og:image" content="https://netzeroworking.web.app//avatar/thumnail.jpg">
+
+
+  <!-- Liên kết đến manifest để hỗ trợ PWA -->
+  <link rel="manifest" href="manifest.json" />
+
+  <!-- Các file CSS tách riêng theo component để dễ quản lý -->
+  <link rel="stylesheet" href="styles/base.css">
+
+  <!-- Font Awesome icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <!-- Icon cho thiết bị iOS -->
+  <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+  <!-- Icon cho trình duyệt -->
+  <link rel="icon" href="icons/logo.png" type="image/png">
+</head>
+<body>
+
+<!-- Hiển thị popup hướng dẫn chỉ khi chưa cài -->
+<!-- <div id="installPrompt" class="install-popup">
+  <p>📲 "To add the app to the home screen:"</p>
+  <br>
+  <ol>
+    <p>1. Tap the <strong>"Share Button"</strong> <span style="font-size: 1.2em;">📤</span></p>
+    <br>
+    <p>2. Select <strong>“Add to Home Screen”</strong></p>
+  </ol>
+  <button onclick="document.getElementById('installPrompt').style.display='none'">Got it!</button>
+</div> -->
+
+  <div class="container">
+    <div id="loginForm">
+      <div class="login-logo">
+        <img src="icons/logo.png" alt="Logo" />
+        <h2>Welcome to Net0Working</h2>
+        <p>Easy Connection – Professional Development</p>
+      </div>
+      <!-- Form đăng nhập -->
+      <input type="email" id="loginEmail" placeholder="Email" />
+      <input type="password" id="password" placeholder="Password" />
+            <button id="loginBtn">Sign in</button>
+      <button id="openSignup">Sign Up</button>
+      <!-- Thêm link mở modal -->
+        <!-- <a href="#" id="openSignup" style="color: var(--text-primary);text-decoration: none;">Sign Up</a> -->
+        <br><br>
+        <a href="#" id="forgotPasswordLink" style="color: var(--text-primary);text-decoration: none;">Forgot password?</a>
+    </div>
+
+    <!-- Modal Quên Mật Khẩu -->
+    <div id="forgotPasswordModal" class="modal hidden">
+      <div class="modal-content">
+        <span id="closeForgotPassword" class="close-btn">&times;</span>
+        <h2>Forgot password</h2>
+        <br>
+        <input type="email" id="forgotEmail" placeholder="Enter your email" />
+        <button id="resetPasswordBtn">Send password reset link</button>
+      </div>
+    </div>
+
+    <!-- Modal đăng ký -->
+    <div id="signup" class="modal hidden">
+      <div class="modal-content">
+        <span id="closeSignup" class="close-btn">&times;</span>
+        <h2>Sign up</h2>
+        <br>
+        <input type="email" id="registerEmail" placeholder="Email" />
+        <input type="password" id="registerPassword" placeholder="Password" />
+        <input type="password" id="confirmPassword" placeholder="Confirm Password" />
+        <input type="text" id="activationCode" placeholder="Activation Code" />
+
+         <!-- Checkbox điều khoản -->
+   <label class="custom-checkbox">
+  <input type="checkbox" id="termsCheckbox" required />
+  <span class="checkmark"></span>
+  I agree to the 
+  <a href="#" onclick="openModal('termsModal')">Terms of Use</a>& 
+  <a href="#" onclick="openModal('privacyModal')">Privacy Policy</a>
+  </label> 
+        <button id="registerBtn" disabled>Sign Up</button>
+      </div>
+    </div>
+
+
+
+    <!-- Modal Điều khoản sử dụng -->
+<div id="termsModal" class="modal hidden">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeModal('termsModal')">&times;</span>
+    <h2>Terms of Use</h2>
+    <div class="privacy-policy">
+      <h4>📝 1. Điều khoản sử dụng</h4>
+<h4>1.1. Mục đích sử dụng</h4>
+<p>Trang web này cung cấp công cụ để người dùng tạo và chia sẻ hồ sơ vCard cá nhân. Khi sử dụng dịch vụ, bạn đồng ý:
+Cung cấp thông tin chính xác và trung thực.
+Không sử dụng dịch vụ cho mục đích trái pháp luật, lừa đảo, hoặc gây ảnh hưởng đến người khác.
+Tuân thủ các quy định của pháp luật Việt Nam và các điều khoản được công bố tại đây.
+</p>
+<h4>1.2. Trách nhiệm người dùng</h4>
+<p>Bạn chịu trách nhiệm về nội dung mình tạo và chia sẻ qua nền tảng này. Chúng tôi không chịu trách nhiệm pháp lý nếu bạn sử dụng dịch vụ để vi phạm pháp luật hoặc xâm phạm quyền của bên thứ ba.
+</p>
+</div>
+  </div>
+</div>
+
+<!-- Modal Chính sách bảo mật -->
+<div id="privacyModal" class="modal hidden">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeModal('privacyModal')">&times;</span>
+    <h2>Privacy Policy</h2>
+    <div class="privacy-policy">
+  <h4>🔐 2. Chính sách bảo mật (Tuân thủ Nghị định 13/2023/NĐ-CP)</h4>
+
+  <h4>2.1. Dữ liệu thu thập</h4>
+  <p>
+    Chúng tôi chỉ thu thập các thông tin tối thiểu cần thiết để cung cấp dịch vụ, bao gồm:
+    <ul>
+      <li>Họ tên (nếu có), email, mật khẩu.</li>
+      <li>Mã kích hoạt tài khoản.</li>
+      <li>Dấu thời gian đồng ý điều khoản.</li>
+    </ul>
+    Chúng tôi không thu thập địa chỉ IP, thiết bị, vị trí hay trình duyệt.
+  </p>
+
+  <h4>2.2. Cơ sở pháp lý</h4>
+  <p>
+    Dữ liệu của bạn chỉ được xử lý khi bạn tự nguyện đồng ý, theo Điều 11 Nghị định 13. Bạn có quyền rút lại sự đồng ý bất kỳ lúc nào.
+  </p>
+
+  <h4>2.3. Quyền của người dùng</h4>
+  <p>
+    Theo luật Việt Nam, bạn có các quyền sau:
+    <ul>
+      <li>Được biết, truy cập và chỉnh sửa dữ liệu cá nhân.</li>
+      <li>Rút lại sự đồng ý hoặc yêu cầu xóa dữ liệu.</li>
+      <li>Hạn chế hoặc phản đối xử lý dữ liệu.</li>
+      <li>Yêu cầu bồi thường thiệt hại nếu có vi phạm.</li>
+      <li>Khiếu nại đến cơ quan có thẩm quyền.</li>
+    </ul>
+  </p>
+
+  <h4>2.4. Lưu trữ và chia sẻ</h4>
+  <p>
+    Dữ liệu của bạn được lưu trữ trên hạ tầng bảo mật cao. Chúng tôi không chia sẻ dữ liệu với bất kỳ bên thứ ba nào, trừ khi có yêu cầu hợp pháp từ cơ quan nhà nước.
+  </p>
+
+  <h4>2.5. Liên hệ</h4>
+  <p>
+    Mọi yêu cầu liên quan đến bảo vệ dữ liệu cá nhân, vui lòng gửi email đến: 
+    <a href="mailto:sangleonglee2522@gmail.com">sangleonglee2522@gmail.com</a>.
+  </p>
+</div>
+
+  </div>
+</div>
+
+
+    <!-- Thông tin người dùng và nút đăng xuất -->
+    <div id="userPanel" class="hidden">
+      <!-- <img id="verifiedBadge" src="icons/icon-tick.svg" alt="Verified" style="display: none; width: 20px; height: 20px;"> -->
+      <h3 id="userInfo"></h3>
+
+      <!-- Form thông tin -->
+<div class="vcard-form">
+  <div class="avatar-wrapper">
+    <div class="avatar-container">
+      <!-- Hiển thị ảnh đại diện, mặc định sẽ là ảnh placeholder -->
+      <img id="avatarPreview" src="/" alt="Avatar"/>
+      <!-- Input để tải ảnh lên (ẩn input này đi) -->
+      <input type="file" id="avatarUpload" accept="image/*" style="display: none;" onchange="previewAvatar(event)">      
+      <!-- Biểu tượng chỉnh sửa ảnh -->
+      <div class="edit-avatar" onclick="document.getElementById('avatarUpload').click();">
+        <i class="fas fa-camera"></i>
+      </div>
+    </div>
+</div>
+
+<!-- Thông tin tên và công ty dưới avatar -->
+<div class="avatar-details">
+  <div class="name-bage">
+    <h2 id="userFullName"></h2>
+  <img id="verifiedBadge" src="icons/icon-tick.svg" alt="Verified" style="display: none; width: 24px; height: 24px;">
+  </div>
+  <p id="userCompany"></p>
+  </div>
+
+  <!-- Nút mở modal -->
+   <div class="button-group">
+    <button id="openEditModal" class="edit-btn"><i class="fa-solid fa-user-pen"></i> Information</button>
+    <button id="openSocialModal" class="edit-btn"><i class="fa-solid fa-link"></i> Social link</button>
+   </div>
+
+   <div class="button-group">
+         <!-- Nút tạo mã chỉ hiển thị khi user email đúng -->
+  <button id="generateCodeBtn" style="display: none;"><i class="fa-solid fa-laptop-code"></i> Generate</button>
+  <!-- <button id="showCodeListBtn">Xem danh sách mã</button> -->
+  <button id="showCodeListBtn" style="display: none;"><i class="fa-solid fa-rectangle-list"></i> Code list</button>
+   </div>
+<!-- Modal Tạo Mã Xác Nhận -->
+<div id="createCodeModal" class="modal hidden">
+  <div class="modal-content">
+    <span id="closeCreateCodeModal" class="close-btn">&times;</span>
+    <h2>Create code</h2>
+    <br>
+    <label for="codeQuantity">Code quantity:</label>
+    <input type="number" id="codeQuantity" value="1" min="1" max="100" />
+    <br><br>
+    <!-- Thêm dropdown chọn gói -->
+    <label for="packageSelect">Select Package:</label>
+    <select id="packageSelect">
+      <option value="Basic">Basic</option>
+      <option value="Standard">Standard</option>
+      <option value="Pro">Pro</option>
+      <option value="Enterprise">Enterprise</option>
+    </select>
+    <br><br>
+
+    <button id="createCodeBtn">Create</button>
+  </div>
+</div>
+
+
+<!-- Modal Danh sách mã -->
+<div id="codeListModal" class="modal hidden">
+  <div class="modal-content">
+    <span id="closeCodeListModal" class="close-btn">&times;</span>
+    <h2>Authentication Code List</h2>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Code</th>
+            <th>Status</th>
+            <th>User</th>
+            <th>Date Created</th>
+            <th>Nfc Link</th>
+          </tr>
+        </thead>
+        <tbody id="codeListTableBody">
+          <!-- Dữ liệu sẽ được chèn ở đây -->
+        </tbody>
+      </table>
+    </div> 
+    <button id="exportExcelBtn">Export Excel</button>   
+  </div>
+</div>
+
+
+<!-- Modal chỉnh sửa thông tin -->
+<div id="editModal" class="modal hidden">
+  <div class="modal-content">
+    <h2><i class="fa-solid fa-user-pen"></i> Edit information vCard</h2>
+
+    <!-- Tabs -->
+    <div class="tab-buttons">
+      <button type="button" id="tabPrimary" class="active">Primary Language</button>
+      <button type="button" id="tabSecondary">Secondary Language</button>
+    </div>
+
+    <form id="vcardForm">
+      <!-- Primary Language Tab -->
+      <div id="primaryInfoTab">
+        <div class="form-group"><input type="text" id="fullName" placeholder="Name" required /></div>
+        <div class="form-group"><input type="email" id="vcardEmail" placeholder="Email" required /></div>
+        <div class="form-group"><input type="tel" id="phone" placeholder="Phone" required /></div>
+        <div class="form-group"><input type="text" id="address" placeholder="Address" /></div>
+        <div class="form-group"><input type="text" id="company" placeholder="Position & Company" /></div>
+        <div class="form-group"><input type="url" id="website" placeholder="Website" /></div>
+      </div>
+
+      <!-- Secondary Language Tab -->
+      <div id="secondaryInfoTab" style="display: none;">
+        <div class="form-group"><input type="text" id="fullName_alt" placeholder="Name (Secondary)" /></div>
+        <div class="form-group"><input type="email" id="vcardEmail_alt" placeholder="Email (Secondary)" /></div>
+        <div class="form-group"><input type="tel" id="phone_alt" placeholder="Phone (Secondary)" /></div>
+        <div class="form-group"><input type="text" id="address_alt" placeholder="Address (Secondary)" /></div>
+        <div class="form-group"><input type="text" id="company_alt" placeholder="Position & Company (Secondary)" /></div>
+        <div class="form-group"><input type="url" id="website_alt" placeholder="Website (Secondary)" /></div>
+      </div>
+
+      <div class="button-group">
+        <button type="button" id="closeEditModal">Close</button>
+        <button id="saveBtn">Save information</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<!-- Modal chỉnh sửa mạng xã hội -->
+<div id="socialModal" class="modal hidden">
+  <div class="modal-content">
+    <h2><i class="fa-solid fa-link fa-lg"></i> Edit social link</h2>
+    <form>
+      <label for="facebookLink">
+        <input type="url" id="facebookLink" placeholder="facebookLink" name="facebookLink">
+      </label>
+      <label for="instagramLink">
+        <input type="url" id="instagramLink" placeholder="instagramLink" name="instagramLink">
+      </label>
+      <label for="linkedinLink">
+        <input type="url" id="linkedinLink" placeholder="linkedinLink" name="linkedinLink">
+      </label>
+      <label for="githubLink">
+        <input type="url" id="githubLink" placeholder="githubLink" name="githubLink">
+      </label>
+      <label for="tiktokLink">
+        <input type="url" id="tiktokLink" placeholder="tiktokLink" name="tiktokLink">
+      </label>
+      <!-- WeChat -->
+      <label for="wechatLink">
+      <input type="url" id="wechatLink" placeholder="WeChatLink" name="wechatLink">
+      </label>
+      <!-- WhatsApp -->
+      <label for="whatsappLink">
+      <input type="url" id="whatsappLink" placeholder="WhatsAppLink" name="whatsappLink">
+      </label>
+      <!-- zalo -->
+      <label for="zaloLink">
+        <input type="url" id="zaloLink" placeholder="ZaloLink" name="zaloLink">
+        </label>
+      <div class="button-group">
+        <button type="button" id="closeSocialModal">Close</button>
+        <button type="button" id="saveSocialLinks">Save link</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Nút lưu thông tin và nút xem vCard nếu cần -->
+<div class="button-group">
+  <!-- <button id="viewCardsBtn"><i class="fa-solid fa-clipboard-user"></i> Contact</button> -->
+   <button id="viewCardsBtn" style="display:none;"><i class="fa-solid fa-clipboard-user"></i> Contact</button>
+  <button id="openModalBtn"><i class="fa-solid fa-id-card"></i> Scan</button>
+</div>
+
+<div class="button-group">
+  <button id="openSettingsBtn"><i class="fa-solid fa-gear"></i> Setting</button>
+  <button id="viewVcardBtn" type="button"><i class="fa-solid fa-id-card-clip"></i> vCard</button>
+</div>
+
+<!-- Modal Scan -->
+<div id="scanModal" class="modal hidden">
+  <div class="modal-content">
+    <!-- Video stream -->
+    <div id="video-container">
+      <video id="scan-video" autoplay playsinline style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; object-fit: cover;"></video>
+      <div id="frame-overlay"></div>
+    </div>
+    <div id="verificationImages"></div>
+      <canvas id="scan-canvas" class="hidden"></canvas>
+      <div id="resultText"></div>
+    
+    <!-- Form -->
+    <form id="scan-infoForm">
+      <div class="button-group">
+        <input type="text" id="scan-name" placeholder="Họ và tên">
+        <input type="text" id="scan-phone" placeholder="Số điện thoại">
+      </div>
+      <div class="button-group">
+        <input type="text" id="scan-position" placeholder="Chức vụ">
+        <input type="text" id="scan-company" placeholder="Công ty">
+      </div>
+      <div class="button-group">
+        <input type="text" id="scan-address" placeholder="Địa chỉ">
+        <input type="email" id="scan-email" placeholder="Email">
+      </div>
+      <div class="content-group">
+        <p>“Scanning isn’t perfect — make sure to review key info before saving.”</p>
+      </div>
+      <button id="saveinfo">Save info</button>
+    </form>
+    <!-- Buttons -->
+    <div class="button-group">
+      <button id="scan-capture">Scan</button>
+      <input type="file" id="scan-upload" accept="image/*" class="hidden">
+      <button id="scan-uploadBtn">Upload</button>
+     </div>
+    <button id="closeModalBtn">Close</button>
+  </div>   
+</div>
+
+<!-- Modal hiển thị business card -->
+<div id="modal-contact" class="modal hidden">
+  <div class="modal-content">
+    <h2><i class="fa-solid fa-clipboard-user"></i> Stored Business Cards</h2>
+    <input id="searchInput" placeholder="Tìm kiếm danh thiếp...">
+    <div id="contactList"></div>
+    <button id="closeContactModalBtn">Close</button>
+  </div>
+</div>
+
+<!-- Modal cài đặt (setting) -->
+<div id="modal-settings" class="modal hidden">
+  <div class="modal-content">
+    <h2><i class="fa-solid fa-gear"></i> Setting</h2>
+
+    <!-- Ví dụ nội dung cài đặt -->
+    <div class="settings-section">
+        <label for="viewCountToggle">Display the number of times the vCard has been viewed.</label>
+  <!-- Toggle View Count -->
+  <div class="ios-toggle-wrapper">
+  <div class="ios-toggle-switch" id="viewCountToggle" role="switch" tabindex="0" aria-checked="false">
+    <div class="toggle-knob"></div>
+    <i class="fa-solid fa-eye toggle-icon"></i>
+  </div>
+  </div>
+
+    </div>
+    <button id="closeSettingsModalBtn">Đóng</button>
+  </div>
+</div>
+
+
+<!-- Modal hiển thị vCard -->
+<div id="vcardModal" class="modal hidden">
+  <div class="modal-content">
+    <span class="close-btn" id="closeVcard">&times;</span>
+
+     <!-- Toggle Language -->
+<div class="ios2-toggle-wrapper">
+  <!-- <h5 id="toggleLabel">Primary</h5> -->
+  <div class="ios-toggle-switch" id="tabToggle" role="switch" aria-checked="false" tabindex="0">
+    <div class="toggle-knob"></div>
+    <i class="fa-solid fa-address-book toggle-icon"></i>
+  </div>
+</div>
+
+    <!-- Avatar và Verified badge dùng chung -->
+    <div class="vcard-preview common-preview">
+      <img id="previewAvatar" src="" alt="Avatar" class="vcard-avatar" />
+      <div class="name-bage">
+      <img id="verifiedBadgeModal" src="icons/icon-tick.svg" alt="Verified" style="display: none; width: 20px; height: 20px;" />
+      </div>
+    </div>
+
+    <!-- Tab 1: Primary Info -->
+    <div id="mainTab" class="tab-content active">
+      <div class="vcard-preview">
+        <h2 id="previewName"></h2>
+        <span id="userPackage" class="package-label">
+        <span class="label-text">Đang tải...</span>
+        </span>
+        <!-- <div class="subscription-tag enterprise-tag">
+          <span class="tag-text"><i class="fa-solid fa-crown fa-xs"></i> Enterprise</span>
+        </div> -->
+        <div class="name-bage">
+        <p id="previewCompany"></p>
+        </div>
+        <div class="group"><div class="content-group"><p id="previewEmail"></p></div></div>
+        <div class="group"><div class="content-group"><p id="previewPhone"></p></div></div>
+        <div class="group"><div class="content-group"><p id="previewAddress"></p></div></div>
+        <div class="group"><div class="content-group">
+          <a id="previewWebsite" href="#" target="_blank" rel="noopener noreferrer">Website</a>
+        </div></div>
+      </div>
+    </div>
+
+    <!-- Tab 2: Alt Info -->
+    <div id="altTab" class="tab-content">
+      <div class="vcard-preview">
+        <h2 id="previewAltName"></h2>
+        <!-- <div class="subscription-tag enterprise-tag">
+          <span class="tag-text"><i class="fa-solid fa-crown fa-xs"></i> Enterprise</span>
+        </div> -->
+        <div class="name-bage">
+        <p id="previewAltCompany"></p>
+        </div>
+        <div class="group"><div class="content-group"><p id="previewAltEmail"></p></div></div>
+        <div class="group"><div class="content-group"><p id="previewAltPhone"></p></div></div>
+        <div class="group"><div class="content-group"><p id="previewAltAddress"></p></div></div>
+        <div class="group"><div class="content-group">
+          <a id="previewAltWebsite" href="#" target="_blank" rel="noopener noreferrer">Website</a>
+        </div></div>
+      </div>
+    </div>
+
+    <!-- Mạng xã hội và nút share -->
+    <div id="previewSocials" class="vcard-socials"></div>
+    <button id="shareVcardLink"><i class="fa-solid fa-clipboard"></i> Copy link vCard</button>
+  </div>
+</div>
+
+
+      <!-- Logout đăng xuất -->
+      <button id="logoutBtn"><i class="fa-solid fa-right-from-bracket" style="color:var(--bg-dark);"></i> Logout</button>
+    </div>
+  </div>
+
+ <!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-storage-compat.js"></script>
+<!-- <script src="js/main.js"></script> -->
+<script src="https://docs.opencv.org/4.5.2/opencv.js"></script>
+<script src="https://unpkg.com/tesseract.js@4.1.3/dist/tesseract.min.js"></script>
+<script src="js/main.obfuscated.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</body>
+</html>

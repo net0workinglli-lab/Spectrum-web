@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Net zero working">
+  <meta name="theme-color" content="#ffffff">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>Net Zero Working</title>
+  <meta property="og:image" content="https://netzeroworking.web.app//avatar/thumnail.jpg">
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="styles/vcard.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- Icon ios -->
+  <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+  <!-- Icon cho trình duyệt -->
+  <link rel="icon" href="icons/logo.png" type="image/png">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.0/lottie.min.js"></script>
+</head>
+<body>
+<!-- Loading -->
+<div id="loadingOverlay">
+  <div class="spinner-container">
+    <div id="lottieAnimation" style="width: 150px; height: 150px;"></div>
+    <div class="loading-text">Powered by Leong Lee</div>
+  </div>
+</div>
+
+  <div class="container">
+    <div class="modal-content">
+              <!-- Chỉ còn icon con mắt + số lượt truy cập -->
+               <div class="group-view">
+                <div id="viewCountDisplay">
+                  <i class="fa-solid fa-eye" style="color: var(--bg-light);"></i> <span id="viewCountNumber">0</span>
+                </div>
+               </div>
+
+  <!-- Toggle Language -->
+<div class="ios-toggle-wrapper">
+  <!-- <h5 id="toggleLabel">Primary</h5> -->
+  <div class="ios-toggle-switch" id="tabToggle" role="switch" aria-checked="false" tabindex="0">
+    <div class="toggle-knob"></div>
+    <i class="fa-solid fa-address-book toggle-icon"></i>
+  </div>
+</div>
+
+<!-- VCard Preview -->
+<div class="vcard-preview">
+  <img id="previewAvatar" src="" alt="Avatar" class="vcard-avatar" />
+
+  <div class="name-bage">
+    <h2 id="previewName">Tên</h2>
+    <img id="verifiedBadgeModal" src="icons/icon-tick.svg" alt="Verified" style="display: none; width: 24px; height: 24px;" />
+  </div>
+
+  <span id="userPackage" class="package-label">
+  <span class="label-text">Đang tải...</span>
+  </span>
+
+  <p id="previewCompany">Công ty</p>
+
+  <!-- Social links -->
+  <div id="previewSocials" class="social-links"></div>
+
+  <!-- Phone -->
+  <div class="group">
+    <div class="flex-group">
+      <label for="contact"><i class="fa-solid fa-phone fa-xl"></i></label>
+      <div class="content-group">
+        <h5>Contact</h5>
+        <p class="copy-target" id="previewPhone">Số điện thoại</p>
+      </div>
+    </div>
+    <i class="copy-btn" data-target="previewPhone">
+      <i class="fa-regular fa-copy"></i>
+    </i>
+  </div>
+
+  <!-- Email -->
+  <div class="group">
+    <div class="flex-group">
+      <label for="email"><i class="fa-solid fa-envelope fa-xl"></i></label>
+      <div class="content-group">
+        <h5>Email</h5>
+        <p class="copy-target" id="previewEmail">Email</p>
+      </div>
+    </div>
+    <i class="copy-btn" data-target="previewEmail">
+      <i class="fa-regular fa-copy"></i>
+    </i>
+  </div>
+
+  <!-- Address -->
+  <div class="group">
+    <div class="flex-group">
+      <label for="location"><i class="fa-solid fa-location-dot fa-xl"></i></label>
+      <div class="content-group">
+        <h5>Location</h5>
+        <p class="copy-target" id="previewAddress">Địa chỉ</p>
+      </div>
+    </div>
+    <i class="copy-btn" data-target="previewAddress">
+      <i class="fa-regular fa-copy"></i>
+    </i>
+  </div>
+
+  <!-- Website -->
+  <div class="group">
+    <div class="flex-group">
+      <label for="company"><i class="fa-solid fa-building fa-xl"></i></label>
+      <div class="content-group">
+        <h5>Website</h5>
+        <a class="copy-target" id="previewWebsite" href="#" target="_blank" rel="noopener noreferrer" style="color: var(--text-primary); font-size: 16px;">Website</a>
+      </div>
+    </div>
+    <i class="copy-btn" data-target="previewWebsite">
+      <i class="fa-regular fa-copy"></i>
+    </i>
+  </div>
+</div>
+
+      <div class="button-group">
+        <button id="showQrBtn"><i class="fa-solid fa-qrcode"></i> Qr</button>
+        <button id="saveToContactsBtn"><i class="fa-solid fa-address-book"></i> Save</button>
+        <button id="showContactBtn"><i class="fa-solid fa-user-plus"></i> Share</button>
+      </div>
+    </div>
+
+    <!-- Sharing Modal -->
+    <div id="sharingModal" class="sharingModal">
+      <div class="modal-content">
+      <h3><i class="fa-solid fa-user-plus"></i> Share contact</h3>
+      <span id="closeContactBtn" class="close-btn">&times;</span>
+      <input type="text" id="contactName" placeholder="Name (required)" required>
+      <input type="tel" id="contactPhone" placeholder="Phone (required)" required>
+      <input type="email" id="contactEmail" placeholder="Email (required)" required">
+      <textarea class="no-zoom" id="contactMessage" placeholder="Message" ></textarea>
+      <div id="remainingQuota" class="quota-indicator"></div>
+      <button id="submitContactBtn"><i class="fa-solid fa-user-plus"></i> Share</button>
+      </div>
+    </div>
+
+    <!-- QR Code Modal -->
+    <div id="qrModal" class="modal">
+      <div class="modal-qr">
+      <div id="qrCode"></div>
+      <button id="downloadQR" class="btn-download"><i class="fa-solid fa-file-arrow-down"></i> Download QR</button>
+      <h5>Scan QR code to share</h5>
+      </div>
+      </div>
+
+  </div>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-storage-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  <!-- Load thư viện QR Code -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script>emailjs.init("c0pykJZDQk_GkjRbV");</script>
+  <!-- <script src="js/view-vcard.js"></script> -->
+  <script src="js/view-vcard.obfuscated.js"></script>
+</body>
+</html>

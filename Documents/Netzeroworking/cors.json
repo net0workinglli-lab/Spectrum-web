@@ -1,0 +1,9 @@
+[
+    {
+      "origin": ["https://netzeroworking.web.app"],
+      "method": ["GET", "HEAD", "OPTIONS","POST","PUT"],
+      "responseHeader": ["Content-Type"],
+      "maxAgeSeconds": 3600
+    }
+  ]
+
