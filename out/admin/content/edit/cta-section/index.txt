@@ -1,6 +1,6 @@
 1:"$Sreact.fragment"
 2:I[17989,[],"ClientSegmentRoot"]
-3:I[86276,["177","static/chunks/app/layout-602d75ca339d1945.js"],"default"]
+3:I[86276,["177","static/chunks/app/layout-dee0674ec6566c5f.js"],"default"]
 4:I[9766,[],""]
 5:I[98924,[],""]
 7:I[81959,[],"ClientPageRoot"]
