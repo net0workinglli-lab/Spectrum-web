@@ -1,0 +1,58 @@
+                    <div className="space-y-2">
+                      <Label>Top Bar Left Text</Label>
+                      <Input
+                        value={content.topBarLeft || 'Free consultation and eye exam'}
+                        onChange={(e) => handleInputChange('topBarLeft', e.target.value)}
+                        placeholder="Free consultation and eye exam"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>Top Bar Right Text</Label>
+                      <Input
+                        value={content.topBarRight || '30-day return policy'}
+                        onChange={(e) => handleInputChange('topBarRight', e.target.value)}
+                        placeholder="30-day return policy"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>Search Placeholder</Label>
+                      <Input
+                        value={content.searchPlaceholder || 'Search glasses, brands...'}
+                        onChange={(e) => handleInputChange('searchPlaceholder', e.target.value)}
+                        placeholder="Search glasses, brands..."
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <div className="flex items-center space-x-2">
+                        <input
+                          type="checkbox"
+                          id="useMenuNumbers"
+                          checked={content.useMenuNumbers || false}
+                          onChange={(e) => handleInputChange('useMenuNumbers', e.target.checked)}
+                          className="rounded border-gray-300 text-primary focus:ring-primary"
+                        />
+                        <Label htmlFor="useMenuNumbers" className="text-sm font-medium">
+                          Use Menu Numbers (1, 2, 3... instead of brand names)
+                        </Label>
+                      </div>
+                      <p className="text-xs text-gray-500">
+                        When enabled, menu items will display as "1. Ray-Ban", "2. Oakley", etc.
+                      </p>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>Status</Label>
+                      <select
+                        value={content.status}
+                        onChange={(e) => handleInputChange('status', e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      >
+                        <option value="draft">Draft</option>
+                        <option value="published">Published</option>
+                      </select>
+                    </div>
+                  </CardContent>
+                </Card>

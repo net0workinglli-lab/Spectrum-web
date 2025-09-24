@@ -1,0 +1,27 @@
+{
+  "name": "SPECTRUM EYECARE",
+  "short_name": "SPECTRUM",
+  "description": "Premium eyewear collection with quality sunglasses, eyeglasses, and contact lenses. Your vision is our focus.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1e40af",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["shopping", "lifestyle", "health"],
+  "lang": "en",
+  "dir": "ltr"
+}

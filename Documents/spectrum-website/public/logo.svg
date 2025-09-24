@@ -1,0 +1,41 @@
+<svg width="800" height="600" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="800" height="600" fill="#F5F5DC"/>
+  
+  <!-- SPECTRUM Text -->
+  <text x="400" y="200" text-anchor="middle" font-family="serif" font-size="72" font-weight="bold" fill="#B8860B">
+    <tspan x="400" dy="0">SPECTRUM</tspan>
+  </text>
+  
+  <!-- EYECARE Text -->
+  <text x="400" y="250" text-anchor="middle" font-family="sans-serif" font-size="24" font-weight="normal" fill="#B8860B">
+    EYECARE
+  </text>
+  
+  <!-- Slogan -->
+  <text x="400" y="320" text-anchor="middle" font-family="sans-serif" font-size="18" font-weight="normal" fill="#B8860B">
+    YOUR VISION, OUR FOCUS
+  </text>
+  
+  <!-- Glasses Icon -->
+  <g transform="translate(400, 380)">
+    <!-- Left lens -->
+    <circle cx="-30" cy="0" r="25" fill="none" stroke="#B8860B" stroke-width="3"/>
+    <!-- Right lens -->
+    <circle cx="30" cy="0" r="25" fill="none" stroke="#B8860B" stroke-width="3"/>
+    <!-- Bridge -->
+    <line x1="-5" y1="0" x2="5" y2="0" stroke="#B8860B" stroke-width="3"/>
+    <!-- Left temple -->
+    <line x1="-55" y1="0" x2="-80" y2="0" stroke="#B8860B" stroke-width="3"/>
+    <!-- Right temple -->
+    <line x1="55" y1="0" x2="80" y2="0" stroke="#B8860B" stroke-width="3"/>
+  </g>
+  
+  <!-- Divider line -->
+  <line x1="100" y1="450" x2="700" y2="450" stroke="#B8860B" stroke-width="2"/>
+  
+  <!-- Website -->
+  <text x="400" y="520" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#DAA520">
+    www.spectrumbn.com
+  </text>
+</svg>
