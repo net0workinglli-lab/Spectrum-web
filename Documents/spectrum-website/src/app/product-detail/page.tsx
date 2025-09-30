@@ -23,6 +23,7 @@ import {
 import { getProducts } from '@/lib/firebase-firestore';
 import { toast } from 'sonner';
 import { Product } from '@/types';
+import { ProductCard } from '@/components/ProductCard';
 
 // Mock product data
 const mockProduct = {
@@ -53,6 +54,7 @@ function ProductDetailContent() {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [isWishlisted, setIsWishlisted] = useState(false);
+  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
 
   // Load product from Firebase
   useEffect(() => {
@@ -97,6 +99,49 @@ function ProductDetailContent() {
 
     loadProduct();
   }, [productId]);
+
+  // Load related products based on same category
+  useEffect(() => {
+    const loadRelatedProducts = async () => {
+      if (!product) return;
+      
+      try {
+        const products = await getProducts();
+        
+        // Filter products: same category but not the current product
+        const related = products
+          .filter((p: Product) => 
+            p.category === product.category && p.id !== product.id
+          )
+          .slice(0, 4); // Limit to 4 products
+        
+        // Process timestamps for related products
+        const processedRelated = related.map((p: Product) => {
+          const processTimestamp = (timestamp: unknown): Date => {
+            if (timestamp && typeof timestamp === 'object' && 'toDate' in timestamp) {
+              return (timestamp as { toDate: () => Date }).toDate();
+            }
+            if (typeof timestamp === 'string') {
+              return new Date(timestamp);
+            }
+            return new Date();
+          };
+
+          return {
+            ...p,
+            createdAt: processTimestamp(p.createdAt),
+            updatedAt: processTimestamp(p.updatedAt),
+          } as Product;
+        });
+        
+        setRelatedProducts(processedRelated);
+      } catch (error) {
+        console.error('Error loading related products:', error);
+      }
+    };
+
+    loadRelatedProducts();
+  }, [product]);
 
 
   if (isLoading) {
@@ -345,15 +390,19 @@ function ProductDetailContent() {
       </div>
 
       {/* Related Products */}
-      <div className="mt-16">
-        <h2 className="text-2xl font-bold text-gray-900 mb-8">Sản phẩm liên quan</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {/* This would be populated with related products */}
-          <div className="text-center py-8 text-gray-500">
-            Sản phẩm liên quan sẽ được hiển thị ở đây
+      {relatedProducts.length > 0 && (
+        <div className="mt-16">
+          <h2 className="text-2xl font-bold text-gray-900 mb-8">Sản phẩm liên quan</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {relatedProducts.map((relatedProduct) => (
+              <ProductCard 
+                key={relatedProduct.id} 
+                product={relatedProduct}
+              />
+            ))}
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
