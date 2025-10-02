@@ -2,6 +2,7 @@
 
 import { useState, Suspense, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { useStoreSettings } from '@/hooks/useStoreSettings';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
@@ -56,6 +57,7 @@ function ProductDetailContent() {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
+  const { phoneNumber } = useStoreSettings();
 
   // Load product from Firebase
   useEffect(() => {
@@ -337,10 +339,10 @@ function ProductDetailContent() {
                     <div className="text-sm text-red-600">
                       <p className="font-medium">📞 Liên hệ:</p>
                       <a 
-                        href="tel:+84901234567"
+                        href={`tel:${phoneNumber}`}
                         className="hover:text-red-800 underline font-medium"
                       >
-                        +84 90 123 4567
+                        {phoneNumber}
                       </a>
                     </div>
                   </div>
@@ -356,7 +358,7 @@ function ProductDetailContent() {
                   className="flex-1"
                   asChild
                 >
-                  <a href="tel:+84901234567">
+                  <a href={`tel:${phoneNumber}`}>
                     <Phone className="h-5 w-5 mr-2" />
                     Gọi ngay
                   </a>

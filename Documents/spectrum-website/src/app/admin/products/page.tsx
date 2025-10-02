@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { 
   Package, Plus, Edit, Trash2, Eye, Search,
   Filter, Download, Upload, RefreshCw, Star,
-  Heart, ShoppingCart, MoreHorizontal
+  Heart, ShoppingCart, MoreHorizontal, Settings
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -22,6 +22,7 @@ import { useApp } from '@/contexts/AppContext';
 import { Product } from '@/types';
 import Image from 'next/image';
 import Link from 'next/link';
+import { StoreSettings } from '@/components/admin/StoreSettings';
 import { getProducts, deleteProduct, getCategories } from '@/lib/firebase-firestore';
 import { toast } from 'sonner';
 
@@ -34,6 +35,7 @@ export default function ProductsPage() {
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
   const [categories, setCategories] = useState<Array<{id: string, name: string, slug: string}>>([]);
+  const [activeTab, setActiveTab] = useState<'products' | 'settings'>('products');
 
   // Load products from Firebase
   useEffect(() => {
@@ -226,7 +228,7 @@ export default function ProductsPage() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold text-gray-900">Product Management</h1>
-              <p className="text-gray-600">Manage your product catalog</p>
+              <p className="text-gray-600">Manage your product catalog and store settings</p>
             </div>
             <div className="flex items-center gap-4">
               <Button asChild>
@@ -240,15 +242,38 @@ export default function ProductsPage() {
               </Button>
             </div>
           </div>
+          
+          {/* Tab Navigation */}
+          <div className="flex items-center gap-1 mt-4">
+            <Button
+              variant={activeTab === 'products' ? 'default' : 'ghost'}
+              onClick={() => setActiveTab('products')}
+              className="flex items-center gap-2"
+            >
+              <Package className="h-4 w-4" />
+              Products
+            </Button>
+            <Button
+              variant={activeTab === 'settings' ? 'default' : 'ghost'}
+              onClick={() => setActiveTab('settings')}
+              className="flex items-center gap-2"
+            >
+              <Settings className="h-4 w-4" />
+              Store Settings
+            </Button>
+          </div>
         </div>
       </div>
 
       <div className="container mx-auto px-4 py-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
+        {activeTab === 'settings' ? (
+          <StoreSettings />
+        ) : (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
           {/* Filters */}
           <Card className="mb-6">
             <CardContent className="p-4">
@@ -432,6 +457,7 @@ export default function ProductsPage() {
             </Card>
           )}
         </motion.div>
+        )}
       </div>
     </div>
   );
