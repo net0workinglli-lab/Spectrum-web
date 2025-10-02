@@ -18,6 +18,8 @@ import {
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useApp } from '@/contexts/AppContext';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -36,7 +38,19 @@ export default function LoginPage() {
     setError('');
 
     try {
-      await login(formData.email, formData.password);
+      const userCredential = await signInWithEmailAndPassword(auth, formData.email, formData.password);
+      const user = userCredential.user;
+      
+      // Create user object for context
+      const userData = {
+        id: user.uid,
+        email: user.email || '',
+        name: user.displayName || user.email?.split('@')[0] || 'User',
+        avatar: user.photoURL || undefined
+      };
+      
+      // Update context
+      login(userData);
       
       // Check if user is admin
       const isAdmin = formData.email === 'admin@spectrum.com' || formData.email === 'nguyenphuocsang@gmail.com';
@@ -46,8 +60,17 @@ export default function LoginPage() {
       } else {
         router.push('/');
       }
-    } catch (err) {
-      setError('Invalid email or password. Please try again.');
+    } catch (err: any) {
+      console.error('Login error:', err);
+      if (err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
+        setError('Invalid email or password. Please try again.');
+      } else if (err.code === 'auth/invalid-email') {
+        setError('Invalid email format.');
+      } else if (err.code === 'auth/too-many-requests') {
+        setError('Too many failed attempts. Please try again later.');
+      } else {
+        setError('An error occurred. Please try again.');
+      }
     } finally {
       setIsLoading(false);
     }
