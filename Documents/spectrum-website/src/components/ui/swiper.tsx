@@ -64,7 +64,11 @@ export function SwiperComponent({
       }}
     >
       {children.map((child, index) => (
-        <SwiperSlide key={index}>{child}</SwiperSlide>
+        <SwiperSlide key={index} className="h-auto">
+          <div className="h-full">
+            {child}
+          </div>
+        </SwiperSlide>
       ))}
     </Swiper>
   );
