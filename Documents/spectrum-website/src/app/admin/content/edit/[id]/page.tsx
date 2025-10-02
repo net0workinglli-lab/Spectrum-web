@@ -11,7 +11,7 @@ import {
   ArrowLeft, Save, Type, Image, 
   CheckCircle, AlertCircle,
   Award, Leaf, Users, Shield, X, Settings, SlidersHorizontal,
-  MessageSquare, Building2, Globe, MapPin, Monitor
+  MessageSquare, Building2, Globe, MapPin, Monitor, Eye
 } from 'lucide-react';
 import Link from 'next/link';
 import { useApp } from '@/contexts/AppContext';
