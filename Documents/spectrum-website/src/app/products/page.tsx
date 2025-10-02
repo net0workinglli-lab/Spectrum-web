@@ -328,7 +328,7 @@ function ProductsPageContent() {
             <img
               src={pageContent.imageUrl}
               alt="Products Hero"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain"
             />
           </div>
         )}

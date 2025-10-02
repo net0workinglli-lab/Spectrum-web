@@ -209,7 +209,7 @@ function ProductDetailContent() {
               src={(product.images || [])[selectedImageIndex] || '/placeholder-glasses.jpg'}
               alt={product.name}
               fill
-              className="object-cover"
+              className="object-contain"
             />
           </div>
 
@@ -230,7 +230,7 @@ function ProductDetailContent() {
                     src={image}
                     alt={`${product.name} ${index + 1}`}
                     fill
-                    className="object-cover"
+                    className="object-contain"
                   />
                 </button>
               ))}

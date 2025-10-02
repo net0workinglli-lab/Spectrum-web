@@ -44,7 +44,7 @@ export function ProductCard({ product, onAddToComparison, isInComparison, onQuic
           src={product.images?.[0] || '/placeholder-glasses.jpg'}
           alt={product.name}
           fill
-          className="object-cover group-hover:scale-105 transition-transform duration-300"
+          className="object-contain group-hover:scale-105 transition-transform duration-300"
         />
         
 
