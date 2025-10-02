@@ -82,7 +82,7 @@ export default function ESGCertificatePage() {
                   src={content?.imageUrl || "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1200&h=750&fit=crop"}
                   alt="Synesgy ESG Certificate - Spectrum Eyecare"
                   fill
-                  className="object-cover"
+                  className="object-contain"
                   priority
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent">

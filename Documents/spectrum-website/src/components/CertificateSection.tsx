@@ -69,7 +69,7 @@ export function CertificateSection() {
                       src={content.certificate.imageUrl || "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=600&h=800&fit=crop"}
                       alt="Synesgy ESG Certificate - Spectrum Eyecare"
                       fill
-                      className="object-cover"
+                      className="object-contain"
                       priority
                     />
                     {/* Overlay with certificate info */}
