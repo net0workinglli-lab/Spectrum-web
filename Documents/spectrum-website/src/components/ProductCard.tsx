@@ -38,7 +38,7 @@ export function ProductCard({ product, onAddToComparison, isInComparison, onQuic
       whileHover={{ y: -5, scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
     >
-      <Card className="group relative overflow-hidden hover:shadow-lg transition-shadow duration-300">
+      <Card className="group relative overflow-hidden hover:shadow-lg transition-shadow duration-300 h-full flex flex-col">
       <div className="relative aspect-square overflow-hidden">
         <Image
           src={product.images?.[0] || '/placeholder-glasses.jpg'}
@@ -79,8 +79,8 @@ export function ProductCard({ product, onAddToComparison, isInComparison, onQuic
         </div>
       </div>
 
-      <CardContent className="p-4">
-        <div className="space-y-2">
+      <CardContent className="p-4 flex-grow flex flex-col">
+        <div className="space-y-2 flex-grow">
           <div className="flex items-center justify-between">
             <Badge variant="outline" className="text-xs">
               {product.brand}
