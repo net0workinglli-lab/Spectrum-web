@@ -18,7 +18,8 @@ import {
   Shield,
   RotateCcw,
   MapPin,
-  Loader2
+  Loader2,
+  Phone
 } from 'lucide-react';
 import { getProducts } from '@/lib/firebase-firestore';
 import { toast } from 'sonner';
@@ -330,9 +331,18 @@ function ProductDetailContent() {
                     <p className="text-sm text-red-700 mb-2">
                       Sản phẩm hiện đang tạm hết hàng tại cửa hàng
                     </p>
-                    <p className="text-sm text-red-600">
+                    <p className="text-sm text-red-600 mb-2">
                       Vui lòng liên hệ với chúng tôi để đặt hàng trước hoặc kiểm tra thời gian có hàng trở lại.
                     </p>
+                    <div className="text-sm text-red-600">
+                      <p className="font-medium">📞 Liên hệ:</p>
+                      <a 
+                        href="tel:+84901234567"
+                        className="hover:text-red-800 underline font-medium"
+                      >
+                        +84 90 123 4567
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -341,6 +351,16 @@ function ProductDetailContent() {
             {/* Action Buttons */}
             <div className="space-y-4">
               <div className="flex gap-4">
+                <Button 
+                  size="lg" 
+                  className="flex-1"
+                  asChild
+                >
+                  <a href="tel:+84901234567">
+                    <Phone className="h-5 w-5 mr-2" />
+                    Gọi ngay
+                  </a>
+                </Button>
                 <Button 
                   size="lg" 
                   className="flex-1"
@@ -356,19 +376,25 @@ function ProductDetailContent() {
                     Xem bản đồ
                   </a>
                 </Button>
+              </div>
+              <div className="flex gap-4">
                 <Button
                   size="lg"
                   variant="outline"
                   onClick={handleWishlistToggle}
+                  className="flex-1"
                 >
-                  <Heart className={`h-5 w-5 ${isWishlisted ? 'fill-current text-red-500' : ''}`} />
+                  <Heart className={`h-5 w-5 mr-2 ${isWishlisted ? 'fill-current text-red-500' : ''}`} />
+                  {isWishlisted ? 'Đã thích' : 'Thích'}
                 </Button>
                 <Button
                   size="lg"
                   variant="outline"
                   onClick={handleShare}
+                  className="flex-1"
                 >
-                  <Share2 className="h-5 w-5" />
+                  <Share2 className="h-5 w-5 mr-2" />
+                  Chia sẻ
                 </Button>
               </div>
             </div>
