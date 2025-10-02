@@ -11,7 +11,7 @@ import {
   ArrowLeft, Save, Type, Image, 
   CheckCircle, AlertCircle,
   Award, Leaf, Users, Shield, X, Settings, SlidersHorizontal,
-  MessageSquare, Building2, Globe, MapPin, Monitor
+  MessageSquare, Building2, Globe, MapPin
 } from 'lucide-react';
 import Link from 'next/link';
 import { useApp } from '@/contexts/AppContext';
@@ -254,25 +254,21 @@ export default function EditContentPage({ params }: { params: { id: string } }) 
             </div>
           )}
 
-          <div className="max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Editor */}
             <div className="space-y-6">
               {/* Hero Slides Management - Only for Hero Section */}
               {content.id === 'hero-section' ? (
-                <div className="space-y-6">
-                  <Card>
-                    <CardHeader>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <Type className="h-5 w-5" />
-                          <CardTitle>Hero Slides Management</CardTitle>
-                        </div>
-                        <Badge variant="outline">{content.slides?.length || 0} / 6 slides</Badge>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="space-y-6">
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                        {[1, 2, 3, 4, 5, 6].map((slideId) => {
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Type className="h-5 w-5" />
+                      Hero Slides Management
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    <div className="space-y-4">
+                      {[1, 2, 3].map((slideId) => {
                         const slide = content.slides?.find(s => s.id === slideId) || {
                           id: slideId,
                           title: '',
@@ -385,29 +381,21 @@ export default function EditContentPage({ params }: { params: { id: string } }) 
                           </Card>
                         );
                       })}
-                      </div>
-                    </CardContent>
-                  </Card>
+                    </div>
 
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Publication Status</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-2">
-                        <Label>Status</Label>
-                        <select
-                          value={content.status}
-                          onChange={(e) => handleInputChange('status', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        >
-                          <option value="draft">Draft</option>
-                          <option value="published">Published</option>
-                        </select>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
+                    <div className="space-y-2">
+                      <Label>Status</Label>
+                      <select
+                        value={content.status}
+                        onChange={(e) => handleInputChange('status', e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      >
+                        <option value="draft">Draft</option>
+                        <option value="published">Published</option>
+                      </select>
+                    </div>
+                  </CardContent>
+                </Card>
               ) : content.id === 'brands-section' ? (
                 /* Brands Section Editor */
                 <Card>
@@ -625,19 +613,18 @@ export default function EditContentPage({ params }: { params: { id: string } }) 
                   </CardContent>
                 </Card>
               ) : content.id === 'header-section' ? (
-                /* Header Section Editor - 2 Column Layout */
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {/* Left Column - Basic Settings */}
-                  <div className="space-y-6">
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                          <Type className="h-5 w-5" />
-                          Basic Settings
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="space-y-4">
-                        {/* Logo */}
+                /* Header Section Editor - Shopify Style */
+                <div className="space-y-6">
+                  {/* Basic Settings */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Type className="h-5 w-5" />
+                        Basic Settings
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label>Logo Text</Label>
                           <Input
@@ -646,17 +633,55 @@ export default function EditContentPage({ params }: { params: { id: string } }) 
                             placeholder="Spectrum"
                           />
                         </div>
-                        
                         <div className="space-y-2">
                           <ImageUpload
                             value={content.logoImage || ''}
                             onChange={(url) => handleInputChange('logoImage', url)}
                             placeholder="https://example.com/logo.png"
-                            label="Logo Image"
+                            label="Logo Image (Horizontal)"
+                            className="max-w-xs"
                           />
                         </div>
+                      </div>
 
-                        {/* Top Bar */}
+                    <div className="space-y-2">
+                      <Label>Top Bar Left Text</Label>
+                      <Input
+                        value={content.topBarLeft || 'Free consultation and eye exam'}
+                        onChange={(e) => handleInputChange('topBarLeft', e.target.value)}
+                        placeholder="Free consultation and eye exam"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>Top Bar Right Text</Label>
+                      <Input
+                        value={content.topBarRight || '30-day return policy'}
+                        onChange={(e) => handleInputChange('topBarRight', e.target.value)}
+                        placeholder="30-day return policy"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>Blog Link Text</Label>
+                      <Input
+                        value={content.blogLinkText || 'Blog'}
+                        onChange={(e) => handleInputChange('blogLinkText', e.target.value)}
+                        placeholder="Blog"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>Contact Link Text</Label>
+                      <Input
+                        value={content.contactLinkText || 'Contact'}
+                        onChange={(e) => handleInputChange('contactLinkText', e.target.value)}
+                        placeholder="Contact"
+                      />
+                    </div>
+
+
+                      <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label>Top Bar Left Text</Label>
                           <Input
@@ -665,7 +690,6 @@ export default function EditContentPage({ params }: { params: { id: string } }) 
                             placeholder="Free consultation and eye exam"
                           />
                         </div>
-
                         <div className="space-y-2">
                           <Label>Top Bar Right Text</Label>
                           <Input
@@ -674,87 +698,33 @@ export default function EditContentPage({ params }: { params: { id: string } }) 
                             placeholder="30-day return policy"
                           />
                         </div>
+                      </div>
 
-                        {/* Top Links */}
-                        <div className="space-y-2">
-                          <Label>Blog Link Text</Label>
-                          <Input
-                            value={content.blogLinkText || 'Blog'}
-                            onChange={(e) => handleInputChange('blogLinkText', e.target.value)}
-                            placeholder="Blog"
-                          />
-                        </div>
+                      <div className="space-y-2">
+                        <Label>Search Placeholder</Label>
+                        <Input
+                          value={content.searchPlaceholder || 'Search glasses, brands...'}
+                          onChange={(e) => handleInputChange('searchPlaceholder', e.target.value)}
+                          placeholder="Search glasses, brands..."
+                        />
+                      </div>
 
-                        <div className="space-y-2">
-                          <Label>Contact Link Text</Label>
-                          <Input
-                            value={content.contactLinkText || 'Contact'}
-                            onChange={(e) => handleInputChange('contactLinkText', e.target.value)}
-                            placeholder="Contact"
-                          />
-                        </div>
 
-                        {/* Search */}
-                        <div className="space-y-2">
-                          <Label>Search Placeholder</Label>
-                          <Input
-                            value={content.searchPlaceholder || 'Search glasses, brands...'}
-                            onChange={(e) => handleInputChange('searchPlaceholder', e.target.value)}
-                            placeholder="Search glasses, brands..."
-                          />
-                        </div>
+                      <div className="space-y-2">
+                        <Label>Status</Label>
+                        <select
+                          value={content.status}
+                          onChange={(e) => handleInputChange('status', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        >
+                          <option value="draft">Draft</option>
+                          <option value="published">Published</option>
+                        </select>
+                      </div>
+                    </CardContent>
+                  </Card>
 
-                        {/* Dropdown Menu Titles */}
-                        <div className="border-t pt-4 mt-4">
-                          <Label className="text-base font-semibold mb-3 block">Dropdown Menu Titles</Label>
-                          
-                          <div className="space-y-3">
-                            <div className="space-y-2">
-                              <Label className="text-sm">Dropdown Menu 1 Title</Label>
-                              <Input
-                                value={content.productsDropdownTitle || 'Products'}
-                                onChange={(e) => handleInputChange('productsDropdownTitle', e.target.value)}
-                                placeholder="e.g. Products, Shop, Categories"
-                              />
-                            </div>
-
-                            <div className="space-y-2">
-                              <Label className="text-sm">Dropdown Menu 2 Title</Label>
-                              <Input
-                                value={content.brandsDropdownTitle || 'Brands'}
-                                onChange={(e) => handleInputChange('brandsDropdownTitle', e.target.value)}
-                                placeholder="e.g. Brands, Partners, Collections"
-                              />
-                            </div>
-
-                            <div className="space-y-2">
-                              <Label className="text-sm">Dropdown Menu 3 Title</Label>
-                              <Input
-                                value={content.lensesDropdownTitle || 'Lenses'}
-                                onChange={(e) => handleInputChange('lensesDropdownTitle', e.target.value)}
-                                placeholder="e.g. Lenses, Technology, Solutions"
-                              />
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Status */}
-                        <div className="border-t pt-4 mt-4">
-                          <Label>Status</Label>
-                          <select
-                            value={content.status}
-                            onChange={(e) => handleInputChange('status', e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                          >
-                            <option value="draft">Draft</option>
-                            <option value="published">Published</option>
-                          </select>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-
-                  {/* Right Column - Navigation & Dropdown Managers */}
+                  {/* Navigation Items Manager */}
                   <div className="space-y-6">
                     <DropdownManager
                       title="Navigation Items"
@@ -765,71 +735,32 @@ export default function EditContentPage({ params }: { params: { id: string } }) 
                       category="navigation"
                     />
 
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                          <Settings className="h-5 w-5" />
-                          {content.productsDropdownTitle || 'Dropdown Menu 1'}
-                        </CardTitle>
-                        <p className="text-sm text-gray-600 mt-1">
-                          Manage items for &quot;{content.productsDropdownTitle || 'Products'}&quot; dropdown
-                        </p>
-                      </CardHeader>
-                      <CardContent>
-                        <DropdownManager
-                          title=""
-                          items={content.productsDropdown || []}
-                          onItemsChange={(items) => handleInputChange('productsDropdown', items)}
-                          placeholder="e.g. Eyeglasses, Sunglasses, Contact Lenses"
-                          maxItems={8}
-                          category="products"
-                        />
-                      </CardContent>
-                    </Card>
+                    <DropdownManager
+                      title="Products Dropdown"
+                      items={content.productsDropdown || []}
+                      onItemsChange={(items) => handleInputChange('productsDropdown', items)}
+                      placeholder="Enter product name"
+                      maxItems={8}
+                      category="products"
+                    />
 
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                          <Settings className="h-5 w-5" />
-                          {content.brandsDropdownTitle || 'Dropdown Menu 2'}
-                        </CardTitle>
-                        <p className="text-sm text-gray-600 mt-1">
-                          Manage items for &quot;{content.brandsDropdownTitle || 'Brands'}&quot; dropdown
-                        </p>
-                      </CardHeader>
-                      <CardContent>
-                        <DropdownManager
-                          title=""
-                          items={content.brandsDropdown || []}
-                          onItemsChange={(items) => handleInputChange('brandsDropdown', items)}
-                          placeholder="e.g. Ray-Ban, Oakley, Gucci"
-                          maxItems={10}
-                          category="brands"
-                        />
-                      </CardContent>
-                    </Card>
+                    <DropdownManager
+                      title="Brands Dropdown"
+                      items={content.brandsDropdown || []}
+                      onItemsChange={(items) => handleInputChange('brandsDropdown', items)}
+                      placeholder="Enter brand name"
+                      maxItems={10}
+                      category="brands"
+                    />
 
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                          <Settings className="h-5 w-5" />
-                          {content.lensesDropdownTitle || 'Dropdown Menu 3'}
-                        </CardTitle>
-                        <p className="text-sm text-gray-600 mt-1">
-                          Manage items for &quot;{content.lensesDropdownTitle || 'Lenses'}&quot; dropdown
-                        </p>
-                      </CardHeader>
-                      <CardContent>
-                        <DropdownManager
-                          title=""
-                          items={content.lensesDropdown || []}
-                          onItemsChange={(items) => handleInputChange('lensesDropdown', items)}
-                          placeholder="e.g. Essilor, Hoya, Zeiss"
-                          maxItems={10}
-                          category="lenses"
-                        />
-                      </CardContent>
-                    </Card>
+                    <DropdownManager
+                      title="Lenses Dropdown"
+                      items={content.lensesDropdown || []}
+                      onItemsChange={(items) => handleInputChange('lensesDropdown', items)}
+                      placeholder="Enter lens brand name"
+                      maxItems={10}
+                      category="lenses"
+                    />
                   </div>
                 </div>
               ) : content.id === 'esg-certificate-page' ? (
@@ -1190,117 +1121,197 @@ export default function EditContentPage({ params }: { params: { id: string } }) 
                   </CardContent>
                 </Card>
               ) : content.id === 'footer-section' ? (
-                /* Footer Section Editor - 2 Column Layout */
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {/* Left Column - Basic Info */}
-                  <div className="space-y-6">
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                          <Type className="h-5 w-5" />
-                          Brand Information
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="space-y-4">
-                        <div className="space-y-2">
-                          <Label>Brand Name (optional)</Label>
-                          <Input
-                            value={content.title || ''}
-                            onChange={(e) => handleInputChange('title', e.target.value)}
-                            placeholder="Spectrum (leave empty to show logo only)"
-                          />
-                        </div>
+                /* Footer Section Editor */
+                <div className="space-y-6">
+                  {/* Brand Information */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Type className="h-5 w-5" />
+                        Brand Information
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="space-y-2">
+                        <Label>Brand Name (optional)</Label>
+                        <Input
+                          value={content.title || ''}
+                          onChange={(e) => handleInputChange('title', e.target.value)}
+                          placeholder="Spectrum (leave empty to show logo only)"
+                        />
+                      </div>
 
-                        <div className="space-y-2">
-                          <ImageUpload
-                            value={content.logoImage || ''}
-                            onChange={(url) => handleInputChange('logoImage', url)}
-                            placeholder="https://example.com/footer-logo.png"
-                            label="Footer Logo"
-                          />
-                        </div>
+                      <div className="space-y-2">
+                        <ImageUpload
+                          value={content.logoImage || ''}
+                          onChange={(url) => {
+                            console.log('ImageUpload onChange called with:', url);
+                            handleInputChange('logoImage', url);
+                          }}
+                          placeholder="https://example.com/footer-logo.png"
+                          label="Footer Logo"
+                          className="max-w-xs"
+                        />
+                      </div>
 
-                        <div className="space-y-2">
-                          <Label>Brand Description</Label>
-                          <textarea
-                            value={content.description || 'Discover the perfect eyewear that complements your style and protects your vision.'}
-                            onChange={(e) => handleInputChange('description', e.target.value)}
-                            placeholder="Brand description..."
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                            rows={3}
-                          />
-                        </div>
-                      </CardContent>
-                    </Card>
+                      <div className="space-y-2">
+                        <Label>Brand Description</Label>
+                        <textarea
+                          value={content.description || 'Discover the perfect eyewear that complements your style and protects your vision. From trendy sunglasses to prescription glasses, we have everything you need.'}
+                          onChange={(e) => handleInputChange('description', e.target.value)}
+                          placeholder="Brand description..."
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          rows={3}
+                        />
+                      </div>
+                    </CardContent>
+                  </Card>
 
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                          <Type className="h-5 w-5" />
-                          Newsletter Section
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="space-y-4">
-                        <div className="space-y-2">
-                          <Label>Newsletter Title</Label>
-                          <Input
-                            value={content.subtitle || 'Stay Updated'}
-                            onChange={(e) => handleInputChange('subtitle', e.target.value)}
-                            placeholder="Stay Updated"
-                          />
-                        </div>
+                  {/* Newsletter Section */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Type className="h-5 w-5" />
+                        Newsletter Section
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="space-y-2">
+                        <Label>Newsletter Title</Label>
+                        <Input
+                          value={content.subtitle || 'Stay Updated'}
+                          onChange={(e) => handleInputChange('subtitle', e.target.value)}
+                          placeholder="Stay Updated"
+                        />
+                      </div>
 
-                        <div className="space-y-2">
-                          <Label>Newsletter Description</Label>
-                          <textarea
-                            value={content.content || 'Subscribe to our newsletter for the latest trends and exclusive offers.'}
-                            onChange={(e) => handleInputChange('content', e.target.value)}
-                            placeholder="Newsletter description..."
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                            rows={2}
-                          />
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
+                      <div className="space-y-2">
+                        <Label>Newsletter Description</Label>
+                        <textarea
+                          value={content.content || 'Subscribe to our newsletter for the latest trends and exclusive offers.'}
+                          onChange={(e) => handleInputChange('content', e.target.value)}
+                          placeholder="Newsletter description..."
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          rows={2}
+                        />
+                      </div>
+                    </CardContent>
+                  </Card>
 
-                  {/* Right Column - Footer Links */}
-                  <div className="space-y-6">
-                    <DropdownManager
-                      title="Shop Links"
-                      items={content.shopLinks || []}
-                      onItemsChange={(items) => handleInputChange('shopLinks', items)}
-                      category="products"
-                    />
+                  {/* Footer Links Management */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Type className="h-5 w-5" />
+                        Footer Links
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                      {/* Shop Links */}
+                      <div className="space-y-3">
+                        <Label className="text-base font-semibold">Shop Links</Label>
+                        <DropdownManager
+                          title="Shop Links"
+                          items={content.shopLinks || []}
+                          onItemsChange={(items) => handleInputChange('shopLinks', items)}
+                          category="products"
+                        />
+                      </div>
 
-                    <DropdownManager
-                      title="Support Links"
-                      items={content.supportLinks || []}
-                      onItemsChange={(items) => handleInputChange('supportLinks', items)}
-                      category="general"
-                    />
+                      {/* Support Links */}
+                      <div className="space-y-3">
+                        <Label className="text-base font-semibold">Support Links</Label>
+                        <DropdownManager
+                          title="Support Links"
+                          items={content.supportLinks || []}
+                          onItemsChange={(items) => handleInputChange('supportLinks', items)}
+                          category="general"
+                        />
+                      </div>
 
-                    <DropdownManager
-                      title="Company Links"
-                      items={content.companyLinks || []}
-                      onItemsChange={(items) => handleInputChange('companyLinks', items)}
-                      category="general"
-                    />
+                      {/* Company Links */}
+                      <div className="space-y-3">
+                        <Label className="text-base font-semibold">Company Links</Label>
+                        <DropdownManager
+                          title="Company Links"
+                          items={content.companyLinks || []}
+                          onItemsChange={(items) => handleInputChange('companyLinks', items)}
+                          category="general"
+                        />
+                      </div>
 
-                    <DropdownManager
-                      title="Legal Links"
-                      items={content.legalLinks || []}
-                      onItemsChange={(items) => handleInputChange('legalLinks', items)}
-                      category="general"
-                    />
+                      {/* Legal Links */}
+                      <div className="space-y-3">
+                        <Label className="text-base font-semibold">Legal Links</Label>
+                        <DropdownManager
+                          title="Legal Links"
+                          items={content.legalLinks || []}
+                          onItemsChange={(items) => handleInputChange('legalLinks', items)}
+                          category="general"
+                        />
+                      </div>
 
-                    <DropdownManager
-                      title="Social Links"
-                      items={content.socialLinks || []}
-                      onItemsChange={(items) => handleInputChange('socialLinks', items)}
-                      category="social"
-                    />
-                  </div>
+                      {/* Social Links */}
+                      <div className="space-y-3">
+                        <Label className="text-base font-semibold">Social Media Links</Label>
+                        <DropdownManager
+                          title="Social Links"
+                          items={content.socialLinks || []}
+                          onItemsChange={(items) => handleInputChange('socialLinks', items)}
+                          category="social"
+                        />
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Copyright & Bottom Text */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Type className="h-5 w-5" />
+                        Copyright & Bottom Text
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="space-y-2">
+                        <Label>Copyright Text</Label>
+                        <Input
+                          value={content.buttonText || `© ${new Date().getFullYear()} Spectrum. All rights reserved.`}
+                          onChange={(e) => handleInputChange('buttonText', e.target.value)}
+                          placeholder="© 2024 Spectrum. All rights reserved."
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label>Bottom Text</Label>
+                        <Input
+                          value={content.secondaryButtonText || 'Made with ❤️ for your vision'}
+                          onChange={(e) => handleInputChange('secondaryButtonText', e.target.value)}
+                          placeholder="Made with ❤️ for your vision"
+                        />
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Status */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Publication Status</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-2">
+                        <Label>Status</Label>
+                        <select
+                          value={content.status}
+                          onChange={(e) => handleInputChange('status', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        >
+                          <option value="draft">Draft</option>
+                          <option value="published">Published</option>
+                        </select>
+                      </div>
+                    </CardContent>
+                  </Card>
                 </div>
               ) : content.id === 'certificate-section' ? (
                 /* Certificate Section Editor */
@@ -2075,117 +2086,89 @@ export default function EditContentPage({ params }: { params: { id: string } }) 
                   </Card>
                 </div>
               ) : content.id === 'products-page' ? (
-                /* Products Page Editor - 2 Column Layout */
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {/* Left Column - Basic Settings */}
-                  <div className="space-y-6">
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                          <Monitor className="h-5 w-5" />
-                          Page Header
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="space-y-4">
-                        <div className="space-y-2">
-                          <Label>Page Title</Label>
-                          <Input
-                            value={content.title || 'Tất cả sản phẩm'}
-                            onChange={(e) => handleInputChange('title', e.target.value)}
-                            placeholder="Tất cả sản phẩm"
-                          />
-                        </div>
+                /* Products Page Editor */
+                <div className="space-y-6">
+                  {/* Page Header */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Monitor className="h-5 w-5" />
+                        Products Page Header
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="space-y-2">
+                        <Label>Page Title</Label>
+                        <Input
+                          value={content.title || 'Tất cả sản phẩm'}
+                          onChange={(e) => handleInputChange('title', e.target.value)}
+                          placeholder="Tất cả sản phẩm"
+                        />
+                      </div>
 
-                        <div className="space-y-2">
-                          <Label>Page Description</Label>
-                          <textarea
-                            value={content.description || 'Khám phá bộ sưu tập kính mắt thời trang của chúng tôi'}
-                            onChange={(e) => handleInputChange('description', e.target.value)}
-                            placeholder="Page description..."
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                            rows={2}
-                          />
-                        </div>
+                      <div className="space-y-2">
+                        <Label>Page Description</Label>
+                        <textarea
+                          value={content.description || 'Khám phá bộ sưu tập kính mắt thời trang của chúng tôi'}
+                          onChange={(e) => handleInputChange('description', e.target.value)}
+                          placeholder="Page description..."
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          rows={2}
+                        />
+                      </div>
 
-                        <div className="space-y-2">
-                          <ImageUpload
-                            value={content.imageUrl || ''}
-                            onChange={(url) => handleInputChange('imageUrl', url)}
-                            placeholder="https://example.com/products-hero.jpg"
-                            label="Hero Banner Image (Optional)"
-                          />
-                        </div>
-                      </CardContent>
-                    </Card>
+                      <div className="space-y-2">
+                        <ImageUpload
+                          value={content.imageUrl || ''}
+                          onChange={(url) => handleInputChange('imageUrl', url)}
+                          placeholder="https://example.com/products-hero.jpg"
+                          label="Hero Banner Image (Optional)"
+                          className="max-w-xs"
+                        />
+                      </div>
+                    </CardContent>
+                  </Card>
 
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                          <Type className="h-5 w-5" />
-                          Category Labels
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="space-y-4">
-                        <div className="space-y-2">
-                          <Label>All Categories Label</Label>
-                          <Input
-                            value={content.allCategoriesLabel || 'Tất cả danh mục'}
-                            onChange={(e) => handleInputChange('allCategoriesLabel', e.target.value)}
-                            placeholder="Tất cả danh mục"
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label>Category Filter Label</Label>
-                          <Input
-                            value={content.categoryFilterLabel || 'Danh mục'}
-                            onChange={(e) => handleInputChange('categoryFilterLabel', e.target.value)}
-                            placeholder="Danh mục"
-                          />
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
+                  {/* Filter & Search Settings */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <SlidersHorizontal className="h-5 w-5" />
+                        Filter & Search Settings
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="space-y-2">
+                        <Label>Search Placeholder</Label>
+                        <Input
+                          value={content.searchPlaceholder || 'Tìm kiếm sản phẩm...'}
+                          onChange={(e) => handleInputChange('searchPlaceholder', e.target.value)}
+                          placeholder="Tìm kiếm sản phẩm..."
+                        />
+                      </div>
 
-                  {/* Right Column - Filter & Display Settings */}
-                  <div className="space-y-6">
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                          <SlidersHorizontal className="h-5 w-5" />
-                          Filter & Search Settings
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="space-y-4">
-                        <div className="space-y-2">
-                          <Label>Search Placeholder</Label>
-                          <Input
-                            value={content.searchPlaceholder || 'Tìm kiếm sản phẩm...'}
-                            onChange={(e) => handleInputChange('searchPlaceholder', e.target.value)}
-                            placeholder="Tìm kiếm sản phẩm..."
-                          />
-                        </div>
+                      <div className="space-y-2">
+                        <Label>Filter Button Text</Label>
+                        <Input
+                          value={content.filterButtonText || 'Bộ lọc'}
+                          onChange={(e) => handleInputChange('filterButtonText', e.target.value)}
+                          placeholder="Bộ lọc"
+                        />
+                      </div>
 
-                        <div className="space-y-2">
-                          <Label>Filter Button Text</Label>
-                          <Input
-                            value={content.filterButtonText || 'Bộ lọc'}
-                            onChange={(e) => handleInputChange('filterButtonText', e.target.value)}
-                            placeholder="Bộ lọc"
-                          />
-                        </div>
+                      <div className="space-y-2">
+                        <Label>Items Per Page Label</Label>
+                        <Input
+                          value={content.itemsPerPageLabel || 'Sản phẩm mỗi trang:'}
+                          onChange={(e) => handleInputChange('itemsPerPageLabel', e.target.value)}
+                          placeholder="Sản phẩm mỗi trang:"
+                        />
+                      </div>
+                    </CardContent>
+                  </Card>
 
-                        <div className="space-y-2">
-                          <Label>Items Per Page Label</Label>
-                          <Input
-                            value={content.itemsPerPageLabel || 'Sản phẩm mỗi trang:'}
-                            onChange={(e) => handleInputChange('itemsPerPageLabel', e.target.value)}
-                            placeholder="Sản phẩm mỗi trang:"
-                          />
-                        </div>
-                      </CardContent>
-                    </Card>
-
-                    <Card>
+                  {/* Category Settings */}
+                  <Card>
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
                         <Type className="h-5 w-5" />
@@ -2263,98 +2246,74 @@ export default function EditContentPage({ params }: { params: { id: string } }) 
                     </CardContent>
                   </Card>
 
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                          <Settings className="h-5 w-5" />
-                          Sort & Display Settings
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="space-y-4">
-                        <div className="space-y-2">
-                          <Label>Sort Label</Label>
-                          <Input
-                            value={content.sortLabel || 'Sắp xếp'}
-                            onChange={(e) => handleInputChange('sortLabel', e.target.value)}
-                            placeholder="Sắp xếp"
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label>Display Mode Label</Label>
-                          <Input
-                            value={content.displayModeLabel || 'Hiển thị'}
-                            onChange={(e) => handleInputChange('displayModeLabel', e.target.value)}
-                            placeholder="Hiển thị"
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label>Price Range Label</Label>
-                          <Input
-                            value={content.priceRangeLabel || 'Khoảng giá'}
-                            onChange={(e) => handleInputChange('priceRangeLabel', e.target.value)}
-                            placeholder="Khoảng giá"
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label>Clear Filters Text</Label>
-                          <Input
-                            value={content.clearFiltersText || 'Xóa tất cả bộ lọc'}
-                            onChange={(e) => handleInputChange('clearFiltersText', e.target.value)}
-                            placeholder="Xóa tất cả bộ lọc"
-                          />
-                        </div>
-                      </CardContent>
-                    </Card>
+                  {/* Messages & Labels */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Type className="h-5 w-5" />
+                        Messages & Labels
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="space-y-2">
+                        <Label>No Products Found Title</Label>
+                        <Input
+                          value={content.noProductsTitle || 'Không tìm thấy sản phẩm'}
+                          onChange={(e) => handleInputChange('noProductsTitle', e.target.value)}
+                          placeholder="Không tìm thấy sản phẩm"
+                        />
+                      </div>
 
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                          <Type className="h-5 w-5" />
-                          Messages & Pagination
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="space-y-4">
+                      <div className="space-y-2">
+                        <Label>No Products Found Message</Label>
+                        <textarea
+                          value={content.noProductsMessage || 'Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm'}
+                          onChange={(e) => handleInputChange('noProductsMessage', e.target.value)}
+                          placeholder="No products message..."
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          rows={2}
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <Label>No Products Found Title</Label>
+                          <Label>Previous Page Text</Label>
                           <Input
-                            value={content.noProductsTitle || 'Không tìm thấy sản phẩm'}
-                            onChange={(e) => handleInputChange('noProductsTitle', e.target.value)}
-                            placeholder="Không tìm thấy sản phẩm"
+                            value={content.previousPageText || 'Trước'}
+                            onChange={(e) => handleInputChange('previousPageText', e.target.value)}
+                            placeholder="Trước"
                           />
                         </div>
-
                         <div className="space-y-2">
-                          <Label>No Products Found Message</Label>
-                          <textarea
-                            value={content.noProductsMessage || 'Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm'}
-                            onChange={(e) => handleInputChange('noProductsMessage', e.target.value)}
-                            placeholder="No products message..."
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                            rows={2}
+                          <Label>Next Page Text</Label>
+                          <Input
+                            value={content.nextPageText || 'Sau'}
+                            onChange={(e) => handleInputChange('nextPageText', e.target.value)}
+                            placeholder="Sau"
                           />
                         </div>
+                      </div>
+                    </CardContent>
+                  </Card>
 
-                        <div className="grid grid-cols-2 gap-4">
-                          <div className="space-y-2">
-                            <Label>Previous Page Text</Label>
-                            <Input
-                              value={content.previousPageText || 'Trước'}
-                              onChange={(e) => handleInputChange('previousPageText', e.target.value)}
-                              placeholder="Trước"
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <Label>Next Page Text</Label>
-                            <Input
-                              value={content.nextPageText || 'Sau'}
-                              onChange={(e) => handleInputChange('nextPageText', e.target.value)}
-                              placeholder="Sau"
-                            />
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Publication Status</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-2">
+                        <Label>Status</Label>
+                        <select
+                          value={content.status}
+                          onChange={(e) => handleInputChange('status', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        >
+                          <option value="draft">Draft</option>
+                          <option value="published">Published</option>
+                        </select>
+                      </div>
+                    </CardContent>
+                  </Card>
                 </div>
               ) : content.id === 'contact-page' ? (
                 /* Contact Page Editor */
@@ -2871,6 +2830,1552 @@ export default function EditContentPage({ params }: { params: { id: string } }) 
                   </CardContent>
                 </Card>
               )}
+            </div>
+          </div>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Eye className="h-5 w-5" />
+                    Live Preview
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="border rounded-lg p-6 bg-white">
+                    <div className="text-center space-y-4">
+                      {/* Main Image */}
+                      {content.imageUrl && (
+                        <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden">
+                          <img
+                            src={content.imageUrl}
+                            alt="Main Preview"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      )}
+                      
+                      {/* Hero Slides Preview */}
+                      {content.id === 'hero-section' && content.slides && content.slides.length > 0 && (
+                        <div className="space-y-2">
+                          <h4 className="text-sm font-medium text-gray-700">Hero Slides Preview:</h4>
+                          <div className="space-y-3">
+                            {content.slides.map((slide, index) => (
+                              <div key={slide.id} className="border rounded-lg p-3 bg-gray-50">
+                                <div className="flex items-center gap-2 mb-2">
+                                  <Badge variant="outline">Slide {slide.id}</Badge>
+                                  {slide.id === 1 && <Badge className="bg-blue-100 text-blue-800 text-xs">Dynamic</Badge>}
+                                </div>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                  <div className="space-y-1">
+                                    <p className="text-sm font-medium">{slide.title || 'No title'}</p>
+                                    <p className="text-xs text-gray-600">{slide.subtitle || 'No subtitle'}</p>
+                                  </div>
+                                  <div className="space-y-1">
+                                    <p className="text-xs text-gray-600">Button: {slide.cta || 'No button'}</p>
+                                    <p className="text-xs text-gray-600">Link: {slide.href || 'No link'}</p>
+                                  </div>
+                                  <div className="aspect-video bg-gray-200 rounded overflow-hidden">
+                                    {slide.image ? (
+                                      <img
+                                        src={slide.image}
+                                        alt={`Slide ${slide.id}`}
+                                        className="w-full h-full object-cover"
+                                      />
+                                    ) : (
+                                      <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
+                                        No image
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Additional Images */}
+                      {content.images && content.images.length > 0 && (
+                        <div className="space-y-2">
+                          <h4 className="text-sm font-medium text-gray-700">Additional Images:</h4>
+                          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                            {content.images.map((imageUrl, index) => (
+                              <div key={index} className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
+                                <img
+                                  src={imageUrl}
+                                  alt={`Preview ${index + 1}`}
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      
+                      {/* Header Section Preview */}
+                      {content.id === 'header-section' && (
+                        <div className="space-y-6">
+                          <div className="bg-white border rounded-lg overflow-hidden">
+                            {/* Top Bar */}
+                            <div className="bg-gray-50 px-4 py-2 text-sm text-gray-600 flex justify-between">
+                              <span>{content.topBarLeft || 'Free consultation and eye exam'}</span>
+                              <div className="flex gap-4">
+                                <span className="hidden md:inline">|</span>
+                                <span className="hidden md:inline">{content.topBarRight || '30-day return policy'}</span>
+                                <a href="/blog" className="hover:text-primary">{content.blogLinkText || 'Blog'}</a>
+                                <a href="/contact" className="hover:text-primary">{content.contactLinkText || 'Contact'}</a>
+                              </div>
+                            </div>
+                            
+                            {/* Main Header */}
+                            <div className="px-4 py-4 flex items-center justify-between">
+                              {/* Logo */}
+                              <div className="flex items-center gap-2">
+                                {content.logoImage ? (
+                                  <img 
+                                    src={content.logoImage} 
+                                    alt="Logo" 
+                                    className="h-10 w-auto object-contain"
+                                  />
+                                ) : (
+                                  <div className="w-10 h-10 bg-primary rounded flex items-center justify-center">
+                                    <span className="text-white font-bold text-sm">S</span>
+                                  </div>
+                                )}
+                                {content.logoText && (
+                                  <span className="text-2xl font-bold">{content.logoText}</span>
+                                )}
+                              </div>
+                              
+                              {/* Desktop Navigation */}
+                              <div className="hidden lg:flex items-center gap-8">
+                                <a href={content.ecoFriendlyLink || '/eco-friendly'} className="flex items-center gap-2 hover:text-primary">
+                                  <span className="w-4 h-4">🌱</span>
+                                  {content.ecoFriendlyText || 'Eco-friendly'}
+                                </a>
+                                <a href={content.communityLink || '/community'} className="flex items-center gap-2 hover:text-primary">
+                                  <span className="w-4 h-4">👥</span>
+                                  {content.communityText || 'Community'}
+                                </a>
+                                
+                                {/* Products Dropdown */}
+                                <div className="relative group">
+                                  <button className="flex items-center gap-2 hover:text-primary">
+                                    <span className="w-4 h-4">👓</span>
+                                    Products
+                                    <span className="w-4 h-4">▼</span>
+                                  </button>
+                                  <div className="absolute top-full left-0 mt-1 w-48 bg-white border rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <div className="py-2">
+                                      {(content.productsDropdown || []).map((item) => (
+                                        <a key={item.id} href={item.href} className="block px-4 py-2 hover:bg-gray-50">
+                                          {item.name}
+                                        </a>
+                                      ))}
+                                    </div>
+                                  </div>
+                                </div>
+                                
+                                {/* Brands Dropdown */}
+                                <div className="relative group">
+                                  <button className="flex items-center gap-2 hover:text-primary">
+                                    <span className="w-4 h-4">🏆</span>
+                                    Brands
+                                    <span className="w-4 h-4">▼</span>
+                                  </button>
+                                  <div className="absolute top-full left-0 mt-1 w-48 bg-white border rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <div className="py-2">
+                                      {(content.brandsDropdown || []).map((item) => (
+                                        <a key={item.id} href={item.href} className="block px-4 py-2 hover:bg-gray-50">
+                                          {item.name}
+                                        </a>
+                                      ))}
+                                    </div>
+                                  </div>
+                                </div>
+                                
+                                {/* Lenses Dropdown */}
+                                <div className="relative group">
+                                  <button className="flex items-center gap-2 hover:text-primary">
+                                    <span className="w-4 h-4">🔍</span>
+                                    Lenses
+                                    <span className="w-4 h-4">▼</span>
+                                  </button>
+                                  <div className="absolute top-full left-0 mt-1 w-48 bg-white border rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <div className="py-2">
+                                      {(content.lensesDropdown || []).map((item) => (
+                                        <a key={item.id} href={item.href} className="block px-4 py-2 hover:bg-gray-50">
+                                          {item.name}
+                                        </a>
+                                      ))}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              
+                              {/* Search Bar */}
+                              <div className="flex items-center gap-2">
+                                <div className="relative">
+                                  <input
+                                    type="text"
+                                    placeholder={content.searchPlaceholder || 'Search glasses, brands...'}
+                                    className="w-64 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                                  />
+                                  <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">🔍</span>
+                                </div>
+                                
+                                {/* Action Buttons */}
+                                <div className="flex items-center gap-2">
+                                  <button className="p-2 hover:bg-gray-100 rounded-lg">❤️</button>
+                                  <button className="p-2 hover:bg-gray-100 rounded-lg">👤</button>
+                                  <button className="p-2 hover:bg-gray-100 rounded-lg lg:hidden">☰</button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                      
+                      {/* Brands Section Preview */}
+                      {content.id === 'brands-section' && (
+                        <div className="space-y-6">
+                          <div className="text-center space-y-4">
+                            <div className="inline-flex items-center px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-sm">
+                              {content.badgeText || '✨ Premium Partners'}
+                            </div>
+                            <h2 className="text-2xl font-bold text-gray-900">
+                              {content.title || 'Discover Our Premium Lens Brands'}
+                            </h2>
+                            <p className="text-lg text-gray-600">
+                              {content.description || 'Description'}
+                            </p>
+                          </div>
+                          
+                          {/* Brands Grid Preview */}
+                          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
+                            {content.brandLogos && content.brandLogos.length > 0 ? (
+                              content.brandLogos.slice(0, 8).map((logoUrl, index) => (
+                                <div key={index} className="group flex flex-col items-center justify-center p-4 bg-white rounded-xl border border-gray-100 hover:border-gray-200 hover:shadow-lg transition-all duration-300">
+                                  <div className="relative w-12 h-8 mb-2">
+                                    <img
+                                      src={logoUrl}
+                                      alt={`Brand ${index + 1}`}
+                                      className="w-full h-full object-contain"
+                                      onError={(e) => {
+                                        e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjUwIiB2aWV3Qm94PSIwIDAgMTAwIDUwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iNTAiIGZpbGw9IiNmM2Y0ZjYiLz48dGV4dCB4PSI1MCIgeT0iMjgiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzk5YTNhZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+SW52YWxpZDwvdGV4dD48L3N2Zz4=';
+                                      }}
+                                    />
+                                  </div>
+                                  <h3 className="text-xs font-medium text-gray-800 text-center">
+                                    Brand {index + 1}
+                                  </h3>
+                                </div>
+                              ))
+                            ) : (
+                              Array.from({ length: 8 }).map((_, index) => (
+                                <div key={index} className="group flex flex-col items-center justify-center p-4 bg-gray-100 rounded-xl border border-gray-200">
+                                  <div className="w-12 h-8 mb-2 bg-gray-200 rounded"></div>
+                                  <h3 className="text-xs font-medium text-gray-500 text-center">
+                                    Brand {index + 1}
+                                  </h3>
+                                </div>
+                              ))
+                            )}
+                          </div>
+                          
+                          <div className="text-center space-y-4">
+                            <p className="text-gray-600 text-sm">
+                              {content.bottomCtaText || 'Discover our complete collection...'}
+                            </p>
+                            <div className="flex gap-2 justify-center">
+                              {content.buttonText && (
+                                <button className="bg-gray-900 text-white px-4 py-2 rounded text-sm">
+                                  {content.buttonText}
+                                </button>
+                              )}
+                              {content.secondaryButtonText && (
+                                <button className="border border-gray-200 text-gray-700 px-4 py-2 rounded text-sm">
+                                  {content.secondaryButtonText}
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Certificate Section Preview */}
+                      {content.id === 'certificate-section' && (
+                        <div className="space-y-6">
+                          <div className="text-center space-y-4">
+                            <div className="inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-green-800 text-sm">
+                              <Award className="h-4 w-4 mr-2" />
+                              {content.badgeText || 'Chứng nhận ESG'}
+                            </div>
+                            <h2 className="text-2xl font-bold text-gray-900">
+                              {content.title || 'ESG Certified Excellence'}
+                            </h2>
+                            <p className="text-lg text-gray-600">
+                              {content.description || 'Description'}
+                            </p>
+                          </div>
+                          
+                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div className="relative">
+                              {content.imageUrl && (
+                                <div className="aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden">
+                                  <img
+                                    src={content.imageUrl}
+                                    alt="Certificate"
+                                    className="w-full h-full object-cover"
+                                  />
+                                  <div className="absolute inset-0 bg-black/20 flex items-end">
+                                    <div className="p-4 text-white">
+                                      <h3 className="text-lg font-bold">
+                                        {content.certificateTitle || 'Synesgy ESG Certificate'}
+                                      </h3>
+                                      <p className="text-sm">
+                                        {content.certificateSubtitle || 'Awarded to Spectrum Eyecare'}
+                                      </p>
+                                      <p className="text-xs opacity-90">
+                                        {content.certificateDate || 'May 5, 2025'}
+                                      </p>
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                            
+                            <div className="space-y-4">
+                              <div>
+                                <h3 className="text-lg font-bold text-gray-900">
+                                  {content.whatThisMeansTitle || 'What This Means for You'}
+                                </h3>
+                                <p className="text-gray-600 text-sm">
+                                  {content.whatThisMeansDescription || 'Description'}
+                                </p>
+                              </div>
+                              
+                              <div className="grid grid-cols-3 gap-2">
+                                <div className="text-center p-2 bg-white rounded border">
+                                  <div className="w-8 h-8 mx-auto mb-1 bg-green-100 rounded-full flex items-center justify-center">
+                                    <Leaf className="h-4 w-4 text-green-600" />
+                                  </div>
+                                  <h4 className="text-xs font-semibold">Environmental</h4>
+                                </div>
+                                <div className="text-center p-2 bg-white rounded border">
+                                  <div className="w-8 h-8 mx-auto mb-1 bg-gray-100 rounded-full flex items-center justify-center">
+                                    <Users className="h-4 w-4 text-gray-600" />
+                                  </div>
+                                  <h4 className="text-xs font-semibold">Social</h4>
+                                </div>
+                                <div className="text-center p-2 bg-white rounded border">
+                                  <div className="w-8 h-8 mx-auto mb-1 bg-purple-100 rounded-full flex items-center justify-center">
+                                    <Shield className="h-4 w-4 text-purple-600" />
+                                  </div>
+                                  <h4 className="text-xs font-semibold">Governance</h4>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <div className="text-center space-y-4">
+                            <p className="text-gray-600 text-sm">
+                              {content.bottomCtaText || 'Join us in our mission...'}
+                            </p>
+                            <div className="flex gap-2 justify-center">
+                              {content.buttonText && (
+                                <button className="bg-green-600 text-white px-4 py-2 rounded text-sm">
+                                  {content.buttonText}
+                                </button>
+                              )}
+                              {content.secondaryButtonText && (
+                                <button className="border border-green-600 text-green-600 px-4 py-2 rounded text-sm">
+                                  {content.secondaryButtonText}
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* ESG Certificate Page Preview */}
+                      {content.id === 'esg-certificate-page' && (
+                        <div className="space-y-6">
+                          <div className="text-center space-y-4">
+                            <div className="inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-green-800 text-sm">
+                              <Award className="h-4 w-4 mr-2" />
+                              {content.badgeText || 'Synesgy ESG Certified'}
+                            </div>
+                            <h2 className="text-2xl font-bold text-gray-900">
+                              {content.heroTitle || 'Among Vietnam\'s First Sustainable Eyewear Retailers'}
+                            </h2>
+                            <p className="text-lg text-gray-600">
+                              {content.heroDescription || 'Hero description...'}
+                            </p>
+                          </div>
+                          
+                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div className="relative">
+                              {content.imageUrl && (
+                                <div className="aspect-[16/10] bg-gray-100 rounded-lg overflow-hidden">
+                                  <img
+                                    src={content.imageUrl}
+                                    alt="Certificate"
+                                    className="w-full h-full object-cover"
+                                  />
+                                  <div className="absolute inset-0 bg-black/20 flex items-end">
+                                    <div className="p-4 text-white">
+                                      <h3 className="text-lg font-bold">
+                                        {content.certificateTitle || 'Synesgy ESG Certificate'}
+                                      </h3>
+                                      <p className="text-sm">
+                                        {content.certificateSubtitle || 'Awarded to Spectrum Eyecare'}
+                                      </p>
+                                      <p className="text-xs opacity-90">
+                                        {content.certificateDate || 'May 5, 2025 • Certificate #SYN-2025-001'}
+                                      </p>
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                            
+                            <div className="space-y-4">
+                              <div>
+                                <h3 className="text-lg font-bold text-gray-900">
+                                  {content.whatThisMeansTitle || 'What This Certification Means'}
+                                </h3>
+                                <p className="text-gray-600 text-sm">
+                                  {content.whatThisMeansDescription || 'Description'}
+                                </p>
+                              </div>
+                              
+                              <div className="grid grid-cols-3 gap-2">
+                                <div className="text-center p-2 bg-white rounded border">
+                                  <div className="w-8 h-8 mx-auto mb-1 bg-green-100 rounded-full flex items-center justify-center">
+                                    <Leaf className="h-4 w-4 text-green-600" />
+                                  </div>
+                                  <h4 className="text-xs font-semibold">Environmental</h4>
+                                </div>
+                                <div className="text-center p-2 bg-white rounded border">
+                                  <div className="w-8 h-8 mx-auto mb-1 bg-gray-100 rounded-full flex items-center justify-center">
+                                    <Users className="h-4 w-4 text-gray-600" />
+                                  </div>
+                                  <h4 className="text-xs font-semibold">Social</h4>
+                                </div>
+                                <div className="text-center p-2 bg-white rounded border">
+                                  <div className="w-8 h-8 mx-auto mb-1 bg-purple-100 rounded-full flex items-center justify-center">
+                                    <Shield className="h-4 w-4 text-purple-600" />
+                                  </div>
+                                  <h4 className="text-xs font-semibold">Governance</h4>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <div className="space-y-4">
+                            <h3 className="text-xl font-bold text-gray-900">
+                              {content.esgPillarsTitle || 'Our ESG Pillars'}
+                            </h3>
+                            <h3 className="text-xl font-bold text-gray-900">
+                              {content.impactMetricsTitle || 'Our Impact Metrics'}
+                            </h3>
+                            <h3 className="text-xl font-bold text-gray-900">
+                              {content.certificationDetailsTitle || 'Certification Details'}
+                            </h3>
+                          </div>
+                          
+                          <div className="text-center space-y-4">
+                            <h3 className="text-2xl font-bold text-gray-900">
+                              {content.ctaTitle || 'Join Us in Our Mission'}
+                            </h3>
+                            <p className="text-lg text-gray-600">
+                              {content.ctaDescription || 'CTA description...'}
+                            </p>
+                            <div className="flex gap-2 justify-center">
+                              {content.buttonText && (
+                                <button className="bg-green-600 text-white px-4 py-2 rounded text-sm">
+                                  {content.buttonText}
+                                </button>
+                              )}
+                              {content.secondaryButtonText && (
+                                <button className="border border-green-600 text-green-600 px-4 py-2 rounded text-sm">
+                                  {content.secondaryButtonText}
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Premium Partners Page Preview */}
+                      {content.id === 'premium-partners-page' && (
+                        <div className="space-y-6">
+                          <div className="text-center space-y-4">
+                            <div className="inline-flex items-center px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-sm">
+                              <Award className="h-4 w-4 mr-2" />
+                              {content.badgeText || 'Premium Partners'}
+                            </div>
+                            <h2 className="text-2xl font-bold text-gray-900">
+                              {content.heroTitle || 'Trusted by Leading Brands'}
+                            </h2>
+                            <p className="text-lg text-gray-600">
+                              {content.heroDescription || 'Hero description...'}
+                            </p>
+                          </div>
+                          
+                          <div className="space-y-4">
+                            <h3 className="text-xl font-bold text-gray-900">
+                              {content.benefitsTitle || 'Why Partner with Us?'}
+                            </h3>
+                            <h3 className="text-xl font-bold text-gray-900">
+                              {content.statsTitle || 'Partnership Statistics'}
+                            </h3>
+                          </div>
+                          
+                          <div className="text-center space-y-4">
+                            <h3 className="text-2xl font-bold text-gray-900">
+                              {content.ctaTitle || 'Interested in Partnership?'}
+                            </h3>
+                            <p className="text-lg text-gray-600">
+                              {content.ctaDescription || 'CTA description...'}
+                            </p>
+                            <div className="flex gap-2 justify-center">
+                              {content.buttonText && (
+                                <button className="bg-gray-900 text-white px-4 py-2 rounded text-sm">
+                                  {content.buttonText}
+                                </button>
+                              )}
+                              {content.secondaryButtonText && (
+                                <button className="border border-gray-200 text-gray-700 px-4 py-2 rounded text-sm">
+                                  {content.secondaryButtonText}
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Only show general content fields for non-hero sections */}
+                      {content.id !== 'hero-section' && content.id !== 'certificate-section' && content.id !== 'brands-section' && content.id !== 'premium-partners-page' && content.id !== 'esg-certificate-page' && content.id !== 'header-section' && content.id !== 'footer-section' && content.id !== 'featured-products-section' && (
+                        <>
+                          <h2 className="text-2xl font-bold text-gray-900">
+                            {content.title || 'Title'}
+                          </h2>
+                          <p className="text-lg text-gray-600">
+                            {content.subtitle || 'Subtitle'}
+                          </p>
+                          <p className="text-gray-600">
+                            {content.description || 'Description'}
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            {content.content || 'Main content...'}
+                          </p>
+                          {content.buttonText && (
+                            <Button asChild>
+                              <Link href={content.buttonLink || '#'}>
+                                {content.buttonText}
+                              </Link>
+                            </Button>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Device Preview */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Monitor className="h-5 w-5" />
+                    Device Preview
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex gap-2 mb-4">
+                    <Button 
+                      variant={deviceType === 'mobile' ? 'default' : 'outline'} 
+                      size="sm"
+                      onClick={() => setDeviceType('mobile')}
+                    >
+                      <Smartphone className="h-4 w-4 mr-1" />
+                      Mobile
+                    </Button>
+                    <Button 
+                      variant={deviceType === 'tablet' ? 'default' : 'outline'} 
+                      size="sm"
+                      onClick={() => setDeviceType('tablet')}
+                    >
+                      <Tablet className="h-4 w-4 mr-1" />
+                      Tablet
+                    </Button>
+                    <Button 
+                      variant={deviceType === 'desktop' ? 'default' : 'outline'} 
+                      size="sm"
+                      onClick={() => setDeviceType('desktop')}
+                    >
+                      <Monitor className="h-4 w-4 mr-1" />
+                      Desktop
+                    </Button>
+                  </div>
+                  
+                  {/* Responsive Preview Container */}
+                  <div className="flex justify-center">
+                    <div 
+                      className={`border-2 border-gray-300 rounded-lg bg-white shadow-lg transition-all duration-300 ${
+                        deviceType === 'mobile' 
+                          ? 'w-80 h-[600px]' 
+                          : deviceType === 'tablet' 
+                          ? 'w-96 h-[500px]' 
+                          : 'w-full h-[400px]'
+                      }`}
+                    >
+                      <div className="h-full overflow-auto">
+                        {/* Featured Products Section Preview */}
+                        {content.id === 'featured-products-section' ? (
+                          <div className="h-full bg-gray-50 p-4">
+                            <div className="bg-white rounded-lg p-4 space-y-4">
+                              <div className="text-center space-y-3">
+                                <div className={`inline-block px-3 py-1 bg-gray-100 text-gray-800 rounded-full ${
+                                  deviceType === 'mobile' ? 'text-xs' : 
+                                  deviceType === 'tablet' ? 'text-sm' : 'text-sm'
+                                }`}>
+                                  {content.badgeText || 'Featured Collection'}
+                                </div>
+                                <h2 className={`font-bold text-gray-900 ${
+                                  deviceType === 'mobile' ? 'text-lg' : 
+                                  deviceType === 'tablet' ? 'text-xl' : 'text-2xl'
+                                }`}>
+                                  {content.title || 'Our Most Popular Eyewear'}
+                                </h2>
+                                <p className={`text-gray-600 ${
+                                  deviceType === 'mobile' ? 'text-xs' : 
+                                  deviceType === 'tablet' ? 'text-sm' : 'text-base'
+                                }`}>
+                                  {content.description || 'Section description...'}
+                                </p>
+                              </div>
+
+                              {/* Product Cards Preview */}
+                              <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
+                                {Array.from({ length: 4 }).map((_, index) => (
+                                  <div key={index} className={`bg-gray-100 rounded-lg ${
+                                    deviceType === 'mobile' ? 'h-16' : 
+                                    deviceType === 'tablet' ? 'h-20' : 'h-24'
+                                  }`}>
+                                    <div className="p-2 h-full flex flex-col justify-between">
+                                      <div className={`bg-gray-200 rounded ${
+                                        deviceType === 'mobile' ? 'h-8' : 
+                                        deviceType === 'tablet' ? 'h-10' : 'h-12'
+                                      }`}></div>
+                                      <div className="text-xs text-gray-500 text-center">Product {index + 1}</div>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+
+                              {/* Button Preview */}
+                              <div className="text-center">
+                                <button className={`bg-blue-500 text-white px-4 py-2 rounded font-medium ${
+                                  deviceType === 'mobile' ? 'text-xs px-3 py-1' : 
+                                  deviceType === 'tablet' ? 'text-sm px-4 py-2' : 'text-sm px-6 py-2'
+                                }`}>
+                                  {content.buttonText || 'View All Products'}
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        ) : content.id === 'footer-section' ? (
+                          <div className="h-full bg-gray-50 p-4">
+                            <div className="bg-white rounded-lg p-4 space-y-4">
+                              {/* Brand Section */}
+                              <div className="space-y-2">
+                                <div className="flex items-center gap-2">
+                                  {content.logoImage ? (
+                                    <img 
+                                      src={content.logoImage} 
+                                      alt={content.title || 'Logo'} 
+                                      className={`object-contain ${
+                                        deviceType === 'mobile' ? 'h-6 w-auto' : 
+                                        deviceType === 'tablet' ? 'h-8 w-auto' : 'h-10 w-auto'
+                                      }`}
+                                    />
+                                  ) : (
+                                    <div className="w-6 h-6 bg-blue-500 rounded"></div>
+                                  )}
+                                  {content.title && (
+                                    <span className={`font-bold ${
+                                      deviceType === 'mobile' ? 'text-lg' : 
+                                      deviceType === 'tablet' ? 'text-xl' : 'text-2xl'
+                                    }`}>
+                                      {content.title}
+                                    </span>
+                                  )}
+                                </div>
+                                <p className={`text-gray-600 ${
+                                  deviceType === 'mobile' ? 'text-xs' : 
+                                  deviceType === 'tablet' ? 'text-sm' : 'text-base'
+                                }`}>
+                                  {content.description || 'Brand description...'}
+                                </p>
+                                
+                                {/* Footer Links Preview */}
+                                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+                                  {/* Shop Links */}
+                                  <div>
+                                    <h4 className="font-semibold mb-1">Shop</h4>
+                                    <div className="space-y-1">
+                                      {(content.shopLinks || []).slice(0, 3).map((link) => (
+                                        <div key={link.id} className="text-gray-500">{link.name}</div>
+                                      ))}
+                                      {(content.shopLinks || []).length > 3 && <div className="text-gray-400">+{(content.shopLinks || []).length - 3} more</div>}
+                                    </div>
+                                  </div>
+                                  
+                                  {/* Support Links */}
+                                  <div>
+                                    <h4 className="font-semibold mb-1">Support</h4>
+                                    <div className="space-y-1">
+                                      {(content.supportLinks || []).slice(0, 3).map((link) => (
+                                        <div key={link.id} className="text-gray-500">{link.name}</div>
+                                      ))}
+                                      {(content.supportLinks || []).length > 3 && <div className="text-gray-400">+{(content.supportLinks || []).length - 3} more</div>}
+                                    </div>
+                                  </div>
+                                  
+                                  {/* Company Links */}
+                                  <div>
+                                    <h4 className="font-semibold mb-1">Company</h4>
+                                    <div className="space-y-1">
+                                      {(content.companyLinks || []).slice(0, 3).map((link) => (
+                                        <div key={link.id} className="text-gray-500">{link.name}</div>
+                                      ))}
+                                      {(content.companyLinks || []).length > 3 && <div className="text-gray-400">+{(content.companyLinks || []).length - 3} more</div>}
+                                    </div>
+                                  </div>
+                                  
+                                  {/* Legal Links */}
+                                  <div>
+                                    <h4 className="font-semibold mb-1">Legal</h4>
+                                    <div className="space-y-1">
+                                      {(content.legalLinks || []).slice(0, 3).map((link) => (
+                                        <div key={link.id} className="text-gray-500">{link.name}</div>
+                                      ))}
+                                      {(content.legalLinks || []).length > 3 && <div className="text-gray-400">+{(content.legalLinks || []).length - 3} more</div>}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Newsletter Section */}
+                              <div className="border-t pt-4 space-y-2">
+                                <h3 className={`font-semibold ${
+                                  deviceType === 'mobile' ? 'text-sm' : 
+                                  deviceType === 'tablet' ? 'text-base' : 'text-lg'
+                                }`}>
+                                  {content.subtitle || 'Stay Updated'}
+                                </h3>
+                                <p className={`text-gray-600 ${
+                                  deviceType === 'mobile' ? 'text-xs' : 
+                                  deviceType === 'tablet' ? 'text-sm' : 'text-sm'
+                                }`}>
+                                  {content.content || 'Newsletter description...'}
+                                </p>
+                                <div className="flex gap-2">
+                                  <div className={`flex-1 bg-gray-100 rounded ${
+                                    deviceType === 'mobile' ? 'h-6' : 
+                                    deviceType === 'tablet' ? 'h-8' : 'h-10'
+                                  }`}></div>
+                                  <div className={`bg-blue-500 text-white rounded px-3 flex items-center ${
+                                    deviceType === 'mobile' ? 'h-6 text-xs' : 
+                                    deviceType === 'tablet' ? 'h-8 text-sm' : 'h-10 text-sm'
+                                  }`}>
+                                    Subscribe
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Copyright */}
+                              <div className="border-t pt-4 flex justify-between items-center">
+                                <span className={`text-gray-500 ${
+                                  deviceType === 'mobile' ? 'text-xs' : 
+                                  deviceType === 'tablet' ? 'text-sm' : 'text-sm'
+                                }`}>
+                                  {content.buttonText || `© ${new Date().getFullYear()} Spectrum. All rights reserved.`}
+                                </span>
+                                <span className={`text-gray-500 ${
+                                  deviceType === 'mobile' ? 'text-xs' : 
+                                  deviceType === 'tablet' ? 'text-sm' : 'text-sm'
+                                }`}>
+                                  {content.secondaryButtonText || 'Made with ❤️ for your vision'}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        ) : content.id === 'header-section' ? (
+                          <div className="h-full bg-white">
+                            {/* Top Bar */}
+                            <div className={`bg-gray-50 px-2 py-1 text-xs text-gray-600 flex justify-between ${
+                              deviceType === 'mobile' ? 'px-2 py-1' : 
+                              deviceType === 'tablet' ? 'px-3 py-1' : 'px-4 py-2'
+                            }`}>
+                              <span className={`${
+                                deviceType === 'mobile' ? 'text-xs' : 
+                                deviceType === 'tablet' ? 'text-sm' : 'text-sm'
+                              }`}>
+                                {content.topBarLeft || 'Free consultation and eye exam'}
+                              </span>
+                              <div className="flex gap-2">
+                                <span className={`hidden md:inline ${
+                                  deviceType === 'mobile' ? 'hidden' : 
+                                  deviceType === 'tablet' ? 'text-xs' : 'text-sm'
+                                }`}>|</span>
+                                <span className={`hidden md:inline ${
+                                  deviceType === 'mobile' ? 'hidden' : 
+                                  deviceType === 'tablet' ? 'text-xs' : 'text-sm'
+                                }`}>
+                                  {content.topBarRight || '30-day return policy'}
+                                </span>
+                                <a href="/blog" className={`hover:text-primary ${
+                                  deviceType === 'mobile' ? 'text-xs' : 
+                                  deviceType === 'tablet' ? 'text-xs' : 'text-sm'
+                                }`}>
+                                  {content.blogLinkText || 'Blog'}
+                                </a>
+                                <a href="/contact" className={`hover:text-primary ${
+                                  deviceType === 'mobile' ? 'text-xs' : 
+                                  deviceType === 'tablet' ? 'text-xs' : 'text-sm'
+                                }`}>
+                                  {content.contactLinkText || 'Contact'}
+                                </a>
+                              </div>
+                            </div>
+                            
+                            {/* Main Header */}
+                            <div className={`px-2 py-2 flex items-center justify-between ${
+                              deviceType === 'mobile' ? 'px-2 py-2' : 
+                              deviceType === 'tablet' ? 'px-3 py-3' : 'px-4 py-4'
+                            }`}>
+                              {/* Logo */}
+                              <div className="flex items-center gap-1">
+                                {content.logoImage ? (
+                                  <img 
+                                    src={content.logoImage} 
+                                    alt="Logo" 
+                                    className={`object-contain ${
+                                      deviceType === 'mobile' ? 'h-8 w-auto' : 
+                                      deviceType === 'tablet' ? 'h-9 w-auto' : 'h-10 w-auto'
+                                    }`}
+                                  />
+                                ) : (
+                                  <div className={`bg-primary rounded flex items-center justify-center ${
+                                    deviceType === 'mobile' ? 'w-8 h-8' : 
+                                    deviceType === 'tablet' ? 'w-9 h-9' : 'w-10 h-10'
+                                  }`}>
+                                    <span className={`text-white font-bold ${
+                                      deviceType === 'mobile' ? 'text-xs' : 
+                                      deviceType === 'tablet' ? 'text-sm' : 'text-sm'
+                                    }`}>S</span>
+                                  </div>
+                                )}
+                                {content.logoText && (
+                                  <span className={`font-bold ${
+                                    deviceType === 'mobile' ? 'text-lg' : 
+                                    deviceType === 'tablet' ? 'text-xl' : 'text-2xl'
+                                  }`}>
+                                    {content.logoText}
+                                  </span>
+                                )}
+                              </div>
+                              
+                              {/* Desktop Navigation */}
+                              <div className={`hidden lg:flex items-center gap-4 ${
+                                deviceType === 'mobile' ? 'hidden' : 
+                                deviceType === 'tablet' ? 'hidden' : 'flex'
+                              }`}>
+                                <a href={content.ecoFriendlyLink || '/eco-friendly'} className="flex items-center gap-1 hover:text-primary">
+                                  <span className="w-3 h-3">🌱</span>
+                                  <span className={`${
+                                    deviceType === 'mobile' ? 'text-xs' : 
+                                    deviceType === 'tablet' ? 'text-sm' : 'text-sm'
+                                  }`}>
+                                    {content.ecoFriendlyText || 'Eco-friendly'}
+                                  </span>
+                                </a>
+                                <a href={content.communityLink || '/community'} className="flex items-center gap-1 hover:text-primary">
+                                  <span className="w-3 h-3">👥</span>
+                                  <span className={`${
+                                    deviceType === 'mobile' ? 'text-xs' : 
+                                    deviceType === 'tablet' ? 'text-sm' : 'text-sm'
+                                  }`}>
+                                    {content.communityText || 'Community'}
+                                  </span>
+                                </a>
+                                
+                                {/* Products Dropdown */}
+                                <div className="relative group">
+                                  <button className="flex items-center gap-1 hover:text-primary">
+                                    <span className="w-3 h-3">👓</span>
+                                    <span className={`${
+                                      deviceType === 'mobile' ? 'text-xs' : 
+                                      deviceType === 'tablet' ? 'text-sm' : 'text-sm'
+                                    }`}>
+                                      Products
+                                    </span>
+                                    <span className="w-3 h-3">▼</span>
+                                  </button>
+                                </div>
+                                
+                                {/* Brands Dropdown */}
+                                <div className="relative group">
+                                  <button className="flex items-center gap-1 hover:text-primary">
+                                    <span className="w-3 h-3">🏆</span>
+                                    <span className={`${
+                                      deviceType === 'mobile' ? 'text-xs' : 
+                                      deviceType === 'tablet' ? 'text-sm' : 'text-sm'
+                                    }`}>
+                                      Brands
+                                    </span>
+                                    <span className="w-3 h-3">▼</span>
+                                  </button>
+                                </div>
+                                
+                                {/* Lenses Dropdown */}
+                                <div className="relative group">
+                                  <button className="flex items-center gap-1 hover:text-primary">
+                                    <span className="w-3 h-3">🔍</span>
+                                    <span className={`${
+                                      deviceType === 'mobile' ? 'text-xs' : 
+                                      deviceType === 'tablet' ? 'text-sm' : 'text-sm'
+                                    }`}>
+                                      Lenses
+                                    </span>
+                                    <span className="w-3 h-3">▼</span>
+                                  </button>
+                                </div>
+                              </div>
+                              
+                              {/* Search Bar */}
+                              <div className="flex items-center gap-1">
+                                <div className="relative">
+                                  <input
+                                    type="text"
+                                    placeholder={content.searchPlaceholder || 'Search glasses, brands...'}
+                                    className={`border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
+                                      deviceType === 'mobile' ? 'w-32 px-2 py-1 text-xs' : 
+                                      deviceType === 'tablet' ? 'w-48 px-3 py-1 text-sm' : 'w-64 px-4 py-2'
+                                    }`}
+                                  />
+                                  <span className={`absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 ${
+                                    deviceType === 'mobile' ? 'text-xs' : 
+                                    deviceType === 'tablet' ? 'text-sm' : 'text-sm'
+                                  }`}>🔍</span>
+                                </div>
+                                
+                                {/* Action Buttons */}
+                                <div className="flex items-center gap-1">
+                                  <button className={`hover:bg-gray-100 rounded-lg ${
+                                    deviceType === 'mobile' ? 'p-1' : 
+                                    deviceType === 'tablet' ? 'p-1' : 'p-2'
+                                  }`}>❤️</button>
+                                  <button className={`hover:bg-gray-100 rounded-lg ${
+                                    deviceType === 'mobile' ? 'p-1' : 
+                                    deviceType === 'tablet' ? 'p-1' : 'p-2'
+                                  }`}>👤</button>
+                                  <button className={`hover:bg-gray-100 rounded-lg lg:hidden ${
+                                    deviceType === 'mobile' ? 'p-1' : 
+                                    deviceType === 'tablet' ? 'p-1' : 'p-2'
+                                  }`}>☰</button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ) : content.id === 'hero-section' && content.slides && content.slides.length > 0 ? (
+                          <div className="h-full">
+                            {/* Hero Slider Preview */}
+                            <div className="relative h-full">
+                              {content.slides.slice(0, 1).map((slide) => (
+                                <div key={slide.id} className="relative h-full">
+                                  {slide.image && (
+                                    <div className="absolute inset-0">
+                                      <img
+                                        src={slide.image}
+                                        alt={slide.title}
+                                        className="w-full h-full object-cover"
+                                      />
+                                      <div className="absolute inset-0 bg-black/40" />
+                                    </div>
+                                  )}
+                                  
+                                  <div className="absolute inset-0 flex items-center">
+                                    <div className="container mx-auto px-4">
+                                      <div className="max-w-2xl">
+                                        <h1 className={`font-bold text-white mb-4 ${
+                                          deviceType === 'mobile' ? 'text-2xl' : 
+                                          deviceType === 'tablet' ? 'text-3xl' : 'text-4xl'
+                                        }`}>
+                                          {slide.title || 'Title'}
+                                        </h1>
+                                        <p className={`text-white/90 mb-8 ${
+                                          deviceType === 'mobile' ? 'text-sm' : 
+                                          deviceType === 'tablet' ? 'text-base' : 'text-lg'
+                                        }`}>
+                                          {slide.subtitle || 'Subtitle'}
+                                        </p>
+                                        {slide.cta && (
+                                          <button className={`bg-white text-gray-900 px-4 py-2 rounded font-medium ${
+                                            deviceType === 'mobile' ? 'text-sm px-3 py-1' : 
+                                            deviceType === 'tablet' ? 'text-base px-4 py-2' : 'text-lg px-6 py-3'
+                                          }`}>
+                                            {slide.cta}
+                                          </button>
+                                        )}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        ) : content.id === 'brands-section' ? (
+                          /* Brands Section Preview */
+                          <div className="p-4 h-full bg-gradient-to-br from-gray-50 to-gray-100">
+                            <div className="text-center space-y-4">
+                              <div className="inline-flex items-center px-2 py-1 rounded-full bg-blue-100 text-blue-800 text-xs">
+                                {content.badgeText || '✨ Premium Partners'}
+                              </div>
+                              <h2 className={`font-bold text-gray-900 ${
+                                deviceType === 'mobile' ? 'text-lg' : 
+                                deviceType === 'tablet' ? 'text-xl' : 'text-2xl'
+                              }`}>
+                                {content.title || 'Discover Our Premium Lens Brands'}
+                              </h2>
+                              <p className={`text-gray-600 ${
+                                deviceType === 'mobile' ? 'text-xs' : 
+                                deviceType === 'tablet' ? 'text-sm' : 'text-base'
+                              }`}>
+                                {content.description || 'Description'}
+                              </p>
+                              
+                              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-2">
+                                {content.brandLogos && content.brandLogos.length > 0 ? (
+                                  content.brandLogos.slice(0, 8).map((logoUrl, index) => (
+                                    <div key={index} className="group flex flex-col items-center justify-center p-2 bg-white rounded-lg border border-gray-100 hover:border-gray-200 transition-all duration-300">
+                                      <div className={`relative mb-1 ${
+                                        deviceType === 'mobile' ? 'w-8 h-5' : 
+                                        deviceType === 'tablet' ? 'w-10 h-6' : 'w-12 h-8'
+                                      }`}>
+                                        <img
+                                          src={logoUrl}
+                                          alt={`Brand ${index + 1}`}
+                                          className="w-full h-full object-contain"
+                                          onError={(e) => {
+                                            e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjUwIiB2aWV3Qm94PSIwIDAgMTAwIDUwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iNTAiIGZpbGw9IiNmM2Y0ZjYiLz48dGV4dCB4PSI1MCIgeT0iMjgiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzk5YTNhZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+SW52YWxpZDwvdGV4dD48L3N2Zz4=';
+                                          }}
+                                        />
+                                      </div>
+                                      <h3 className={`font-medium text-gray-800 text-center ${
+                                        deviceType === 'mobile' ? 'text-xs' : 
+                                        deviceType === 'tablet' ? 'text-xs' : 'text-sm'
+                                      }`}>
+                                        Brand {index + 1}
+                                      </h3>
+                                    </div>
+                                  ))
+                                ) : (
+                                  Array.from({ length: 8 }).map((_, index) => (
+                                    <div key={index} className="group flex flex-col items-center justify-center p-2 bg-gray-100 rounded-lg border border-gray-200">
+                                      <div className={`mb-1 bg-gray-200 rounded ${
+                                        deviceType === 'mobile' ? 'w-8 h-5' : 
+                                        deviceType === 'tablet' ? 'w-10 h-6' : 'w-12 h-8'
+                                      }`}></div>
+                                      <h3 className={`font-medium text-gray-500 text-center ${
+                                        deviceType === 'mobile' ? 'text-xs' : 
+                                        deviceType === 'tablet' ? 'text-xs' : 'text-sm'
+                                      }`}>
+                                        Brand {index + 1}
+                                      </h3>
+                                    </div>
+                                  ))
+                                )}
+                              </div>
+                              
+                              <div className="text-center space-y-2">
+                                <p className={`text-gray-600 ${
+                                  deviceType === 'mobile' ? 'text-xs' : 
+                                  deviceType === 'tablet' ? 'text-sm' : 'text-sm'
+                                }`}>
+                                  {content.bottomCtaText || 'Discover our complete collection...'}
+                                </p>
+                                <div className="flex gap-2 justify-center">
+                                  {content.buttonText && (
+                                    <button className={`bg-gray-900 text-white px-3 py-1 rounded font-medium ${
+                                      deviceType === 'mobile' ? 'text-xs px-2 py-1' : 
+                                      deviceType === 'tablet' ? 'text-sm px-3 py-1' : 'text-sm px-4 py-2'
+                                    }`}>
+                                      {content.buttonText}
+                                    </button>
+                                  )}
+                                  {content.secondaryButtonText && (
+                                    <button className={`border border-gray-200 text-gray-700 px-3 py-1 rounded font-medium ${
+                                      deviceType === 'mobile' ? 'text-xs px-2 py-1' : 
+                                      deviceType === 'tablet' ? 'text-sm px-3 py-1' : 'text-sm px-4 py-2'
+                                    }`}>
+                                      {content.secondaryButtonText}
+                                    </button>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ) : content.id === 'certificate-section' ? (
+                          /* Certificate Section Preview */
+                          <div className="p-4 h-full bg-gradient-to-br from-gray-50 to-gray-100">
+                            <div className="text-center space-y-4">
+                              <div className="inline-flex items-center px-2 py-1 rounded-full bg-green-100 text-green-800 text-xs">
+                                <Award className="h-3 w-3 mr-1" />
+                                {content.badgeText || 'Chứng nhận ESG'}
+                              </div>
+                              <h2 className={`font-bold text-gray-900 ${
+                                deviceType === 'mobile' ? 'text-lg' : 
+                                deviceType === 'tablet' ? 'text-xl' : 'text-2xl'
+                              }`}>
+                                {content.title || 'ESG Certified Excellence'}
+                              </h2>
+                              <p className={`text-gray-600 ${
+                                deviceType === 'mobile' ? 'text-xs' : 
+                                deviceType === 'tablet' ? 'text-sm' : 'text-base'
+                              }`}>
+                                {content.description || 'Description'}
+                              </p>
+                              
+                              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                <div className="relative">
+                                  {content.imageUrl && (
+                                    <div className={`bg-gray-100 rounded overflow-hidden ${
+                                      deviceType === 'mobile' ? 'h-32' : 
+                                      deviceType === 'tablet' ? 'h-48' : 'h-64'
+                                    }`}>
+                                      <img
+                                        src={content.imageUrl}
+                                        alt="Certificate"
+                                        className="w-full h-full object-cover"
+                                      />
+                                      <div className="absolute inset-0 bg-black/20 flex items-end">
+                                        <div className="p-2 text-white">
+                                          <h3 className={`font-bold ${
+                                            deviceType === 'mobile' ? 'text-xs' : 
+                                            deviceType === 'tablet' ? 'text-sm' : 'text-base'
+                                          }`}>
+                                            {content.certificateTitle || 'Synesgy ESG Certificate'}
+                                          </h3>
+                                          <p className={`${
+                                            deviceType === 'mobile' ? 'text-xs' : 
+                                            deviceType === 'tablet' ? 'text-xs' : 'text-sm'
+                                          }`}>
+                                            {content.certificateSubtitle || 'Awarded to Spectrum Eyecare'}
+                                          </p>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+                                
+                                <div className="space-y-2">
+                                  <h3 className={`font-bold text-gray-900 ${
+                                    deviceType === 'mobile' ? 'text-sm' : 
+                                    deviceType === 'tablet' ? 'text-base' : 'text-lg'
+                                  }`}>
+                                    {content.whatThisMeansTitle || 'What This Means for You'}
+                                  </h3>
+                                  <p className={`text-gray-600 ${
+                                    deviceType === 'mobile' ? 'text-xs' : 
+                                    deviceType === 'tablet' ? 'text-sm' : 'text-sm'
+                                  }`}>
+                                    {content.whatThisMeansDescription || 'Description'}
+                                  </p>
+                                  
+                                  <div className="grid grid-cols-3 gap-1">
+                                    <div className="text-center p-1 bg-white rounded border">
+                                      <div className={`mx-auto mb-1 bg-green-100 rounded-full flex items-center justify-center ${
+                                        deviceType === 'mobile' ? 'w-4 h-4' : 
+                                        deviceType === 'tablet' ? 'w-6 h-6' : 'w-8 h-8'
+                                      }`}>
+                                        <Leaf className={`text-green-600 ${
+                                          deviceType === 'mobile' ? 'h-2 w-2' : 
+                                          deviceType === 'tablet' ? 'h-3 w-3' : 'h-4 w-4'
+                                        }`} />
+                                      </div>
+                                      <h4 className={`font-semibold ${
+                                        deviceType === 'mobile' ? 'text-xs' : 
+                                        deviceType === 'tablet' ? 'text-xs' : 'text-sm'
+                                      }`}>Environmental</h4>
+                                    </div>
+                                    <div className="text-center p-1 bg-white rounded border">
+                                      <div className={`mx-auto mb-1 bg-gray-100 rounded-full flex items-center justify-center ${
+                                        deviceType === 'mobile' ? 'w-4 h-4' : 
+                                        deviceType === 'tablet' ? 'w-6 h-6' : 'w-8 h-8'
+                                      }`}>
+                                        <Users className={`text-gray-600 ${
+                                          deviceType === 'mobile' ? 'h-2 w-2' : 
+                                          deviceType === 'tablet' ? 'h-3 w-3' : 'h-4 w-4'
+                                        }`} />
+                                      </div>
+                                      <h4 className={`font-semibold ${
+                                        deviceType === 'mobile' ? 'text-xs' : 
+                                        deviceType === 'tablet' ? 'text-xs' : 'text-sm'
+                                      }`}>Social</h4>
+                                    </div>
+                                    <div className="text-center p-1 bg-white rounded border">
+                                      <div className={`mx-auto mb-1 bg-purple-100 rounded-full flex items-center justify-center ${
+                                        deviceType === 'mobile' ? 'w-4 h-4' : 
+                                        deviceType === 'tablet' ? 'w-6 h-6' : 'w-8 h-8'
+                                      }`}>
+                                        <Shield className={`text-purple-600 ${
+                                          deviceType === 'mobile' ? 'h-2 w-2' : 
+                                          deviceType === 'tablet' ? 'h-3 w-3' : 'h-4 w-4'
+                                        }`} />
+                                      </div>
+                                      <h4 className={`font-semibold ${
+                                        deviceType === 'mobile' ? 'text-xs' : 
+                                        deviceType === 'tablet' ? 'text-xs' : 'text-sm'
+                                      }`}>Governance</h4>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              
+                              <div className="text-center space-y-2">
+                                <p className={`text-gray-600 ${
+                                  deviceType === 'mobile' ? 'text-xs' : 
+                                  deviceType === 'tablet' ? 'text-sm' : 'text-sm'
+                                }`}>
+                                  {content.bottomCtaText || 'Join us in our mission...'}
+                                </p>
+                                <div className="flex gap-2 justify-center">
+                                  {content.buttonText && (
+                                    <button className={`bg-green-600 text-white px-3 py-1 rounded font-medium ${
+                                      deviceType === 'mobile' ? 'text-xs px-2 py-1' : 
+                                      deviceType === 'tablet' ? 'text-sm px-3 py-1' : 'text-sm px-4 py-2'
+                                    }`}>
+                                      {content.buttonText}
+                                    </button>
+                                  )}
+                                  {content.secondaryButtonText && (
+                                    <button className={`border border-green-600 text-green-600 px-3 py-1 rounded font-medium ${
+                                      deviceType === 'mobile' ? 'text-xs px-2 py-1' : 
+                                      deviceType === 'tablet' ? 'text-sm px-3 py-1' : 'text-sm px-4 py-2'
+                                    }`}>
+                                      {content.secondaryButtonText}
+                                    </button>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ) : content.id === 'esg-certificate-page' ? (
+                          /* ESG Certificate Page Preview */
+                          <div className="p-4 h-full bg-gradient-to-br from-gray-50 to-gray-100">
+                            <div className="text-center space-y-4">
+                              <div className="inline-flex items-center px-2 py-1 rounded-full bg-green-100 text-green-800 text-xs">
+                                <Award className="h-3 w-3 mr-1" />
+                                {content.badgeText || 'Synesgy ESG Certified'}
+                              </div>
+                              <h2 className={`font-bold text-gray-900 ${
+                                deviceType === 'mobile' ? 'text-lg' : 
+                                deviceType === 'tablet' ? 'text-xl' : 'text-2xl'
+                              }`}>
+                                {content.heroTitle || 'Among Vietnam\'s First Sustainable Eyewear Retailers'}
+                              </h2>
+                              <p className={`text-gray-600 ${
+                                deviceType === 'mobile' ? 'text-xs' : 
+                                deviceType === 'tablet' ? 'text-sm' : 'text-base'
+                              }`}>
+                                {content.heroDescription || 'Hero description...'}
+                              </p>
+                              
+                              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                <div className="relative">
+                                  {content.imageUrl && (
+                                    <div className={`bg-gray-100 rounded overflow-hidden ${
+                                      deviceType === 'mobile' ? 'h-32' : 
+                                      deviceType === 'tablet' ? 'h-48' : 'h-64'
+                                    }`}>
+                                      <img
+                                        src={content.imageUrl}
+                                        alt="Certificate"
+                                        className="w-full h-full object-cover"
+                                      />
+                                      <div className="absolute inset-0 bg-black/20 flex items-end">
+                                        <div className="p-2 text-white">
+                                          <h3 className={`font-bold ${
+                                            deviceType === 'mobile' ? 'text-xs' : 
+                                            deviceType === 'tablet' ? 'text-sm' : 'text-base'
+                                          }`}>
+                                            {content.certificateTitle || 'Synesgy ESG Certificate'}
+                                          </h3>
+                                          <p className={`${
+                                            deviceType === 'mobile' ? 'text-xs' : 
+                                            deviceType === 'tablet' ? 'text-xs' : 'text-sm'
+                                          }`}>
+                                            {content.certificateSubtitle || 'Awarded to Spectrum Eyecare'}
+                                          </p>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+                                
+                                <div className="space-y-2">
+                                  <h3 className={`font-bold text-gray-900 ${
+                                    deviceType === 'mobile' ? 'text-sm' : 
+                                    deviceType === 'tablet' ? 'text-base' : 'text-lg'
+                                  }`}>
+                                    {content.whatThisMeansTitle || 'What This Certification Means'}
+                                  </h3>
+                                  <p className={`text-gray-600 ${
+                                    deviceType === 'mobile' ? 'text-xs' : 
+                                    deviceType === 'tablet' ? 'text-sm' : 'text-sm'
+                                  }`}>
+                                    {content.whatThisMeansDescription || 'Description'}
+                                  </p>
+                                  
+                                  <div className="grid grid-cols-3 gap-1">
+                                    <div className="text-center p-1 bg-white rounded border">
+                                      <div className={`mx-auto mb-1 bg-green-100 rounded-full flex items-center justify-center ${
+                                        deviceType === 'mobile' ? 'w-4 h-4' : 
+                                        deviceType === 'tablet' ? 'w-6 h-6' : 'w-8 h-8'
+                                      }`}>
+                                        <Leaf className={`text-green-600 ${
+                                          deviceType === 'mobile' ? 'h-2 w-2' : 
+                                          deviceType === 'tablet' ? 'h-3 w-3' : 'h-4 w-4'
+                                        }`} />
+                                      </div>
+                                      <h4 className={`font-semibold ${
+                                        deviceType === 'mobile' ? 'text-xs' : 
+                                        deviceType === 'tablet' ? 'text-xs' : 'text-sm'
+                                      }`}>Environmental</h4>
+                                    </div>
+                                    <div className="text-center p-1 bg-white rounded border">
+                                      <div className={`mx-auto mb-1 bg-gray-100 rounded-full flex items-center justify-center ${
+                                        deviceType === 'mobile' ? 'w-4 h-4' : 
+                                        deviceType === 'tablet' ? 'w-6 h-6' : 'w-8 h-8'
+                                      }`}>
+                                        <Users className={`text-gray-600 ${
+                                          deviceType === 'mobile' ? 'h-2 w-2' : 
+                                          deviceType === 'tablet' ? 'h-3 w-3' : 'h-4 w-4'
+                                        }`} />
+                                      </div>
+                                      <h4 className={`font-semibold ${
+                                        deviceType === 'mobile' ? 'text-xs' : 
+                                        deviceType === 'tablet' ? 'text-xs' : 'text-sm'
+                                      }`}>Social</h4>
+                                    </div>
+                                    <div className="text-center p-1 bg-white rounded border">
+                                      <div className={`mx-auto mb-1 bg-purple-100 rounded-full flex items-center justify-center ${
+                                        deviceType === 'mobile' ? 'w-4 h-4' : 
+                                        deviceType === 'tablet' ? 'w-6 h-6' : 'w-8 h-8'
+                                      }`}>
+                                        <Shield className={`text-purple-600 ${
+                                          deviceType === 'mobile' ? 'h-2 w-2' : 
+                                          deviceType === 'tablet' ? 'h-3 w-3' : 'h-4 w-4'
+                                        }`} />
+                                      </div>
+                                      <h4 className={`font-semibold ${
+                                        deviceType === 'mobile' ? 'text-xs' : 
+                                        deviceType === 'tablet' ? 'text-xs' : 'text-sm'
+                                      }`}>Governance</h4>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <h3 className={`font-bold text-gray-900 ${
+                                  deviceType === 'mobile' ? 'text-sm' : 
+                                  deviceType === 'tablet' ? 'text-base' : 'text-lg'
+                                }`}>
+                                  {content.esgPillarsTitle || 'Our ESG Pillars'}
+                                </h3>
+                                <h3 className={`font-bold text-gray-900 ${
+                                  deviceType === 'mobile' ? 'text-sm' : 
+                                  deviceType === 'tablet' ? 'text-base' : 'text-lg'
+                                }`}>
+                                  {content.impactMetricsTitle || 'Our Impact Metrics'}
+                                </h3>
+                                <h3 className={`font-bold text-gray-900 ${
+                                  deviceType === 'mobile' ? 'text-sm' : 
+                                  deviceType === 'tablet' ? 'text-base' : 'text-lg'
+                                }`}>
+                                  {content.certificationDetailsTitle || 'Certification Details'}
+                                </h3>
+                              </div>
+                              
+                              <div className="text-center space-y-2">
+                                <h3 className={`font-bold text-gray-900 ${
+                                  deviceType === 'mobile' ? 'text-base' : 
+                                  deviceType === 'tablet' ? 'text-lg' : 'text-xl'
+                                }`}>
+                                  {content.ctaTitle || 'Join Us in Our Mission'}
+                                </h3>
+                                <p className={`text-gray-600 ${
+                                  deviceType === 'mobile' ? 'text-xs' : 
+                                  deviceType === 'tablet' ? 'text-sm' : 'text-sm'
+                                }`}>
+                                  {content.ctaDescription || 'CTA description...'}
+                                </p>
+                                <div className="flex gap-2 justify-center">
+                                  {content.buttonText && (
+                                    <button className={`bg-green-600 text-white px-3 py-1 rounded font-medium ${
+                                      deviceType === 'mobile' ? 'text-xs px-2 py-1' : 
+                                      deviceType === 'tablet' ? 'text-sm px-3 py-1' : 'text-sm px-4 py-2'
+                                    }`}>
+                                      {content.buttonText}
+                                    </button>
+                                  )}
+                                  {content.secondaryButtonText && (
+                                    <button className={`border border-green-600 text-green-600 px-3 py-1 rounded font-medium ${
+                                      deviceType === 'mobile' ? 'text-xs px-2 py-1' : 
+                                      deviceType === 'tablet' ? 'text-sm px-3 py-1' : 'text-sm px-4 py-2'
+                                    }`}>
+                                      {content.secondaryButtonText}
+                                    </button>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ) : content.id === 'premium-partners-page' ? (
+                          /* Premium Partners Page Preview */
+                          <div className="p-4 h-full bg-gradient-to-br from-gray-50 to-gray-100">
+                            <div className="text-center space-y-4">
+                              <div className="inline-flex items-center px-2 py-1 rounded-full bg-gray-100 text-gray-800 text-xs">
+                                <Award className="h-3 w-3 mr-1" />
+                                {content.badgeText || 'Premium Partners'}
+                              </div>
+                              <h2 className={`font-bold text-gray-900 ${
+                                deviceType === 'mobile' ? 'text-lg' : 
+                                deviceType === 'tablet' ? 'text-xl' : 'text-2xl'
+                              }`}>
+                                {content.heroTitle || 'Trusted by Leading Brands'}
+                              </h2>
+                              <p className={`text-gray-600 ${
+                                deviceType === 'mobile' ? 'text-xs' : 
+                                deviceType === 'tablet' ? 'text-sm' : 'text-base'
+                              }`}>
+                                {content.heroDescription || 'Hero description...'}
+                              </p>
+                              
+                              <div className="space-y-2">
+                                <h3 className={`font-bold text-gray-900 ${
+                                  deviceType === 'mobile' ? 'text-sm' : 
+                                  deviceType === 'tablet' ? 'text-base' : 'text-lg'
+                                }`}>
+                                  {content.benefitsTitle || 'Why Partner with Us?'}
+                                </h3>
+                                <h3 className={`font-bold text-gray-900 ${
+                                  deviceType === 'mobile' ? 'text-sm' : 
+                                  deviceType === 'tablet' ? 'text-base' : 'text-lg'
+                                }`}>
+                                  {content.statsTitle || 'Partnership Statistics'}
+                                </h3>
+                              </div>
+                              
+                              <div className="text-center space-y-2">
+                                <h3 className={`font-bold text-gray-900 ${
+                                  deviceType === 'mobile' ? 'text-base' : 
+                                  deviceType === 'tablet' ? 'text-lg' : 'text-xl'
+                                }`}>
+                                  {content.ctaTitle || 'Interested in Partnership?'}
+                                </h3>
+                                <p className={`text-gray-600 ${
+                                  deviceType === 'mobile' ? 'text-xs' : 
+                                  deviceType === 'tablet' ? 'text-sm' : 'text-sm'
+                                }`}>
+                                  {content.ctaDescription || 'CTA description...'}
+                                </p>
+                                <div className="flex gap-2 justify-center">
+                                  {content.buttonText && (
+                                    <button className={`bg-gray-900 text-white px-3 py-1 rounded font-medium ${
+                                      deviceType === 'mobile' ? 'text-xs px-2 py-1' : 
+                                      deviceType === 'tablet' ? 'text-sm px-3 py-1' : 'text-sm px-4 py-2'
+                                    }`}>
+                                      {content.buttonText}
+                                    </button>
+                                  )}
+                                  {content.secondaryButtonText && (
+                                    <button className={`border border-gray-200 text-gray-700 px-3 py-1 rounded font-medium ${
+                                      deviceType === 'mobile' ? 'text-xs px-2 py-1' : 
+                                      deviceType === 'tablet' ? 'text-sm px-3 py-1' : 'text-sm px-4 py-2'
+                                    }`}>
+                                      {content.secondaryButtonText}
+                                    </button>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          /* Standard Content Preview */
+                          <div className="p-6 h-full flex flex-col justify-center">
+                            <div className="text-center space-y-4">
+                              {content.imageUrl && (
+                                <div className={`mx-auto bg-gray-100 rounded-lg overflow-hidden ${
+                                  deviceType === 'mobile' ? 'w-32 h-24' : 
+                                  deviceType === 'tablet' ? 'w-48 h-36' : 'w-64 h-48'
+                                }`}>
+                                  <img
+                                    src={content.imageUrl}
+                                    alt="Preview"
+                                    className="w-full h-full object-cover"
+                                  />
+                                </div>
+                              )}
+                              
+                              <h3 className={`font-semibold text-gray-900 ${
+                                deviceType === 'mobile' ? 'text-lg' : 
+                                deviceType === 'tablet' ? 'text-xl' : 'text-2xl'
+                              }`}>
+                                {content.title || 'Title'}
+                              </h3>
+                              <p className={`text-gray-600 ${
+                                deviceType === 'mobile' ? 'text-sm' : 
+                                deviceType === 'tablet' ? 'text-base' : 'text-lg'
+                              }`}>
+                                {content.subtitle || 'Subtitle'}
+                              </p>
+                              {content.description && (
+                                <p className={`text-gray-500 ${
+                                  deviceType === 'mobile' ? 'text-xs' : 
+                                  deviceType === 'tablet' ? 'text-sm' : 'text-base'
+                                }`}>
+                                  {content.description}
+                                </p>
+                              )}
+                              {content.buttonText && (
+                                <button className={`bg-blue-600 text-white px-4 py-2 rounded font-medium ${
+                                  deviceType === 'mobile' ? 'text-sm px-3 py-1' : 
+                                  deviceType === 'tablet' ? 'text-base px-4 py-2' : 'text-lg px-6 py-3'
+                                }`}>
+                                  {content.buttonText}
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Device Info */}
+                  <div className="mt-4 text-center text-sm text-gray-500">
+                    {deviceType === 'mobile' && 'Mobile (375px × 667px)'}
+                    {deviceType === 'tablet' && 'Tablet (768px × 1024px)'}
+                    {deviceType === 'desktop' && 'Desktop (1920px × 1080px)'}
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </motion.div>

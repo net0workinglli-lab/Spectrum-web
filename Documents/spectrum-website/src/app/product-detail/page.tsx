@@ -296,30 +296,47 @@ function ProductDetailContent() {
             </div>
 
             {/* Availability at Store */}
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
-              <div className="flex items-start gap-3">
-                <Check className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                <div>
-                  <h3 className="font-semibold text-green-800 mb-1">Có sẵn tại chi nhánh</h3>
-                  <p className="text-sm text-green-700 mb-2">
-                    Sản phẩm hiện có sẵn tại cửa hàng của chúng tôi
-                  </p>
-                  <div className="text-sm text-green-600">
-                    <p className="font-medium">📍 Địa chỉ:</p>
-                    <a 
-                      href="https://maps.google.com/maps?q=Spectrum+Eyecare+192+Nguyễn+Văn+Hưởng,+Thảo+Điền,+Thủ+Đức,+Hồ+Chí+Minh+700000,+Việt+Nam"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="hover:text-green-800 underline"
-                    >
-                      <strong>Spectrum Eyecare</strong><br />
-                      192 Nguyễn Văn Hưởng, Thảo Điền<br />
-                      Thủ Đức, Hồ Chí Minh 700000, Việt Nam
-                    </a>
+            {product.inStock ? (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                <div className="flex items-start gap-3">
+                  <Check className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <h3 className="font-semibold text-green-800 mb-1">Có sẵn tại chi nhánh</h3>
+                    <p className="text-sm text-green-700 mb-2">
+                      Sản phẩm hiện có sẵn tại cửa hàng của chúng tôi
+                    </p>
+                    <div className="text-sm text-green-600">
+                      <p className="font-medium">📍 Địa chỉ:</p>
+                      <a 
+                        href="https://maps.google.com/maps?q=Spectrum+Eyecare+192+Nguyễn+Văn+Hưởng,+Thảo+Điền,+Thủ+Đức,+Hồ+Chí+Minh+700000,+Việt+Nam"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:text-green-800 underline"
+                      >
+                        <strong>Spectrum Eyecare</strong><br />
+                        192 Nguyễn Văn Hưởng, Thảo Điền<br />
+                        Thủ Đức, Hồ Chí Minh 700000, Việt Nam
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            ) : (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+                <div className="flex items-start gap-3">
+                  <X className="h-5 w-5 text-red-600 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <h3 className="font-semibold text-red-800 mb-1">Hết hàng</h3>
+                    <p className="text-sm text-red-700 mb-2">
+                      Sản phẩm hiện đang tạm hết hàng tại cửa hàng
+                    </p>
+                    <p className="text-sm text-red-600">
+                      Vui lòng liên hệ với chúng tôi để đặt hàng trước hoặc kiểm tra thời gian có hàng trở lại.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Action Buttons */}
             <div className="space-y-4">

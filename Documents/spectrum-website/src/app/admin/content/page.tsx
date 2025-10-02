@@ -186,16 +186,6 @@ export default function ContentManagementPage() {
       category: 'pages',
       icon: 'Users'
     },
-    {
-      id: 'community-page',
-      name: 'Community Page',
-      type: 'page',
-      description: 'Community engagement and social features - Customer stories, reviews, and community interactions',
-      lastModified: '2024-01-01',
-      status: 'published',
-      category: 'pages',
-      icon: 'Users'
-    },
     // Global Sections
     {
       id: 'header-section',
@@ -384,7 +374,7 @@ export default function ContentManagementPage() {
               You don&apos;t have permission to access this page.
             </p>
             <Button asChild>
-              <Link href="/">Go to Home</Link>
+              <Link href="/login">Go to Login</Link>
             </Button>
           </CardContent>
         </Card>
@@ -403,7 +393,7 @@ export default function ContentManagementPage() {
               Only administrators can access content management.
             </p>
             <Button asChild>
-              <Link href="/">Go to Home</Link>
+              <Link href="/login">Go to Login</Link>
             </Button>
           </CardContent>
         </Card>

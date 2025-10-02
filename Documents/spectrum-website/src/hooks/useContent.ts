@@ -26,9 +26,13 @@ interface FirestoreContentData {
   communityText?: string;
   communityLink?: string;
   searchPlaceholder?: string;
+  navigationItems?: DropdownItem[];
   productsDropdown?: DropdownItem[];
   brandsDropdown?: DropdownItem[];
   lensesDropdown?: DropdownItem[];
+  productsDropdownTitle?: string;
+  brandsDropdownTitle?: string;
+  lensesDropdownTitle?: string;
   shopLinks?: DropdownItem[];
   supportLinks?: DropdownItem[];
   companyLinks?: DropdownItem[];
@@ -173,9 +177,13 @@ export interface ContentData {
   communityLink?: string;
   searchPlaceholder?: string;
   // New dropdown system
+  navigationItems?: DropdownItem[];
   productsDropdown?: DropdownItem[];
   brandsDropdown?: DropdownItem[];
   lensesDropdown?: DropdownItem[];
+  productsDropdownTitle?: string;
+  brandsDropdownTitle?: string;
+  lensesDropdownTitle?: string;
   
   // Footer Section specific fields
   logoImage?: string; // Footer logo
@@ -289,9 +297,13 @@ export const useContent = (sectionId?: string) => {
             communityLink: sectionData.communityLink || '',
             searchPlaceholder: sectionData.searchPlaceholder || '',
             // New dropdown system
+            navigationItems: sectionData.navigationItems || [],
             productsDropdown: sectionData.productsDropdown || [],
             brandsDropdown: sectionData.brandsDropdown || [],
             lensesDropdown: sectionData.lensesDropdown || [],
+            productsDropdownTitle: sectionData.productsDropdownTitle || '',
+            brandsDropdownTitle: sectionData.brandsDropdownTitle || '',
+            lensesDropdownTitle: sectionData.lensesDropdownTitle || '',
             // Footer Section specific fields
             shopLinks: sectionData.shopLinks || [],
             supportLinks: sectionData.supportLinks || [],

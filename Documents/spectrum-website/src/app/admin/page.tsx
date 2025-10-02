@@ -197,11 +197,8 @@ export default function AdminPage() {
           <CardContent className="p-8">
             <Settings className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
             <h2 className="text-2xl font-bold mb-2">Access Denied</h2>
-            <p className="text-muted-foreground mb-4">
-              You need to be signed in to access the admin panel.
-            </p>
             <Button asChild>
-              <Link href="/">Go to Home</Link>
+              <Link href="/login">Go to Login</Link>
             </Button>
           </CardContent>
         </Card>
@@ -220,7 +217,7 @@ export default function AdminPage() {
               You don&apos;t have permission to access the admin panel.
             </p>
             <Button asChild>
-              <Link href="/">Go to Home</Link>
+              <Link href="/login">Go to Login</Link>
             </Button>
           </CardContent>
         </Card>

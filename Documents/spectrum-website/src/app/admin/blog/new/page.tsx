@@ -20,7 +20,6 @@ import { useEffect } from 'react';
 import { ImageUpload } from '@/components/ImageUpload';
 import BlogLayoutSelector from '@/components/admin/BlogLayoutSelector';
 import BlogLayoutTemplate from '@/components/admin/BlogLayoutTemplates';
-import BlogLayoutPreview from '@/components/admin/BlogLayoutPreview';
 
 interface Category {
   id: string;
@@ -452,17 +451,6 @@ export default function NewBlogPostPage() {
                   <BlogLayoutSelector
                     selectedLayout={formData.layout}
                     onLayoutChange={(layoutId) => setFormData(prev => ({ ...prev, layout: layoutId }))}
-                  />
-                  
-                  {/* Layout Preview */}
-                  <BlogLayoutPreview
-                    layout={formData.layout}
-                    formData={formData}
-                    author={{
-                      name: user?.name || 'Author',
-                      email: user?.email || 'admin@spectrum.com',
-                      ...(user?.avatar && { avatar: user.avatar })
-                    }}
                   />
                 </CardContent>
               </Card>

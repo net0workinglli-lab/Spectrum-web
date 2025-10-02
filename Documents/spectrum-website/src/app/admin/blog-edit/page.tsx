@@ -11,7 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import {
-  FileText, Save, Eye, ArrowLeft, Plus, X,
+  FileText, Save, ArrowLeft, Plus, X,
   Calendar, User, Tag, Type, AlignLeft, Clock
 } from 'lucide-react';
 import { useApp } from '@/contexts/AppContext';
@@ -56,7 +56,6 @@ function EditBlogPost() {
   
   const { isLoggedIn, user } = useApp();
   const [isLoading, setIsLoading] = useState(false);
-  const [isPreview, setIsPreview] = useState(false);
   const [newTag, setNewTag] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -309,10 +308,6 @@ function EditBlogPost() {
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-3xl font-bold">Edit Blog Post</h1>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={() => setIsPreview(!isPreview)}>
-            {isPreview ? <Eye className="h-4 w-4 mr-2" /> : <Eye className="h-4 w-4 mr-2" />}
-            {isPreview ? 'Edit' : 'Preview'}
-          </Button>
           <Button onClick={handleSubmit} disabled={isLoading}>
             {isLoading && <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />}
             <Save className="h-4 w-4 mr-2" />
@@ -343,36 +338,6 @@ function EditBlogPost() {
                 </div>
               )}
 
-              {isPreview ? (
-                // Preview Mode
-                <div className="space-y-6">
-                  <div>
-                    <h1 className="text-3xl font-bold mb-4">{formData.title || 'Untitled Post'}</h1>
-                    <div className="flex items-center gap-4 text-sm text-gray-500 mb-6">
-                      <div className="flex items-center gap-1">
-                        <User className="h-4 w-4" />
-                        <span>{user?.name || 'Admin'}</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Calendar className="h-4 w-4" />
-                        <span>{new Date().toLocaleDateString()}</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Clock className="h-4 w-4" />
-                        <span>{formData.readingTime || '1 min read'}</span>
-                      </div>
-                    </div>
-                    {formData.featuredImage && (
-                      <div className="relative w-full h-64 rounded-lg overflow-hidden mb-6">
-                        <img src={formData.featuredImage} alt="Featured" className="object-cover w-full h-full" />
-                      </div>
-                    )}
-                    <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: formData.content }} />
-                  </div>
-                </div>
-              ) : (
-                // Edit Mode
-                <>
                   <div className="space-y-2">
                     <Label htmlFor="title">Title</Label>
                     <Input
@@ -417,8 +382,6 @@ function EditBlogPost() {
                       required
                     />
                   </div>
-                </>
-              )}
             </CardContent>
           </Card>
         </div>

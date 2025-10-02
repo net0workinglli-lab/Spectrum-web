@@ -3,6 +3,8 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslations } from 'next-intl';
+import { LanguageSwitcher, MobileLanguageSwitcher } from './LanguageSwitcher';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
@@ -89,17 +91,16 @@ export function Header() {
   const { content: headerContent, isLoading } = useContent('header-section');
 
   const isAdmin = user?.email === 'admin@spectrum.com' || user?.email === 'nguyenphuocsang@gmail.com';
+  
+  // Translations
+  const t = useTranslations();
 
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
-  // Convert navigation items to format with icons
-  const navigation = (headerContent?.navigationItems || []).map((item) => {
-    return {
-      name: item.name,
-      href: item.href,
-      icon: item.icon || 'Leaf'
-    };
-  });
+  const navigation = [
+    { name: headerContent?.ecoFriendlyText || t('navigation.ecoFriendly'), href: headerContent?.ecoFriendlyLink || '/eco-friendly', icon: Leaf },
+    { name: headerContent?.communityText || t('navigation.community'), href: headerContent?.communityLink || '/community', icon: Users },
+  ];
 
   // Convert dropdown items to navigation format
   const categories = (headerContent?.productsDropdown || []).map((item) => {
@@ -158,16 +159,16 @@ export function Header() {
         {/* Top bar */}
         <div className="flex items-center justify-between py-2 text-sm">
           <div className="flex items-center gap-4">
-            <span>{headerContent?.topBarLeft || 'Free consultation and eye exam'}</span>
+            <span>{headerContent?.topBarLeft || t('header.topBarLeft')}</span>
             <span className="hidden md:inline">|</span>
-            <span className="hidden md:inline">{headerContent?.topBarRight || '30-day return policy'}</span>
+            <span className="hidden md:inline">{headerContent?.topBarRight || t('header.topBarRight')}</span>
           </div>
           <div className="flex items-center gap-4">
             <Link href="/blog" className="hover:text-primary">
-              {headerContent?.blogLinkText || 'Blog'}
+              {headerContent?.blogLinkText || t('navigation.blog')}
             </Link>
             <Link href="/contact" prefetch={false} className="hover:text-primary">
-              {headerContent?.contactLinkText || 'Contact'}
+              {headerContent?.contactLinkText || t('navigation.contact')}
             </Link>
           </div>
         </div>
@@ -198,83 +199,77 @@ export function Header() {
                 href={item.href}
                 className="flex items-center gap-2 hover:text-primary transition-colors"
               >
-                <IconRenderer iconName={item.icon} className="h-4 w-4" />
+                <item.icon className="h-4 w-4" />
                 {item.name}
               </Link>
             ))}
             
-            {/* Categories Dropdown - Only show if has items */}
-            {categories.length > 0 && (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="flex items-center gap-2 hover:text-primary">
-                    <Glasses className="h-4 w-4" />
-                    {headerContent?.productsDropdownTitle || 'Products'}
-                    <ChevronDown className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56">
-                  {categories.map((category) => (
-                    <DropdownMenuItem key={category.name} asChild>
-                      <Link href={category.href} className="flex items-center gap-2">
-                        <IconRenderer iconName={category.icon} className="h-4 w-4" />
-                        {category.name}
-                      </Link>
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
+            {/* Categories Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="flex items-center gap-2 hover:text-primary">
+                  <Glasses className="h-4 w-4" />
+                  {t('navigation.products')}
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56">
+                {categories.map((category) => (
+                  <DropdownMenuItem key={category.name} asChild>
+                    <Link href={category.href} className="flex items-center gap-2">
+                      <IconRenderer iconName={category.icon} className="h-4 w-4" />
+                      {category.name}
+                    </Link>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
 
-            {/* Brands Dropdown - Only show if has items */}
-            {brands.length > 0 && (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="flex items-center gap-2 hover:text-primary">
-                    <Award className="h-4 w-4" />
-                    {headerContent?.brandsDropdownTitle || 'Brands'}
-                    <ChevronDown className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56">
-                  {brands.map((brand) => (
-                    <DropdownMenuItem key={brand.name} asChild>
-                      <Link href={brand.href} className="flex items-center gap-2">
-                        <IconRenderer iconName={brand.icon} className="h-4 w-4" />
-                        {brand.name}
-                      </Link>
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
+            {/* Brands Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="flex items-center gap-2 hover:text-primary">
+                  <Award className="h-4 w-4" />
+                  {t('navigation.brands')}
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56">
+                {brands.map((brand) => (
+                  <DropdownMenuItem key={brand.name} asChild>
+                    <Link href={brand.href} className="flex items-center gap-2">
+                      <IconRenderer iconName={brand.icon} className="h-4 w-4" />
+                      {brand.name}
+                    </Link>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
 
-            {/* Lenses Dropdown - Only show if has items */}
-            {lensBrands.length > 0 && (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="flex items-center gap-2 hover:text-primary">
-                    <Contact className="h-4 w-4" />
-                    {headerContent?.lensesDropdownTitle || 'Lenses'}
-                    <ChevronDown className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56">
-                  {lensBrands.map((lensBrand) => (
-                    <DropdownMenuItem key={lensBrand.name} asChild>
-                      <Link href={lensBrand.href} className="flex items-center gap-2">
-                        <IconRenderer iconName={lensBrand.icon} className="h-4 w-4" />
-                        {lensBrand.name}
-                      </Link>
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
+            {/* Lenses Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="flex items-center gap-2 hover:text-primary">
+                  <Contact className="h-4 w-4" />
+                  {t('navigation.lenses')}
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56">
+                {lensBrands.map((lensBrand) => (
+                  <DropdownMenuItem key={lensBrand.name} asChild>
+                    <Link href={lensBrand.href} className="flex items-center gap-2">
+                      <IconRenderer iconName={lensBrand.icon} className="h-4 w-4" />
+                      {lensBrand.name}
+                    </Link>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </nav>
 
           {/* Search Bar */}
-          <SearchBar placeholder={headerContent?.searchPlaceholder || 'Search glasses, brands...'} />
+          <SearchBar placeholder={headerContent?.searchPlaceholder || t('common.searchPlaceholder')} />
 
           {/* Action buttons */}
           <div className="flex items-center gap-2">
@@ -304,6 +299,28 @@ export function Header() {
               />
             </div>
 
+            {/* User */}
+            <div className="relative">
+              <Button 
+                variant="ghost" 
+                size="icon"
+                onClick={() => setIsUserOpen(!isUserOpen)}
+              >
+                <User className="h-5 w-5" />
+              </Button>
+              <UserDropdown
+                isOpen={isUserOpen}
+                onClose={() => setIsUserOpen(false)}
+                isLoggedIn={isLoggedIn}
+                user={user}
+                onLogin={() => setIsLoginModalOpen(true)}
+                onLogout={logout}
+                isAdmin={isAdmin}
+              />
+            </div>
+
+            {/* Language Switcher */}
+            <LanguageSwitcher />
 
             {/* Mobile menu */}
             <Sheet>
@@ -320,7 +337,7 @@ export function Header() {
                     <Search className="absolute left-3 h-4 w-4 text-muted-foreground" />
                     <input
                       type="text"
-                      placeholder="Search glasses, brands..."
+                      placeholder={t('common.searchPlaceholder')}
                       className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                     />
                   </div>
@@ -342,7 +359,7 @@ export function Header() {
                     <div className="space-y-2">
                       <div className="text-sm font-medium text-gray-500 mb-2 flex items-center gap-2">
                         <Glasses className="h-4 w-4" />
-                        Products
+                        {t('navigation.products')}
                       </div>
                       {categories.map((category) => (
                         <Link
@@ -350,7 +367,7 @@ export function Header() {
                           href={category.href}
                           className="flex items-center gap-3 hover:text-primary transition-colors py-2 pl-4"
                         >
-                          <category.icon className="h-4 w-4" />
+                          <IconRenderer iconName={category.icon} className="h-4 w-4" />
                           {category.name}
                         </Link>
                       ))}
@@ -360,7 +377,7 @@ export function Header() {
                     <div className="space-y-2">
                       <div className="text-sm font-medium text-gray-500 mb-2 flex items-center gap-2">
                         <Award className="h-4 w-4" />
-                        Brands
+                        {t('navigation.brands')}
                       </div>
                       {brands.map((brand) => (
                         <Link
@@ -368,7 +385,7 @@ export function Header() {
                           href={brand.href}
                           className="flex items-center gap-3 hover:text-primary transition-colors py-2 pl-4"
                         >
-                          <brand.icon className="h-4 w-4" />
+                          <IconRenderer iconName={brand.icon} className="h-4 w-4" />
                           {brand.name}
                         </Link>
                       ))}
@@ -378,7 +395,7 @@ export function Header() {
                     <div className="space-y-2">
                       <div className="text-sm font-medium text-gray-500 mb-2 flex items-center gap-2">
                         <Contact className="h-4 w-4" />
-                        Lenses
+                        {t('navigation.lenses')}
                       </div>
                       {lensBrands.map((lensBrand) => (
                         <Link
@@ -386,7 +403,7 @@ export function Header() {
                           href={lensBrand.href}
                           className="flex items-center gap-3 hover:text-primary transition-colors py-2 pl-4"
                         >
-                          <lensBrand.icon className="h-4 w-4" />
+                          <IconRenderer iconName={lensBrand.icon} className="h-4 w-4" />
                           {lensBrand.name}
                         </Link>
                       ))}
@@ -396,11 +413,14 @@ export function Header() {
                   {/* Mobile Actions */}
                   <div className="flex flex-col gap-4 pt-4 border-t">
                     <Link href="/blog" className="hover:text-primary">
-                      Blog
+                      {t('navigation.blog')}
                     </Link>
                     <Link href="/contact" prefetch={false} className="hover:text-primary">
-                      Contact
+                      {t('navigation.contact')}
                     </Link>
+                    
+                    {/* Mobile Language Switcher */}
+                    <MobileLanguageSwitcher />
                   </div>
                 </div>
               </SheetContent>

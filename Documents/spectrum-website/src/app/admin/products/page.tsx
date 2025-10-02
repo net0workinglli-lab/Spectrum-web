@@ -22,7 +22,7 @@ import { useApp } from '@/contexts/AppContext';
 import { Product } from '@/types';
 import Image from 'next/image';
 import Link from 'next/link';
-import { getProducts, deleteProduct } from '@/lib/firebase-firestore';
+import { getProducts, deleteProduct, getCategories } from '@/lib/firebase-firestore';
 import { toast } from 'sonner';
 
 export default function ProductsPage() {
@@ -33,6 +33,7 @@ export default function ProductsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [categories, setCategories] = useState<Array<{id: string, name: string, slug: string}>>([]);
 
   // Load products from Firebase
   useEffect(() => {
@@ -77,6 +78,30 @@ export default function ProductsPage() {
       loadProducts();
     }
   }, [isLoggedIn]);
+
+  // Load product categories from Firebase
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        console.log('📦 Loading product categories for filter...');
+        const allCategories = await getCategories();
+        const productCategories = allCategories
+          .filter((cat: any) => cat.type === 'product')
+          .map((cat: any) => ({
+            id: cat.id,
+            name: cat.name,
+            slug: cat.slug
+          }));
+        
+        console.log('📦 Product categories loaded for filter:', productCategories.length);
+        setCategories(productCategories);
+      } catch (error) {
+        console.error('❌ Error loading categories:', error);
+      }
+    };
+
+    loadCategories();
+  }, []);
 
   // Filter products
   useEffect(() => {
@@ -247,10 +272,11 @@ export default function ProductsPage() {
                     className="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
                     <option value="all">All Categories</option>
-                    <option value="sunglasses">Sunglasses</option>
-                    <option value="eyeglasses">Eyeglasses</option>
-                    <option value="reading">Reading Glasses</option>
-                    <option value="contact">Contact Lenses</option>
+                    {categories.map((category) => (
+                      <option key={category.id} value={category.slug}>
+                        {category.name}
+                      </option>
+                    ))}
                   </select>
                   <select
                     value={statusFilter}

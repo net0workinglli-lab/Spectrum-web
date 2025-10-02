@@ -171,7 +171,7 @@ export default function UsersPage() {
               You don&apos;t have permission to access this page.
             </p>
             <Button asChild>
-              <Link href="/">Go to Home</Link>
+              <Link href="/login">Go to Login</Link>
             </Button>
           </CardContent>
         </Card>
