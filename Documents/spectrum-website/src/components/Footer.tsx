@@ -129,72 +129,80 @@ export function Footer() {
           </div>
 
           {/* Shop */}
-          <div>
-            <h3 className="font-semibold mb-4">Shop</h3>
-            <ul className="space-y-2">
-              {footerLinks.shop.map((link) => (
-                <li key={link.id || link.name}>
-                  <Link 
-                    href={link.href} 
-                    className="text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {footerLinks.shop && footerLinks.shop.length > 0 && (
+            <div>
+              <h3 className="font-semibold mb-4">Shop</h3>
+              <ul className="space-y-2">
+                {footerLinks.shop.map((link) => (
+                  <li key={link.id || link.name}>
+                    <Link 
+                      href={link.href} 
+                      className="text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {/* Support */}
-          <div>
-            <h3 className="font-semibold mb-4">Support</h3>
-            <ul className="space-y-2">
-              {footerLinks.support.map((link) => (
-                <li key={link.id || link.name}>
-                  <Link 
-                    href={link.href} 
-                    className="text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {footerLinks.support && footerLinks.support.length > 0 && (
+            <div>
+              <h3 className="font-semibold mb-4">Support</h3>
+              <ul className="space-y-2">
+                {footerLinks.support.map((link) => (
+                  <li key={link.id || link.name}>
+                    <Link 
+                      href={link.href} 
+                      className="text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {/* Company */}
-          <div>
-            <h3 className="font-semibold mb-4">Company</h3>
-            <ul className="space-y-2">
-              {footerLinks.company.map((link) => (
-                <li key={link.id || link.name}>
-                  <Link 
-                    href={link.href} 
-                    className="text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {footerLinks.company && footerLinks.company.length > 0 && (
+            <div>
+              <h3 className="font-semibold mb-4">Company</h3>
+              <ul className="space-y-2">
+                {footerLinks.company.map((link) => (
+                  <li key={link.id || link.name}>
+                    <Link 
+                      href={link.href} 
+                      className="text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {/* Legal */}
-          <div>
-            <h3 className="font-semibold mb-4">Legal</h3>
-            <ul className="space-y-2">
-              {footerLinks.legal.map((link) => (
-                <li key={link.id || link.name}>
-                  <Link 
-                    href={link.href} 
-                    className="text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {footerLinks.legal && footerLinks.legal.length > 0 && (
+            <div>
+              <h3 className="font-semibold mb-4">Legal</h3>
+              <ul className="space-y-2">
+                {footerLinks.legal.map((link) => (
+                  <li key={link.id || link.name}>
+                    <Link 
+                      href={link.href} 
+                      className="text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
 
         {/* Newsletter */}
