@@ -19,7 +19,7 @@ function ProductsPageContent() {
   const searchParams = useSearchParams();
   const { content: pageContent, isLoading: contentLoading } = useContent('products-page');
   const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<Array<{id: string, name: string, slug: string}>>([]);
+  const [categories, setCategories] = useState<Array<{id: string, name: string, slug: string, image?: string, description?: string}>>([]);
   const [isLoading, setIsLoading] = useState(true);
   
   const [searchTerm, setSearchTerm] = useState('');
@@ -55,7 +55,9 @@ function ProductsPageContent() {
           .map((cat: any) => ({
             id: cat.id,
             name: cat.name,
-            slug: cat.slug
+            slug: cat.slug,
+            image: cat.image || '',
+            description: cat.description || ''
           }));
         
         console.log('🏷️ Product categories loaded:', productCategories.length, productCategories);
@@ -234,6 +236,12 @@ function ProductsPageContent() {
     setCurrentPage(1);
   }, [searchTerm, selectedCategory, selectedBrands, selectedFeatures, inStockOnly, minRating]);
 
+  // Get selected category data
+  const selectedCategoryData = useMemo(() => {
+    if (selectedCategory === 'all') return null;
+    return categories.find(cat => cat.slug === selectedCategory);
+  }, [selectedCategory, categories]);
+
   // Get unique brands and features for filters
   const availableBrands = useMemo(() => {
     const brands = [...new Set(products.map(p => p.brand || '').filter(b => b))];
@@ -323,20 +331,21 @@ function ProductsPageContent() {
     <div className="container mx-auto px-4 py-8">
       {/* Header */}
       <div className="mb-8">
-        {pageContent?.imageUrl && (
+        {/* Show category banner if category is selected, otherwise show page content banner */}
+        {(selectedCategoryData?.image || pageContent?.imageUrl) && (
           <div className="aspect-[21/9] bg-gray-100 rounded-xl overflow-hidden mb-8">
             <img
-              src={pageContent.imageUrl}
-              alt="Products Hero"
+              src={selectedCategoryData?.image || pageContent.imageUrl}
+              alt={selectedCategoryData ? `${selectedCategoryData.name} Category` : "Products Hero"}
               className="w-full h-full object-contain"
             />
           </div>
         )}
         <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          {pageContent?.title || 'Tất cả sản phẩm'}
+          {selectedCategoryData ? selectedCategoryData.name : (pageContent?.title || 'Tất cả sản phẩm')}
         </h1>
         <p className="text-gray-600">
-          {pageContent?.description || 'Khám phá bộ sưu tập kính mắt thời trang của chúng tôi'}
+          {selectedCategoryData?.description || pageContent?.description || 'Khám phá bộ sưu tập kính mắt thời trang của chúng tôi'}
         </p>
       </div>
 
