@@ -7,7 +7,6 @@ import { Hero } from '@/components/Hero';
 import { FeaturedProductsSection } from '@/components/FeaturedProductsSection';
 import { CertificateSection } from '@/components/CertificateSection';
 import { BrandSection } from '@/components/BrandSection';
-import { LensesSection } from '@/components/LensesSection';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ArrowRight, TrendingUp, Star, Users } from 'lucide-react';
@@ -223,9 +222,6 @@ export default function Home() {
 
       {/* Brand Section */}
       <BrandSection />
-
-      {/* Lenses Section */}
-      <LensesSection />
 
       {/* CTA Section */}
       <section className="py-16 bg-gray-50">
