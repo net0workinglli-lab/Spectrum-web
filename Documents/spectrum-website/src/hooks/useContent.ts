@@ -38,6 +38,10 @@ interface FirestoreContentData {
   companyLinks?: DropdownItem[];
   legalLinks?: DropdownItem[];
   socialLinks?: DropdownItem[];
+  shopTitle?: string;
+  supportTitle?: string;
+  companyTitle?: string;
+  legalTitle?: string;
   selectedProductIds?: string[];
   maxProducts?: number;
   // About page specific fields
@@ -192,6 +196,10 @@ export interface ContentData {
   companyLinks?: DropdownItem[];
   legalLinks?: DropdownItem[];
   socialLinks?: DropdownItem[];
+  shopTitle?: string;
+  supportTitle?: string;
+  companyTitle?: string;
+  legalTitle?: string;
   
   // Featured Products Section specific fields
   selectedProductIds?: string[]; // Array of product IDs to display
@@ -310,6 +318,10 @@ export const useContent = (sectionId?: string) => {
             companyLinks: sectionData.companyLinks || [],
             legalLinks: sectionData.legalLinks || [],
             socialLinks: sectionData.socialLinks || [],
+            shopTitle: sectionData.shopTitle || 'Shop',
+            supportTitle: sectionData.supportTitle || 'Support',
+            companyTitle: sectionData.companyTitle || 'Company',
+            legalTitle: sectionData.legalTitle || 'Legal',
             // Featured Products Section specific fields
             selectedProductIds: sectionData.selectedProductIds || [],
             maxProducts: sectionData.maxProducts || 4,
@@ -595,6 +607,10 @@ export const useContent = (sectionId?: string) => {
             { id: 'instagram', name: 'Instagram', href: '#', icon: 'Instagram' },
             { id: 'youtube', name: 'YouTube', href: '#', icon: 'Youtube' }
           ] : [],
+          shopTitle: sectionId === 'footer-section' ? 'Shop' : '',
+          supportTitle: sectionId === 'footer-section' ? 'Support' : '',
+          companyTitle: sectionId === 'footer-section' ? 'Company' : '',
+          legalTitle: sectionId === 'footer-section' ? 'Legal' : '',
           // Featured Products Section specific fields
           selectedProductIds: sectionId === 'featured-products-section' ? [] : [],
           maxProducts: sectionId === 'featured-products-section' ? 4 : undefined
