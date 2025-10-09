@@ -1266,6 +1266,52 @@ export default function EditContentPage({ params }: { params: { id: string } }) 
 
                   {/* Right Column - Footer Links */}
                   <div className="space-y-6">
+                    {/* Menu Titles Card */}
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <Type className="h-5 w-5" />
+                          Menu Titles
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label>Shop Menu Title</Label>
+                            <Input
+                              value={content.shopTitle || 'Shop'}
+                              onChange={(e) => handleInputChange('shopTitle', e.target.value)}
+                              placeholder="Shop"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label>Support Menu Title</Label>
+                            <Input
+                              value={content.supportTitle || 'Support'}
+                              onChange={(e) => handleInputChange('supportTitle', e.target.value)}
+                              placeholder="Support"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label>Company Menu Title</Label>
+                            <Input
+                              value={content.companyTitle || 'Company'}
+                              onChange={(e) => handleInputChange('companyTitle', e.target.value)}
+                              placeholder="Company"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label>Legal Menu Title</Label>
+                            <Input
+                              value={content.legalTitle || 'Legal'}
+                              onChange={(e) => handleInputChange('legalTitle', e.target.value)}
+                              placeholder="Legal"
+                            />
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+
                     <DropdownManager
                       title="Shop Links"
                       items={content.shopLinks || []}

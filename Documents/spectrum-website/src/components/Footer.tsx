@@ -62,6 +62,14 @@ export function Footer() {
     company: footerContent?.companyLinks || defaultFooterLinks.company,
     legal: footerContent?.legalLinks || defaultFooterLinks.legal,
   };
+
+  // Menu titles - can be customized from CMS
+  const menuTitles = {
+    shop: footerContent?.shopTitle || 'Shop',
+    support: footerContent?.supportTitle || 'Support',
+    company: footerContent?.companyTitle || 'Company',
+    legal: footerContent?.legalTitle || 'Legal',
+  };
   
   // Helper function to get icon component from name
   const getIconComponent = (iconName: string) => {
@@ -131,7 +139,7 @@ export function Footer() {
           {/* Shop */}
           {footerLinks.shop && footerLinks.shop.length > 0 && (
             <div>
-              <h3 className="font-semibold mb-4">Shop</h3>
+              <h3 className="font-semibold mb-4">{menuTitles.shop}</h3>
               <ul className="space-y-2">
                 {footerLinks.shop.map((link) => (
                   <li key={link.id || link.name}>
@@ -150,7 +158,7 @@ export function Footer() {
           {/* Support */}
           {footerLinks.support && footerLinks.support.length > 0 && (
             <div>
-              <h3 className="font-semibold mb-4">Support</h3>
+              <h3 className="font-semibold mb-4">{menuTitles.support}</h3>
               <ul className="space-y-2">
                 {footerLinks.support.map((link) => (
                   <li key={link.id || link.name}>
@@ -169,7 +177,7 @@ export function Footer() {
           {/* Company */}
           {footerLinks.company && footerLinks.company.length > 0 && (
             <div>
-              <h3 className="font-semibold mb-4">Company</h3>
+              <h3 className="font-semibold mb-4">{menuTitles.company}</h3>
               <ul className="space-y-2">
                 {footerLinks.company.map((link) => (
                   <li key={link.id || link.name}>
@@ -188,7 +196,7 @@ export function Footer() {
           {/* Legal */}
           {footerLinks.legal && footerLinks.legal.length > 0 && (
             <div>
-              <h3 className="font-semibold mb-4">Legal</h3>
+              <h3 className="font-semibold mb-4">{menuTitles.legal}</h3>
               <ul className="space-y-2">
                 {footerLinks.legal.map((link) => (
                   <li key={link.id || link.name}>
