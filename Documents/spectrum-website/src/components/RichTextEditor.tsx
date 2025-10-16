@@ -115,6 +115,57 @@ export default function RichTextEditor({
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Add CSS for Editor.js header sizing
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = `
+      .codex-editor__redactor {
+        padding: 20px !important;
+      }
+      .ce-header {
+        font-weight: bold !important;
+        margin: 16px 0 8px 0 !important;
+      }
+      .ce-header[data-level="1"] {
+        font-size: 2.25rem !important; /* text-4xl */
+        line-height: 2.5rem !important;
+        margin: 32px 0 24px 0 !important;
+      }
+      .ce-header[data-level="2"] {
+        font-size: 1.875rem !important; /* text-3xl */
+        line-height: 2.25rem !important;
+        margin: 28px 0 20px 0 !important;
+      }
+      .ce-header[data-level="3"] {
+        font-size: 1.5rem !important; /* text-2xl */
+        line-height: 2rem !important;
+        margin: 24px 0 16px 0 !important;
+      }
+      .ce-header[data-level="4"] {
+        font-size: 1.25rem !important; /* text-xl */
+        line-height: 1.75rem !important;
+        margin: 20px 0 12px 0 !important;
+      }
+      .ce-header[data-level="5"] {
+        font-size: 1.125rem !important; /* text-lg */
+        line-height: 1.75rem !important;
+        margin: 16px 0 12px 0 !important;
+      }
+      .ce-header[data-level="6"] {
+        font-size: 1rem !important; /* text-base */
+        line-height: 1.5rem !important;
+        margin: 12px 0 8px 0 !important;
+      }
+    `;
+    document.head.appendChild(style);
+    
+    return () => {
+      if (document.head.contains(style)) {
+        document.head.removeChild(style);
+      }
+    };
+  }, []);
+
   // Initialize Editor.js
   useEffect(() => {
     let isMounted = true;
