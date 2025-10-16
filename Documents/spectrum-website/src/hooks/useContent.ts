@@ -27,7 +27,6 @@ interface FirestoreContentData {
   communityLink?: string;
   searchPlaceholder?: string;
   navigationItems?: DropdownItem[];
-  navigationPosition?: 'before' | 'after';
   productsDropdown?: DropdownItem[];
   brandsDropdown?: DropdownItem[];
   lensesDropdown?: DropdownItem[];
@@ -123,7 +122,6 @@ export interface DropdownItem {
   name: string;
   href: string;
   icon?: string;
-  position?: 'before' | 'after';
 }
 
 export interface ContentData {
@@ -184,7 +182,6 @@ export interface ContentData {
   searchPlaceholder?: string;
   // New dropdown system
   navigationItems?: DropdownItem[];
-  navigationPosition?: 'before' | 'after';
   productsDropdown?: DropdownItem[];
   brandsDropdown?: DropdownItem[];
   lensesDropdown?: DropdownItem[];
@@ -309,7 +306,6 @@ export const useContent = (sectionId?: string) => {
             searchPlaceholder: sectionData.searchPlaceholder || '',
             // New dropdown system
             navigationItems: sectionData.navigationItems || [],
-            navigationPosition: sectionData.navigationPosition || 'before',
             productsDropdown: sectionData.productsDropdown || [],
             brandsDropdown: sectionData.brandsDropdown || [],
             lensesDropdown: sectionData.lensesDropdown || [],
@@ -555,7 +551,6 @@ export const useContent = (sectionId?: string) => {
           communityLink: sectionId === 'header-section' ? '/community' : '',
           searchPlaceholder: sectionId === 'header-section' ? 'Search glasses, brands...' : '',
           // New dropdown system
-          navigationPosition: sectionId === 'header-section' ? 'before' : 'before',
           productsDropdown: sectionId === 'header-section' ? [
             { id: 'sunglasses', name: 'Sunglasses', href: '/products?category=sunglasses', icon: 'Sun' },
             { id: 'eyeglasses', name: 'Eyeglasses', href: '/products?category=eyeglasses', icon: 'Glasses' },
