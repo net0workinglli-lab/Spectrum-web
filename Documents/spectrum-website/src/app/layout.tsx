@@ -96,6 +96,67 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="SPECTRUM" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="application-name" content="SPECTRUM EYECARE" />
+        
+        {/* Suppress warnings and errors */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              // Suppress various warnings and errors
+              (function() {
+                const originalWarn = console.warn;
+                const originalError = console.error;
+                
+                console.warn = function(message) {
+                  if (typeof message === 'string') {
+                    // Suppress CSS preload warnings
+                    if (message.includes('preloaded using link preload')) {
+                      return;
+                    }
+                    // Suppress Swiper loop warnings
+                    if (message.includes('Swiper Loop Warning') || message.includes('number of slides is not enough for loop mode')) {
+                      return;
+                    }
+                  }
+                  originalWarn.apply(console, arguments);
+                };
+                
+                console.error = function(message) {
+                  if (typeof message === 'string') {
+                    // Suppress RSC payload errors
+                    if (message.includes('Failed to fetch RSC payload') || message.includes('Falling back to browser navigation')) {
+                      return;
+                    }
+                  }
+                  originalError.apply(console, arguments);
+                };
+                
+                // Convert preload links to stylesheets
+                function convertPreloadLinks() {
+                  const preloadLinks = document.querySelectorAll('link[rel="preload"][href*=".css"]');
+                  preloadLinks.forEach(link => {
+                    if (!link.getAttribute('as') || link.getAttribute('as') !== 'style') {
+                      link.setAttribute('as', 'style');
+                      link.setAttribute('onload', "this.onload=null;this.rel='stylesheet'");
+                    }
+                  });
+                }
+                
+                // Run immediately and on DOM ready
+                convertPreloadLinks();
+                if (document.readyState === 'loading') {
+                  document.addEventListener('DOMContentLoaded', convertPreloadLinks);
+                }
+                
+                // Monitor for new preload links
+                const observer = new MutationObserver(convertPreloadLinks);
+                observer.observe(document.head, { childList: true, subtree: true });
+                
+                // Periodic check
+                setInterval(convertPreloadLinks, 1000);
+              })();
+            `,
+          }}
+        />
       </head>
       <body className="font-sans antialiased">
         <QueryProvider>

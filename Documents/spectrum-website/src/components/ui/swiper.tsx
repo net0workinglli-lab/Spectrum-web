@@ -37,6 +37,10 @@ export function SwiperComponent({
   speed = 800,
   breakpoints,
 }: SwiperComponentProps) {
+  // Calculate if we have enough slides for loop mode
+  const childrenArray = Array.isArray(children) ? children : [children];
+  const hasEnoughSlides = childrenArray.length > 1;
+  
   return (
     <Swiper
       modules={[Navigation, Pagination, Autoplay, EffectFade]}
@@ -54,7 +58,7 @@ export function SwiperComponent({
       speed={speed}
       breakpoints={breakpoints}
       className={className}
-      loop={true}
+      loop={hasEnoughSlides}
       grabCursor={true}
       keyboard={{
         enabled: true,
