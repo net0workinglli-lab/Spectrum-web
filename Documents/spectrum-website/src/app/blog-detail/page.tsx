@@ -9,6 +9,7 @@ import { Calendar, User, ArrowLeft, Clock, Eye, Heart, Share2 } from 'lucide-rea
 import Link from 'next/link';
 import Image from 'next/image';
 import { getBlogPosts } from '@/lib/firebase-firestore';
+import EditorJSContent from '@/components/EditorJSContent';
 
 interface BlogPost {
   id: string;
@@ -208,9 +209,9 @@ function BlogPostDetail() {
               )}
               
               {/* Content */}
-              <div 
+              <EditorJSContent 
+                data={post.content} 
                 className="prose prose-lg max-w-none"
-                dangerouslySetInnerHTML={{ __html: post.content }}
               />
               
               {/* Tags */}

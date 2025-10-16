@@ -20,6 +20,7 @@ import { useEffect } from 'react';
 import { ImageUpload } from '@/components/ImageUpload';
 import BlogLayoutSelector from '@/components/admin/BlogLayoutSelector';
 import BlogLayoutTemplate from '@/components/admin/BlogLayoutTemplates';
+import RichTextEditor from '@/components/RichTextEditor';
 
 interface Category {
   id: string;
@@ -412,13 +413,12 @@ export default function NewBlogPostPage() {
                       {/* Content */}
                       <div className="space-y-2">
                         <Label htmlFor="content">Content</Label>
-                        <textarea
-                          id="content"
+                        <RichTextEditor
                           value={formData.content}
-                          onChange={(e) => handleInputChange('content', e.target.value)}
+                          onChange={(value) => handleInputChange('content', value)}
                           placeholder={
                             formData.layout === 'list'
-                              ? "Write your list content here. Use numbers (1., 2., 3.) or bullets (-, *) for list items:\n\n1. First item\n2. Second item\n3. Third item\n\nOr:\n\n- Bullet point one\n- Bullet point two\n- Bullet point three"
+                              ? "Write your list content here. Use the list tool to create organized lists..."
                               : formData.layout === 'featured'
                               ? "Write your featured story content here. Focus on compelling narrative and engaging storytelling..."
                               : formData.layout === 'gallery'
@@ -427,8 +427,6 @@ export default function NewBlogPostPage() {
                               ? "Write content about your video. Include transcript, timestamps, or additional information..."
                               : "Write your post content here..."
                           }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-                          rows={15}
                         />
                       </div>
                     </form>

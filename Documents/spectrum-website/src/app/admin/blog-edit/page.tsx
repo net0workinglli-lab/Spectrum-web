@@ -18,6 +18,7 @@ import { useApp } from '@/contexts/AppContext';
 import { getBlogPosts, updateBlogPost, getCategories } from '@/lib/firebase-firestore';
 import Link from 'next/link';
 import { ImageUpload } from '@/components/ImageUpload';
+import RichTextEditor from '@/components/RichTextEditor';
 
 interface BlogPost {
   id: string;
@@ -372,14 +373,10 @@ function EditBlogPost() {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="content">Content</Label>
-                    <Textarea
-                      id="content"
-                      name="content"
+                    <RichTextEditor
                       value={formData.content}
-                      onChange={handleChange}
+                      onChange={(value) => setFormData(prev => ({ ...prev, content: value }))}
                       placeholder="Write your blog post content here..."
-                      rows={15}
-                      required
                     />
                   </div>
             </CardContent>
