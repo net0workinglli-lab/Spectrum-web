@@ -115,53 +115,103 @@ export default function RichTextEditor({
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Add CSS for Editor.js header sizing
+  // Add CSS for Editor.js header sizing with more aggressive targeting
   useEffect(() => {
     const style = document.createElement('style');
+    style.id = 'editorjs-header-styles';
     style.textContent = `
+      /* Editor.js container styling */
       .codex-editor__redactor {
         padding: 20px !important;
       }
-      .ce-header {
+      
+      /* Base header styling */
+      .ce-header,
+      .ce-block__content h1,
+      .ce-block__content h2,
+      .ce-block__content h3,
+      .ce-block__content h4,
+      .ce-block__content h5,
+      .ce-block__content h6 {
         font-weight: bold !important;
         margin: 16px 0 8px 0 !important;
+        display: block !important;
       }
-      .ce-header[data-level="1"] {
-        font-size: 2.25rem !important; /* text-4xl */
+      
+      /* Level 1 - H1 */
+      .ce-header[data-level="1"],
+      .ce-block__content h1,
+      .ce-header[data-level="1"] .ce-paragraph {
+        font-size: 2.25rem !important;
         line-height: 2.5rem !important;
         margin: 32px 0 24px 0 !important;
       }
-      .ce-header[data-level="2"] {
-        font-size: 1.875rem !important; /* text-3xl */
+      
+      /* Level 2 - H2 */
+      .ce-header[data-level="2"],
+      .ce-block__content h2,
+      .ce-header[data-level="2"] .ce-paragraph {
+        font-size: 1.875rem !important;
         line-height: 2.25rem !important;
         margin: 28px 0 20px 0 !important;
       }
-      .ce-header[data-level="3"] {
-        font-size: 1.5rem !important; /* text-2xl */
+      
+      /* Level 3 - H3 */
+      .ce-header[data-level="3"],
+      .ce-block__content h3,
+      .ce-header[data-level="3"] .ce-paragraph {
+        font-size: 1.5rem !important;
         line-height: 2rem !important;
         margin: 24px 0 16px 0 !important;
       }
-      .ce-header[data-level="4"] {
-        font-size: 1.25rem !important; /* text-xl */
+      
+      /* Level 4 - H4 */
+      .ce-header[data-level="4"],
+      .ce-block__content h4,
+      .ce-header[data-level="4"] .ce-paragraph {
+        font-size: 1.25rem !important;
         line-height: 1.75rem !important;
         margin: 20px 0 12px 0 !important;
       }
-      .ce-header[data-level="5"] {
-        font-size: 1.125rem !important; /* text-lg */
+      
+      /* Level 5 - H5 */
+      .ce-header[data-level="5"],
+      .ce-block__content h5,
+      .ce-header[data-level="5"] .ce-paragraph {
+        font-size: 1.125rem !important;
         line-height: 1.75rem !important;
         margin: 16px 0 12px 0 !important;
       }
-      .ce-header[data-level="6"] {
-        font-size: 1rem !important; /* text-base */
+      
+      /* Level 6 - H6 */
+      .ce-header[data-level="6"],
+      .ce-block__content h6,
+      .ce-header[data-level="6"] .ce-paragraph {
+        font-size: 1rem !important;
         line-height: 1.5rem !important;
         margin: 12px 0 8px 0 !important;
       }
+      
+      /* Force override any conflicting styles */
+      .ce-header * {
+        font-size: inherit !important;
+        line-height: inherit !important;
+      }
     `;
+    
+    // Remove existing style if it exists
+    const existingStyle = document.getElementById('editorjs-header-styles');
+    if (existingStyle) {
+      existingStyle.remove();
+    }
+    
     document.head.appendChild(style);
+    console.log('Editor.js header styles injected');
     
     return () => {
-      if (document.head.contains(style)) {
-        document.head.removeChild(style);
+      const styleToRemove = document.getElementById('editorjs-header-styles');
+      if (styleToRemove) {
+        styleToRemove.remove();
       }
     };
   }, []);
