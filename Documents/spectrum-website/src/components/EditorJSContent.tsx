@@ -180,8 +180,19 @@ export default function EditorJSContent({ data, className = "prose prose-lg max-
     switch (type) {
       case 'header':
         const HeaderTag = `h${safeBlockData.level || 2}` as keyof JSX.IntrinsicElements;
+        const getHeaderSizeClass = (level: number) => {
+          switch (level) {
+            case 1: return "text-4xl font-bold mb-6 mt-8 first:mt-0";
+            case 2: return "text-3xl font-bold mb-5 mt-7 first:mt-0";
+            case 3: return "text-2xl font-bold mb-4 mt-6 first:mt-0";
+            case 4: return "text-xl font-bold mb-3 mt-5 first:mt-0";
+            case 5: return "text-lg font-bold mb-3 mt-4 first:mt-0";
+            case 6: return "text-base font-bold mb-2 mt-3 first:mt-0";
+            default: return "text-2xl font-bold mb-4 mt-6 first:mt-0";
+          }
+        };
         return (
-          <HeaderTag key={index} className="font-bold mb-4 mt-6 first:mt-0">
+          <HeaderTag key={index} className={getHeaderSizeClass(safeBlockData.level || 2)}>
             {renderHtmlContent(safeBlockData.text)}
           </HeaderTag>
         );
