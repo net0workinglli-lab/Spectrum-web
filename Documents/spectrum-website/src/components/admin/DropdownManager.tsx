@@ -49,6 +49,7 @@ interface DropdownItem {
   name: string;
   href: string;
   icon?: string;
+  position?: 'before' | 'after';
 }
 
 interface DropdownManagerProps {
@@ -57,7 +58,8 @@ interface DropdownManagerProps {
   onItemsChange: (items: DropdownItem[]) => void;
   placeholder?: string;
   maxItems?: number;
-  category?: 'products' | 'brands' | 'lenses' | 'general' | 'social';
+  category?: 'products' | 'brands' | 'lenses' | 'general' | 'social' | 'navigation';
+  showPositionControl?: boolean;
 }
 
 // Icon component to render the correct icon based on name
@@ -105,7 +107,8 @@ export default function DropdownManager({
   onItemsChange,
   placeholder = "Enter item name",
   maxItems = 10,
-  category = 'general'
+  category = 'general',
+  showPositionControl = false
 }: DropdownManagerProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -213,6 +216,15 @@ export default function DropdownManager({
                   <span className="font-medium">{item.name || 'Untitled'}</span>
                   <span className="text-gray-400">→</span>
                   <span className="text-gray-600">{item.href}</span>
+                  {showPositionControl && item.position && (
+                    <span className={`text-xs px-2 py-1 rounded ${
+                      item.position === 'before' 
+                        ? 'bg-blue-100 text-blue-800' 
+                        : 'bg-green-100 text-green-800'
+                    }`}>
+                      {item.position}
+                    </span>
+                  )}
                 </div>
               ))}
               {items.length === 0 && (
@@ -281,6 +293,29 @@ export default function DropdownManager({
                             <option value="MapPin">Location</option>
                             <option value="Globe">Website</option>
                           </optgroup>
+                        ) : category === 'navigation' ? (
+                          <optgroup label="Navigation">
+                            <option value="Sun">Sun</option>
+                            <option value="Glasses">Glasses</option>
+                            <option value="BookOpen">Book Open</option>
+                            <option value="Eye">Eye</option>
+                            <option value="Shield">Shield</option>
+                            <option value="Zap">Zap</option>
+                            <option value="Star">Star</option>
+                            <option value="Heart">Heart</option>
+                            <option value="Crown">Crown</option>
+                            <option value="Gem">Gem</option>
+                            <option value="Diamond">Diamond</option>
+                            <option value="Sparkles">Sparkles</option>
+                            <option value="Target">Target</option>
+                            <option value="Aperture">Aperture</option>
+                            <option value="Circle">Circle</option>
+                            <option value="Camera">Camera</option>
+                            <option value="Hexagon">Hexagon</option>
+                            <option value="Triangle">Triangle</option>
+                            <option value="Clock">Clock</option>
+                            <option value="Square">Square</option>
+                          </optgroup>
                         ) : (
                           <>
                             <optgroup label="Products">
@@ -322,6 +357,44 @@ export default function DropdownManager({
                       Choose an icon that represents this menu item
                     </p>
                   </div>
+
+                  {/* Position Control for Navigation Items */}
+                  {showPositionControl && (
+                    <div>
+                      <Label className="text-sm font-medium">Position</Label>
+                      <div className="mt-1 space-y-2">
+                        <label className="flex items-center space-x-2">
+                          <input
+                            type="radio"
+                            name={`position-${item.id}`}
+                            value="before"
+                            checked={item.position === 'before'}
+                            onChange={(e) => updateItem(item.id, 'position', e.target.value)}
+                            className="text-blue-600 focus:ring-blue-500"
+                          />
+                          <span className="text-sm text-gray-700">
+                            Before Products/Brands/Lenses dropdowns
+                          </span>
+                        </label>
+                        <label className="flex items-center space-x-2">
+                          <input
+                            type="radio"
+                            name={`position-${item.id}`}
+                            value="after"
+                            checked={item.position === 'after'}
+                            onChange={(e) => updateItem(item.id, 'position', e.target.value)}
+                            className="text-blue-600 focus:ring-blue-500"
+                          />
+                          <span className="text-sm text-gray-700">
+                            After Products/Brands/Lenses dropdowns
+                          </span>
+                        </label>
+                      </div>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Choose where this navigation item appears in the header
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 {/* Move buttons */}

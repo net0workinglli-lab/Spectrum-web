@@ -2933,7 +2933,7 @@ export default function EditContentPage({ params }: { params: { id: string } }) 
                     <div className="space-y-4">
                       <h3 className="text-lg font-semibold">Navigation Settings</h3>
                       <div className="space-y-2">
-                        <Label>Navigation Items Position</Label>
+                        <Label>Default Navigation Items Position</Label>
                         <select
                           value={content.navigationPosition || 'before'}
                           onChange={(e) => handleInputChange('navigationPosition', e.target.value)}
@@ -2943,9 +2943,23 @@ export default function EditContentPage({ params }: { params: { id: string } }) 
                           <option value="after">After Products/Brands/Lenses</option>
                         </select>
                         <p className="text-sm text-gray-500">
-                          Choose whether Navigation Items appear before or after the dropdown menus (Products, Brands, Lenses)
+                          Default position for Navigation Items (can be overridden individually below)
                         </p>
                       </div>
+                    </div>
+
+                    {/* Navigation Items Management */}
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold">Navigation Items</h3>
+                      <DropdownManager
+                        title="Navigation Items"
+                        items={content.navigationItems || []}
+                        onItemsChange={(items) => handleInputChange('navigationItems', items)}
+                        placeholder="Enter navigation item name"
+                        maxItems={8}
+                        category="navigation"
+                        showPositionControl={true}
+                      />
                     </div>
 
                     {/* Dropdown Settings */}
