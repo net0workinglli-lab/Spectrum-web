@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useEffect, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { ProductCard } from '@/components/ProductCard';
 import { ProductComparison } from '@/components/ProductComparison';
 import { Button } from '@/components/ui/button';
@@ -17,6 +17,8 @@ import { useContent } from '@/hooks/useContent';
 
 function ProductsPageContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
   const { content: pageContent, isLoading: contentLoading } = useContent('products-page');
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Array<{id: string, name: string, slug: string, image?: string, description?: string}>>([]);
@@ -120,6 +122,30 @@ function ProductsPageContent() {
 
     loadProducts();
   }, [priceRangeInitialized]);
+
+  // Function to update URL with current filters
+  const updateURL = (newParams: { search?: string; category?: string }) => {
+    const params = new URLSearchParams(searchParams.toString());
+    
+    if (newParams.search !== undefined) {
+      if (newParams.search) {
+        params.set('search', newParams.search);
+      } else {
+        params.delete('search');
+      }
+    }
+    
+    if (newParams.category !== undefined) {
+      if (newParams.category && newParams.category !== 'all') {
+        params.set('category', newParams.category);
+      } else {
+        params.delete('category');
+      }
+    }
+    
+    const newURL = `${pathname}${params.toString() ? `?${params.toString()}` : ''}`;
+    router.replace(newURL, { scroll: false });
+  };
 
   // Initialize search term and category from URL
   useEffect(() => {
@@ -292,6 +318,17 @@ function ProductsPageContent() {
     );
   };
 
+  // Handlers for URL updates
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value);
+    updateURL({ search: value });
+  };
+
+  const handleCategoryChange = (value: string) => {
+    setSelectedCategory(value);
+    updateURL({ category: value });
+  };
+
   const clearAllFilters = () => {
     setSearchTerm('');
     setSelectedCategory('all');
@@ -302,6 +339,8 @@ function ProductsPageContent() {
     setInStockOnly(false);
     setMinRating(0);
     setSortBy('name');
+    // Update URL to remove all filters
+    updateURL({ search: '', category: 'all' });
   };
 
   const handleQuickView = (product: Product) => {
@@ -358,7 +397,7 @@ function ProductsPageContent() {
             <Input
               placeholder={pageContent?.searchPlaceholder || "Tìm kiếm sản phẩm..."}
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => handleSearchChange(e.target.value)}
               className="pl-10"
             />
           </div>
@@ -376,7 +415,7 @@ function ProductsPageContent() {
         <div className={`space-y-4 ${showFilters ? 'block' : 'hidden lg:block'}`}>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Category Filter */}
-            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+            <Select value={selectedCategory} onValueChange={handleCategoryChange}>
               <SelectTrigger>
                 <SelectValue placeholder="Danh mục" />
               </SelectTrigger>
@@ -453,7 +492,7 @@ function ProductsPageContent() {
               <Badge variant="secondary" className="gap-1">
                 Tìm kiếm: &quot;{searchTerm}&quot;
                 <button
-                  onClick={() => setSearchTerm('')}
+                  onClick={() => handleSearchChange('')}
                   className="ml-1 hover:text-destructive"
                 >
                   ×
@@ -464,7 +503,7 @@ function ProductsPageContent() {
               <Badge variant="secondary" className="gap-1">
                 Danh mục: {selectedCategory}
                 <button
-                  onClick={() => setSelectedCategory('all')}
+                  onClick={() => handleCategoryChange('all')}
                   className="ml-1 hover:text-destructive"
                 >
                   ×
