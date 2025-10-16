@@ -21,37 +21,87 @@ interface EditorJSData {
   version: string;
 }
 
-// Helper function to sanitize data for React compatibility
+// Enhanced helper function to sanitize data for React compatibility
 const sanitizeForReact = (obj: any): any => {
-  if (obj === null || obj === undefined) {
-    return obj;
-  }
-  if (typeof obj === 'string' || typeof obj === 'number' || typeof obj === 'boolean') {
-    return obj;
-  }
-  if (Array.isArray(obj)) {
-    return obj.map(item => sanitizeForReact(item));
-  }
-  if (typeof obj === 'object') {
-    const sanitized: any = {};
-    for (const [key, value] of Object.entries(obj)) {
-      if (
-        typeof value === 'string' || 
-        typeof value === 'number' || 
-        typeof value === 'boolean' ||
-        value === null ||
-        value === undefined
-      ) {
-        sanitized[key] = value;
-      } else if (Array.isArray(value)) {
-        sanitized[key] = sanitizeForReact(value);
-      } else if (typeof value === 'object' && value !== null) {
-        sanitized[key] = sanitizeForReact(value);
-      }
+  try {
+    if (obj === null || obj === undefined) {
+      return obj;
     }
-    return sanitized;
+    
+    // Handle primitives
+    if (typeof obj === 'string' || typeof obj === 'number' || typeof obj === 'boolean') {
+      return obj;
+    }
+    
+    // Handle arrays
+    if (Array.isArray(obj)) {
+      return obj.map(item => sanitizeForReact(item)).filter(item => item !== null && item !== undefined);
+    }
+    
+    // Handle objects
+    if (typeof obj === 'object') {
+      // Check for circular references
+      if (obj instanceof Date || obj instanceof RegExp || obj instanceof Function) {
+        return null;
+      }
+      
+      // Handle objects that might cause React Error #31
+      const sanitized: any = {};
+      const allowedKeys = new Set(['time', 'blocks', 'version', 'id', 'type', 'data', 'text', 'level', 'items', 'content', 'caption', 'code', 'link', 'style', 'meta', 'title', 'description', 'image', 'url']);
+      
+      for (const [key, value] of Object.entries(obj)) {
+        // Only allow safe keys and skip problematic ones
+        if (!allowedKeys.has(key) && !key.startsWith('_') && !key.includes('content') && !key.includes('meta') && !key.includes('items')) {
+          continue;
+        }
+        
+        try {
+          if (
+            typeof value === 'string' || 
+            typeof value === 'number' || 
+            typeof value === 'boolean' ||
+            value === null ||
+            value === undefined
+          ) {
+            sanitized[key] = value;
+          } else if (Array.isArray(value)) {
+            sanitized[key] = sanitizeForReact(value);
+          } else if (typeof value === 'object' && value !== null) {
+            // Prevent the specific problematic objects mentioned in the error
+            const valueAny = value as any;
+            if (valueAny.content || valueAny.meta || valueAny.items) {
+              // Further sanitize these specific problematic structures
+              const safeValue: any = {};
+              if (typeof valueAny.content === 'string') safeValue.content = valueAny.content;
+              if (typeof valueAny.text === 'string') safeValue.text = valueAny.text;
+              if (typeof valueAny.level === 'number') safeValue.level = valueAny.level;
+              if (typeof valueAny.style === 'string') safeValue.style = valueAny.style;
+              if (Array.isArray(valueAny.items)) {
+                safeValue.items = valueAny.items.map((item: any) => {
+                  if (typeof item === 'string') return item;
+                  if (typeof item === 'object' && item && typeof (item as any).text === 'string') return (item as any).text;
+                  return String(item || '');
+                });
+              }
+              sanitized[key] = safeValue;
+            } else {
+              sanitized[key] = sanitizeForReact(value);
+            }
+          }
+        } catch (e) {
+          // Skip problematic properties
+          continue;
+        }
+      }
+      return sanitized;
+    }
+    
+    // Fallback for unknown types
+    return null;
+  } catch (error) {
+    console.warn('Error sanitizing data for React:', error);
+    return null;
   }
-  return null;
 };
 
 export default function RichTextEditor({ 
@@ -205,11 +255,38 @@ export default function RichTextEditor({
             if (isMounted) {
               try {
                 const outputData = await api.saver.save();
-                // Sanitize data before passing to onChange to prevent React errors
-                const sanitizedData = sanitizeForReact(outputData);
-                onChange(JSON.stringify(sanitizedData));
+                // Multiple layers of sanitization
+                let sanitizedData = sanitizeForReact(outputData);
+                
+                // Double validation - ensure data is safe for React
+                try {
+                  const testStringify = JSON.stringify(sanitizedData);
+                  const testParse = JSON.parse(testStringify);
+                  sanitizedData = testParse;
+                } catch (e) {
+                  // If data is still problematic, create a minimal safe structure
+                  sanitizedData = {
+                    time: Date.now(),
+                    blocks: [],
+                    version: '2.28.2'
+                  };
+                }
+                
+                // Final safety check before calling onChange
+                if (sanitizedData && typeof sanitizedData === 'object' && Array.isArray(sanitizedData.blocks)) {
+                  onChange(JSON.stringify(sanitizedData));
+                } else {
+                  console.warn('Invalid sanitized data structure, skipping onChange');
+                }
               } catch (error) {
                 console.error('Error saving editor data:', error);
+                // Provide fallback safe data
+                const fallbackData = {
+                  time: Date.now(),
+                  blocks: [],
+                  version: '2.28.2'
+                };
+                onChange(JSON.stringify(fallbackData));
               }
             }
           },

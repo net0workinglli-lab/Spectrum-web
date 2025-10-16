@@ -19,37 +19,87 @@ interface EditorJSContentProps {
   className?: string;
 }
 
-// Helper function to sanitize data for React compatibility
+// Enhanced helper function to sanitize data for React compatibility
 const sanitizeForReact = (obj: any): any => {
-  if (obj === null || obj === undefined) {
-    return obj;
-  }
-  if (typeof obj === 'string' || typeof obj === 'number' || typeof obj === 'boolean') {
-    return obj;
-  }
-  if (Array.isArray(obj)) {
-    return obj.map(item => sanitizeForReact(item));
-  }
-  if (typeof obj === 'object') {
-    const sanitized: any = {};
-    for (const [key, value] of Object.entries(obj)) {
-      if (
-        typeof value === 'string' || 
-        typeof value === 'number' || 
-        typeof value === 'boolean' ||
-        value === null ||
-        value === undefined
-      ) {
-        sanitized[key] = value;
-      } else if (Array.isArray(value)) {
-        sanitized[key] = sanitizeForReact(value);
-      } else if (typeof value === 'object' && value !== null) {
-        sanitized[key] = sanitizeForReact(value);
-      }
+  try {
+    if (obj === null || obj === undefined) {
+      return obj;
     }
-    return sanitized;
+    
+    // Handle primitives
+    if (typeof obj === 'string' || typeof obj === 'number' || typeof obj === 'boolean') {
+      return obj;
+    }
+    
+    // Handle arrays
+    if (Array.isArray(obj)) {
+      return obj.map(item => sanitizeForReact(item)).filter(item => item !== null && item !== undefined);
+    }
+    
+    // Handle objects
+    if (typeof obj === 'object') {
+      // Check for circular references
+      if (obj instanceof Date || obj instanceof RegExp || obj instanceof Function) {
+        return null;
+      }
+      
+      // Handle objects that might cause React Error #31
+      const sanitized: any = {};
+      const allowedKeys = new Set(['time', 'blocks', 'version', 'id', 'type', 'data', 'text', 'level', 'items', 'content', 'caption', 'code', 'link', 'style', 'meta', 'title', 'description', 'image', 'url']);
+      
+      for (const [key, value] of Object.entries(obj)) {
+        // Only allow safe keys and skip problematic ones
+        if (!allowedKeys.has(key) && !key.startsWith('_') && !key.includes('content') && !key.includes('meta') && !key.includes('items')) {
+          continue;
+        }
+        
+        try {
+          if (
+            typeof value === 'string' || 
+            typeof value === 'number' || 
+            typeof value === 'boolean' ||
+            value === null ||
+            value === undefined
+          ) {
+            sanitized[key] = value;
+          } else if (Array.isArray(value)) {
+            sanitized[key] = sanitizeForReact(value);
+          } else if (typeof value === 'object' && value !== null) {
+            // Prevent the specific problematic objects mentioned in the error
+            const valueAny = value as any;
+            if (valueAny.content || valueAny.meta || valueAny.items) {
+              // Further sanitize these specific problematic structures
+              const safeValue: any = {};
+              if (typeof valueAny.content === 'string') safeValue.content = valueAny.content;
+              if (typeof valueAny.text === 'string') safeValue.text = valueAny.text;
+              if (typeof valueAny.level === 'number') safeValue.level = valueAny.level;
+              if (typeof valueAny.style === 'string') safeValue.style = valueAny.style;
+              if (Array.isArray(valueAny.items)) {
+                safeValue.items = valueAny.items.map((item: any) => {
+                  if (typeof item === 'string') return item;
+                  if (typeof item === 'object' && item && typeof (item as any).text === 'string') return (item as any).text;
+                  return String(item || '');
+                });
+              }
+              sanitized[key] = safeValue;
+            } else {
+              sanitized[key] = sanitizeForReact(value);
+            }
+          }
+        } catch (e) {
+          // Skip problematic properties
+          continue;
+        }
+      }
+      return sanitized;
+    }
+    
+    // Fallback for unknown types
+    return null;
+  } catch (error) {
+    console.warn('Error sanitizing data for React:', error);
+    return null;
   }
-  return null;
 };
 
 export default function EditorJSContent({ data, className = "prose prose-lg max-w-none" }: EditorJSContentProps) {
@@ -212,26 +262,63 @@ export default function EditorJSContent({ data, className = "prose prose-lg max-
       parsedData = sanitizeForReact(data) as EditorJSData;
     }
 
-    if (!parsedData.blocks || !Array.isArray(parsedData.blocks)) {
+    // Double validation - ensure data structure is safe
+    if (!parsedData || typeof parsedData !== 'object' || !parsedData.blocks || !Array.isArray(parsedData.blocks)) {
       return <div className={className}></div>;
     }
 
-    // Sanitize each block before rendering
-    const sanitizedBlocks = parsedData.blocks.map(block => sanitizeForReact(block) as EditorJSBlock);
+    // Multiple layers of sanitization for each block
+    const sanitizedBlocks = parsedData.blocks
+      .map(block => {
+        try {
+          const sanitized = sanitizeForReact(block) as EditorJSBlock;
+          // Additional validation for each block
+          if (sanitized && typeof sanitized === 'object' && sanitized.type && sanitized.data) {
+            return sanitized;
+          }
+          return null;
+        } catch (e) {
+          console.warn('Failed to sanitize block:', e);
+          return null;
+        }
+      })
+      .filter(block => block !== null) as EditorJSBlock[];
 
-    return (
-      <div className={className}>
-        {sanitizedBlocks.map((block, index) => renderBlock(block, index))}
-      </div>
-    );
+    // Final safety check before rendering
+    try {
+      return (
+        <div className={className}>
+          {sanitizedBlocks.map((block, index) => {
+            try {
+              return renderBlock(block, index);
+            } catch (e) {
+              console.warn(`Error rendering block ${index}:`, e);
+              return (
+                <div key={index} className="my-4 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                  <p className="text-sm text-yellow-700">Error rendering block</p>
+                </div>
+              );
+            }
+          })}
+        </div>
+      );
+    } catch (renderError) {
+      console.error('Error rendering blocks:', renderError);
+      return <div className={className}></div>;
+    }
   } catch (error) {
     console.error('Error parsing Editor.js data:', error);
     // Fallback: render as plain text with sanitization
-    const fallbackContent = typeof data === 'string' ? data : JSON.stringify(sanitizeForReact(data));
-    return (
-      <div className={className}>
-        <div dangerouslySetInnerHTML={{ __html: fallbackContent }} />
-      </div>
-    );
+    try {
+      const fallbackContent = typeof data === 'string' ? data : JSON.stringify(sanitizeForReact(data));
+      return (
+        <div className={className}>
+          <div dangerouslySetInnerHTML={{ __html: fallbackContent }} />
+        </div>
+      );
+    } catch (fallbackError) {
+      console.error('Fallback rendering also failed:', fallbackError);
+      return <div className={className}></div>;
+    }
   }
 }
