@@ -11,6 +11,54 @@ import Image from 'next/image';
 import { getBlogPosts } from '@/lib/firebase-firestore';
 import EditorJSContent from '@/components/EditorJSContent';
 
+// Helper function to sanitize data for React compatibility
+const sanitizeForReact = (obj: any): any => {
+  if (obj === null || obj === undefined) {
+    return obj;
+  }
+  if (typeof obj === 'string' || typeof obj === 'number' || typeof obj === 'boolean') {
+    return obj;
+  }
+  if (Array.isArray(obj)) {
+    return obj.map(item => sanitizeForReact(item));
+  }
+  if (typeof obj === 'object') {
+    const sanitized: any = {};
+    for (const [key, value] of Object.entries(obj)) {
+      if (
+        typeof value === 'string' || 
+        typeof value === 'number' || 
+        typeof value === 'boolean' ||
+        value === null ||
+        value === undefined
+      ) {
+        sanitized[key] = value;
+      } else if (Array.isArray(value)) {
+        sanitized[key] = sanitizeForReact(value);
+      } else if (typeof value === 'object' && value !== null) {
+        sanitized[key] = sanitizeForReact(value);
+      }
+    }
+    return sanitized;
+  }
+  return null;
+};
+
+// Helper function to sanitize content specifically for EditorJSContent
+const sanitizeContent = (content: string | any): string => {
+  try {
+    if (typeof content === 'string') {
+      const parsed = JSON.parse(content);
+      return JSON.stringify(sanitizeForReact(parsed));
+    } else if (typeof content === 'object' && content !== null) {
+      return JSON.stringify(sanitizeForReact(content));
+    }
+    return typeof content === 'string' ? content : '';
+  } catch (error) {
+    return typeof content === 'string' ? content : '';
+  }
+};
+
 interface BlogPost {
   id: string;
   title: string;
@@ -210,7 +258,7 @@ function BlogPostDetail() {
               
               {/* Content */}
               <EditorJSContent 
-                data={post.content} 
+                data={sanitizeContent(post.content)} 
                 className="prose prose-lg max-w-none"
               />
               

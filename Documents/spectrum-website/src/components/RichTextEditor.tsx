@@ -21,6 +21,39 @@ interface EditorJSData {
   version: string;
 }
 
+// Helper function to sanitize data for React compatibility
+const sanitizeForReact = (obj: any): any => {
+  if (obj === null || obj === undefined) {
+    return obj;
+  }
+  if (typeof obj === 'string' || typeof obj === 'number' || typeof obj === 'boolean') {
+    return obj;
+  }
+  if (Array.isArray(obj)) {
+    return obj.map(item => sanitizeForReact(item));
+  }
+  if (typeof obj === 'object') {
+    const sanitized: any = {};
+    for (const [key, value] of Object.entries(obj)) {
+      if (
+        typeof value === 'string' || 
+        typeof value === 'number' || 
+        typeof value === 'boolean' ||
+        value === null ||
+        value === undefined
+      ) {
+        sanitized[key] = value;
+      } else if (Array.isArray(value)) {
+        sanitized[key] = sanitizeForReact(value);
+      } else if (typeof value === 'object' && value !== null) {
+        sanitized[key] = sanitizeForReact(value);
+      }
+    }
+    return sanitized;
+  }
+  return null;
+};
+
 export default function RichTextEditor({ 
   value, 
   onChange, 
@@ -72,13 +105,14 @@ export default function RichTextEditor({
           editorInstance.current = null;
         }
 
-        // Parse existing value
+        // Parse existing value with sanitization
         let initialData: EditorJSData | undefined;
         if (value && value.trim()) {
           try {
             // Try to parse as JSON if it looks like Editor.js data
             if (value.startsWith('{') && value.includes('"blocks"')) {
-              initialData = JSON.parse(value);
+              const parsed = JSON.parse(value);
+              initialData = sanitizeForReact(parsed);
             } else {
               // Convert plain text to Editor.js format
               initialData = {
@@ -171,7 +205,9 @@ export default function RichTextEditor({
             if (isMounted) {
               try {
                 const outputData = await api.saver.save();
-                onChange(JSON.stringify(outputData));
+                // Sanitize data before passing to onChange to prevent React errors
+                const sanitizedData = sanitizeForReact(outputData);
+                onChange(JSON.stringify(sanitizedData));
               } catch (error) {
                 console.error('Error saving editor data:', error);
               }
@@ -213,7 +249,9 @@ export default function RichTextEditor({
     if (editorInstance.current && value) {
       try {
         const data = JSON.parse(value);
-        editorInstance.current.render(data);
+        // Sanitize data before rendering to prevent React errors
+        const sanitizedData = sanitizeForReact(data);
+        editorInstance.current.render(sanitizedData);
       } catch (error) {
         // If it's not JSON, treat as plain text
         const plainTextData = {
