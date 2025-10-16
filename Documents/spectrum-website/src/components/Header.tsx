@@ -192,7 +192,8 @@ export function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-8">
-            {navigation.map((item) => (
+            {/* Render Navigation Items before dropdowns if position is 'before' */}
+            {headerContent?.navigationPosition === 'before' && navigation.map((item) => (
               <Link
                 key={item.name}
                 href={item.href}
@@ -271,6 +272,18 @@ export function Header() {
                 </DropdownMenuContent>
               </DropdownMenu>
             )}
+
+            {/* Render Navigation Items after dropdowns if position is 'after' */}
+            {headerContent?.navigationPosition === 'after' && navigation.map((item) => (
+              <Link
+                key={item.name}
+                href={item.href}
+                className="flex items-center gap-2 hover:text-primary transition-colors"
+              >
+                <IconRenderer iconName={item.icon} className="h-4 w-4" />
+                {item.name}
+              </Link>
+            ))}
           </nav>
 
           {/* Search Bar */}

@@ -2873,6 +2873,161 @@ export default function EditContentPage({ params }: { params: { id: string } }) 
                     </div>
                   </CardContent>
                 </Card>
+              ) : content.id === 'header-section' ? (
+                /* Header Section Editor */
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Settings className="h-5 w-5" />
+                      Header Section Editor
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    {/* Logo Settings */}
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold">Logo Settings</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label>Logo Text</Label>
+                          <Input
+                            value={content.logoText || 'Spectrum'}
+                            onChange={(e) => handleInputChange('logoText', e.target.value)}
+                            placeholder="Spectrum"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Logo Image URL</Label>
+                          <Input
+                            value={content.logoImage || ''}
+                            onChange={(e) => handleInputChange('logoImage', e.target.value)}
+                            placeholder="https://example.com/logo.png"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Top Bar Settings */}
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold">Top Bar Settings</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label>Top Bar Left Text</Label>
+                          <Input
+                            value={content.topBarLeft || 'Free consultation and eye exam'}
+                            onChange={(e) => handleInputChange('topBarLeft', e.target.value)}
+                            placeholder="Free consultation and eye exam"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Top Bar Right Text</Label>
+                          <Input
+                            value={content.topBarRight || '30-day return policy'}
+                            onChange={(e) => handleInputChange('topBarRight', e.target.value)}
+                            placeholder="30-day return policy"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Navigation Settings */}
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold">Navigation Settings</h3>
+                      <div className="space-y-2">
+                        <Label>Navigation Items Position</Label>
+                        <select
+                          value={content.navigationPosition || 'before'}
+                          onChange={(e) => handleInputChange('navigationPosition', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        >
+                          <option value="before">Before Products/Brands/Lenses</option>
+                          <option value="after">After Products/Brands/Lenses</option>
+                        </select>
+                        <p className="text-sm text-gray-500">
+                          Choose whether Navigation Items appear before or after the dropdown menus (Products, Brands, Lenses)
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Dropdown Settings */}
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold">Dropdown Settings</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="space-y-2">
+                          <Label>Products Dropdown Title</Label>
+                          <Input
+                            value={content.productsDropdownTitle || 'Products'}
+                            onChange={(e) => handleInputChange('productsDropdownTitle', e.target.value)}
+                            placeholder="Products"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Brands Dropdown Title</Label>
+                          <Input
+                            value={content.brandsDropdownTitle || 'Brands'}
+                            onChange={(e) => handleInputChange('brandsDropdownTitle', e.target.value)}
+                            placeholder="Brands"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Lenses Dropdown Title</Label>
+                          <Input
+                            value={content.lensesDropdownTitle || 'Lenses'}
+                            onChange={(e) => handleInputChange('lensesDropdownTitle', e.target.value)}
+                            placeholder="Lenses"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Search Settings */}
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold">Search Settings</h3>
+                      <div className="space-y-2">
+                        <Label>Search Placeholder</Label>
+                        <Input
+                          value={content.searchPlaceholder || 'Search glasses, brands...'}
+                          onChange={(e) => handleInputChange('searchPlaceholder', e.target.value)}
+                          placeholder="Search glasses, brands..."
+                        />
+                      </div>
+                    </div>
+
+                    {/* Link Settings */}
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold">Link Settings</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label>Blog Link Text</Label>
+                          <Input
+                            value={content.blogLinkText || 'Blog'}
+                            onChange={(e) => handleInputChange('blogLinkText', e.target.value)}
+                            placeholder="Blog"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Contact Link Text</Label>
+                          <Input
+                            value={content.contactLinkText || 'Contact'}
+                            onChange={(e) => handleInputChange('contactLinkText', e.target.value)}
+                            placeholder="Contact"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>Status</Label>
+                      <select
+                        value={content.status}
+                        onChange={(e) => handleInputChange('status', e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      >
+                        <option value="draft">Draft</option>
+                        <option value="published">Published</option>
+                      </select>
+                    </div>
+                  </CardContent>
+                </Card>
               ) : (
                 /* Fallback for sections without specialized editors */
                 <Card>
