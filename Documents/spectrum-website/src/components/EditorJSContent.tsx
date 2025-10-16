@@ -102,6 +102,72 @@ const sanitizeForReact = (obj: any): any => {
   }
 };
 
+// Helper function to render HTML content safely
+const renderHtmlContent = (content: any): JSX.Element => {
+  if (!content) return <></>;
+  
+  let text = '';
+  if (typeof content === 'string') {
+    text = content;
+  } else if (typeof content === 'number') {
+    text = String(content);
+  } else if (typeof content === 'boolean') {
+    text = String(content);
+  } else if (content && typeof content === 'object') {
+    if (typeof content.text === 'string') {
+      text = content.text;
+    } else if (typeof content.content === 'string') {
+      text = content.content;
+    } else {
+      text = String(content);
+    }
+  } else {
+    text = String(content || '');
+  }
+  
+  if (!text || text.trim() === '') return <></>;
+  
+  // Check if content contains HTML tags
+  const hasHtmlTags = /<[^>]*>/.test(text);
+  
+  if (hasHtmlTags) {
+    // Sanitize HTML content
+    let sanitizedHtml = text
+      .replace(/<script[^>]*>.*?<\/script>/gi, '')
+      .replace(/<iframe[^>]*>.*?<\/iframe>/gi, '')
+      .replace(/<object[^>]*>.*?<\/object>/gi, '')
+      .replace(/<embed[^>]*>.*?<\/embed>/gi, '')
+      .replace(/on\w+="[^"]*"/gi, '')
+      .replace(/javascript:/gi, '');
+    
+    // Enhance HTML tags with proper CSS classes for better styling
+    sanitizedHtml = sanitizedHtml
+      .replace(/<strong(?![^>]*class=)[^>]*>/gi, '<strong class="font-bold">')
+      .replace(/<b(?![^>]*class=)[^>]*>/gi, '<strong class="font-bold">')
+      .replace(/<em(?![^>]*class=)[^>]*>/gi, '<em class="italic">')
+      .replace(/<i(?![^>]*class=)[^>]*>/gi, '<em class="italic">')
+      .replace(/<u(?![^>]*class=)[^>]*>/gi, '<u class="underline">')
+      .replace(/<mark(?![^>]*class=)[^>]*>/gi, '<mark class="bg-yellow-200 px-1">')
+      .replace(/<code(?![^>]*class=)[^>]*>/gi, '<code class="bg-gray-100 text-gray-800 px-1 py-0.5 rounded text-sm font-mono">')
+      .replace(/<small(?![^>]*class=)[^>]*>/gi, '<small class="text-sm">');
+    
+    // Render as HTML
+    return <span dangerouslySetInnerHTML={{ __html: sanitizedHtml }} />;
+  }
+  
+  // Render as plain text with line breaks
+  return (
+    <>
+      {text.split('\n').map((line, lineIndex, array) => (
+        <React.Fragment key={lineIndex}>
+          {line}
+          {lineIndex < array.length - 1 && <br />}
+        </React.Fragment>
+      ))}
+    </>
+  );
+};
+
 export default function EditorJSContent({ data, className = "prose prose-lg max-w-none" }: EditorJSContentProps) {
   const renderBlock = (block: EditorJSBlock, index: number) => {
     // Sanitize block data to prevent React errors
@@ -116,14 +182,14 @@ export default function EditorJSContent({ data, className = "prose prose-lg max-
         const HeaderTag = `h${safeBlockData.level || 2}` as keyof JSX.IntrinsicElements;
         return (
           <HeaderTag key={index} className="font-bold mb-4 mt-6 first:mt-0">
-            {safeBlockData.text}
+            {renderHtmlContent(safeBlockData.text)}
           </HeaderTag>
         );
 
       case 'paragraph':
         return (
           <p key={index} className="mb-4 leading-relaxed">
-            {safeBlockData.text}
+            {renderHtmlContent(safeBlockData.text)}
           </p>
         );
 
@@ -134,7 +200,7 @@ export default function EditorJSContent({ data, className = "prose prose-lg max-
           <ListTag key={index} className={`mb-4 ${safeBlockData.style === 'ordered' ? 'list-decimal list-inside' : 'list-disc list-inside'}`}>
             {safeBlockData.items?.map((item: string, itemIndex: number) => (
               <ListItemTag key={itemIndex} className="mb-1">
-                {item}
+                {renderHtmlContent(item)}
               </ListItemTag>
             ))}
           </ListTag>
@@ -143,9 +209,9 @@ export default function EditorJSContent({ data, className = "prose prose-lg max-
       case 'quote':
         return (
           <blockquote key={index} className="border-l-4 border-gray-300 pl-4 my-6 italic text-gray-700">
-            <p className="mb-2">{safeBlockData.text}</p>
+            <p className="mb-2">{renderHtmlContent(safeBlockData.text)}</p>
             {safeBlockData.caption && (
-              <cite className="text-sm text-gray-500 not-italic">— {safeBlockData.caption}</cite>
+              <cite className="text-sm text-gray-500 not-italic">— {renderHtmlContent(safeBlockData.caption)}</cite>
             )}
           </blockquote>
         );
@@ -176,7 +242,7 @@ export default function EditorJSContent({ data, className = "prose prose-lg max-
                 <tr>
                   {safeBlockData.content[0]?.map((cell: string, cellIndex: number) => (
                     <th key={cellIndex} className="border border-gray-300 px-4 py-2 bg-gray-50 font-semibold text-left">
-                      {cell}
+                      {renderHtmlContent(cell)}
                     </th>
                   ))}
                 </tr>
@@ -186,7 +252,7 @@ export default function EditorJSContent({ data, className = "prose prose-lg max-
                   <tr key={rowIndex}>
                     {row.map((cell: string, cellIndex: number) => (
                       <td key={cellIndex} className="border border-gray-300 px-4 py-2">
-                        {cell}
+                        {renderHtmlContent(cell)}
                       </td>
                     ))}
                   </tr>
@@ -217,10 +283,10 @@ export default function EditorJSContent({ data, className = "prose prose-lg max-
                     )}
                     <div className="flex-1">
                       <h4 className="font-semibold text-gray-900 mb-1">
-                        {safeBlockData.meta.title || safeBlockData.link}
+                        {renderHtmlContent(safeBlockData.meta.title || safeBlockData.link)}
                       </h4>
                       {safeBlockData.meta.description && (
-                        <p className="text-sm text-gray-600">{safeBlockData.meta.description}</p>
+                        <p className="text-sm text-gray-600">{renderHtmlContent(safeBlockData.meta.description)}</p>
                       )}
                     </div>
                   </div>
