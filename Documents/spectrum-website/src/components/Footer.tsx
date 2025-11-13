@@ -106,10 +106,10 @@ export function Footer() {
                 <img 
                   src={brandLogo} 
                   alt={brandName || 'Logo'} 
-                  className="h-10 w-auto object-contain"
+                  className="h-24 w-auto object-contain"
                 />
               ) : (
-                <Glasses className="h-8 w-8 text-primary" />
+                <Glasses className="h-20 w-20 text-primary" />
               )}
               {brandName && (
                 <span className="text-2xl font-bold">{brandName}</span>

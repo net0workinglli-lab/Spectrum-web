@@ -14,6 +14,16 @@ export interface Product {
   reviewsCount?: number;
   createdAt: Date;
   updatedAt: Date;
+  evDetails?: ProductEvDetails;
+}
+
+export interface ProductEvDetails {
+  range?: string;
+  charge?: string;
+  acceleration?: string;
+  power?: string;
+  drivetrain?: string;
+  battery?: string;
 }
 
 export type ProductCategory = 
@@ -21,7 +31,12 @@ export type ProductCategory =
   | 'eyeglasses'
   | 'reading-glasses'
   | 'contact-lenses'
-  | 'accessories';
+  | 'accessories'
+  | 'electric-suv'
+  | 'electric-sedan'
+  | 'electric-crossover'
+  | 'electric-truck'
+  | 'electric-vehicle';
 
 // Blog types
 export interface BlogPost {

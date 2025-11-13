@@ -1,12 +1,14 @@
 {
-  "name": "SPECTRUM EYECARE",
-  "short_name": "SPECTRUM",
-  "description": "Premium eyewear collection with quality sunglasses, eyeglasses, and contact lenses. Your vision is our focus.",
-  "start_url": "/",
+  "name": "Sunny Auto EV",
+  "short_name": "Sunny Auto",
+  "description": "Discover Sunny Auto's zero-emission electric vehicles with solid-state batteries, rapid charging, and advanced driver assistance.",
+  "start_url": "/?source=pwa&brand=sunnyauto",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#1e40af",
-  "orientation": "portrait-primary",
+  "display_override": ["standalone", "fullscreen"],
+  "background_color": "#0f172a",
+  "theme_color": "#f97316",
+  "orientation": "any",
   "icons": [
     {
       "src": "/icon.png",
@@ -21,7 +23,35 @@
       "purpose": "any maskable"
     }
   ],
-  "categories": ["shopping", "lifestyle", "health"],
+  "categories": ["automotive", "transportation", "shopping", "technology"],
   "lang": "en",
-  "dir": "ltr"
+  "dir": "ltr",
+  "shortcuts": [
+    {
+      "name": "Book a Test Drive",
+      "short_name": "Test Drive",
+      "description": "Schedule a Sunny Auto EV experience at the nearest center",
+      "url": "/product-detail?id=1&ref=shortcut-test-drive",
+      "icons": [
+        {
+          "src": "/android-chrome-192x192.svg",
+          "sizes": "192x192",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Shop EV Offers",
+      "short_name": "Shop EVs",
+      "description": "Browse the latest Sunny Auto zero-emission promotions",
+      "url": "/products?category=electric-suv&ref=shortcut-purchase",
+      "icons": [
+        {
+          "src": "/android-chrome-192x192.svg",
+          "sizes": "192x192",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
+  ]
 }

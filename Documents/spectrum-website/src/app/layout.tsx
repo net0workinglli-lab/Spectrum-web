@@ -59,43 +59,43 @@ export default function RootLayout({
         <link rel="manifest" href="/manifest.json" />
         
         {/* Theme Colors */}
-        <meta name="theme-color" content="#1e40af" />
-        <meta name="msapplication-TileColor" content="#1e40af" />
+        <meta name="theme-color" content="#f97316" />
+        <meta name="msapplication-TileColor" content="#f97316" />
         
         {/* SEO Meta Tags */}
-        <title>SPECTRUM EYECARE - Your Vision, Our Focus</title>
-        <meta name="description" content="Premium eyewear collection with quality sunglasses, eyeglasses, and contact lenses. Your vision is our focus." />
-        <meta name="keywords" content="eyewear, sunglasses, eyeglasses, contact lenses, vision, optical, SPECTRUM" />
-        <meta name="author" content="SPECTRUM EYECARE" />
+        <title>Sunny Auto EV - Drive the Future of Zero-Emission Mobility</title>
+        <meta name="description" content="Experience Sunny Auto's intelligent EV ecosystem with solid-state batteries, ultra-fast charging, and advanced driver assistance." />
+        <meta name="keywords" content="electric vehicle, EV, Sunny Auto, zero emission, fast charging, autonomous driving" />
+        <meta name="author" content="Sunny Auto" />
         <meta name="robots" content="index, follow" />
         
         {/* Open Graph Meta Tags */}
-        <meta property="og:title" content="SPECTRUM EYECARE - Your Vision, Our Focus" />
-        <meta property="og:description" content="Premium eyewear collection with quality sunglasses, eyeglasses, and contact lenses. Your vision is our focus." />
+        <meta property="og:title" content="Sunny Auto EV - Drive the Future of Zero-Emission Mobility" />
+        <meta property="og:description" content="Discover Sunny Auto EV models featuring 520 km range, DC fast charging, and next-gen autonomous tech." />
         <meta property="og:image" content="https://spec-9233a.web.app/thumnail.png" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
-        <meta property="og:image:alt" content="SPECTRUM EYECARE - Premium Eyewear Collection" />
+        <meta property="og:image:alt" content="Sunny Auto EV - Intelligent electric mobility ecosystem" />
         <meta property="og:url" content="https://spec-9233a.web.app" />
         <meta property="og:type" content="website" />
-        <meta property="og:site_name" content="SPECTRUM EYECARE" />
+        <meta property="og:site_name" content="Sunny Auto" />
         <meta property="og:locale" content="en_US" />
         
         {/* Twitter Card Meta Tags */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="SPECTRUM EYECARE - Your Vision, Our Focus" />
-        <meta name="twitter:description" content="Premium eyewear collection with quality sunglasses, eyeglasses, and contact lenses. Your vision is our focus." />
+        <meta name="twitter:title" content="Sunny Auto EV - Drive the Future of Zero-Emission Mobility" />
+        <meta name="twitter:description" content="Stay updated on Sunny Auto EV offers, schedule test drives, and explore the latest electric innovations." />
         <meta name="twitter:image" content="https://spec-9233a.web.app/thumnail.png" />
-        <meta name="twitter:image:alt" content="SPECTRUM EYECARE - Premium Eyewear Collection" />
-        <meta name="twitter:site" content="@spectrum" />
-        <meta name="twitter:creator" content="@spectrum" />
+        <meta name="twitter:image:alt" content="Sunny Auto EV - Next generation electric mobility" />
+        <meta name="twitter:site" content="@SunnyAutoEV" />
+        <meta name="twitter:creator" content="@SunnyAutoEV" />
         
         {/* Additional Meta Tags */}
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="SPECTRUM" />
+        <meta name="apple-mobile-web-app-title" content="Sunny Auto" />
         <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="application-name" content="SPECTRUM EYECARE" />
+        <meta name="application-name" content="Sunny Auto" />
         
         {/* Suppress warnings and errors */}
         <script

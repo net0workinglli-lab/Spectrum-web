@@ -2,29 +2,29 @@ export function generateOrganizationSchema() {
   return {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: 'Spectrum',
-    description: 'Premium eyewear and sunglasses retailer',
+    name: 'Sunny Auto',
+    description: 'Electric vehicle innovator delivering zero-emission mobility with advanced battery technology and a seamless charging ecosystem.',
     url: 'https://spec-9233a.web.app',
     logo: 'https://spec-9233a.web.app/logo.png',
     contactPoint: {
       '@type': 'ContactPoint',
-      telephone: '+1-555-0123',
+      telephone: '+84-28-8888-6868',
       contactType: 'customer service',
-      areaServed: 'US',
-      availableLanguage: 'English'
+      areaServed: 'VN',
+      availableLanguage: ['English']
     },
     sameAs: [
-      'https://facebook.com/spectrum-eyewear',
-      'https://twitter.com/spectrum_eyewear',
-      'https://instagram.com/spectrum_eyewear',
+      'https://facebook.com/sunnyauto',
+      'https://twitter.com/sunnyautoev',
+      'https://www.youtube.com/@SunnyAutoEV',
     ],
     address: {
       '@type': 'PostalAddress',
-      streetAddress: '123 Main Street',
-      addressLocality: 'New York',
-      addressRegion: 'NY',
-      postalCode: '10001',
-      addressCountry: 'US'
+      streetAddress: '12 D5 Street, Hi-Tech Park',
+      addressLocality: 'Thu Duc City',
+      addressRegion: 'Ho Chi Minh City',
+      postalCode: '700000',
+      addressCountry: 'VN'
     }
   }
 }
@@ -33,9 +33,9 @@ export function generateWebsiteSchema() {
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: 'Spectrum - Premium Eyewear',
+    name: 'Sunny Auto',
     url: 'https://spec-9233a.web.app',
-    description: 'Discover the perfect eyewear that complements your style and protects your vision.',
+    description: "Explore Sunny Auto's electric ecosystem featuring zero-emission SUVs, solid-state batteries, and smart charging services.",
     potentialAction: {
       '@type': 'SearchAction',
       target: 'https://spec-9233a.web.app/search?q={search_term_string}',
@@ -69,11 +69,11 @@ export function generateProductSchema(product: {
     offers: {
       '@type': 'Offer',
       price: product.price,
-      priceCurrency: 'USD',
+      priceCurrency: 'VND',
       availability: product.inStock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
       seller: {
         '@type': 'Organization',
-        name: 'Spectrum'
+        name: 'Sunny Auto'
       }
     },
     aggregateRating: {
@@ -105,7 +105,7 @@ export function generateBlogPostSchema(post: {
     },
     publisher: {
       '@type': 'Organization',
-      name: 'Spectrum',
+      name: 'Sunny Auto',
       logo: {
         '@type': 'ImageObject',
         url: 'https://spec-9233a.web.app/logo.png'

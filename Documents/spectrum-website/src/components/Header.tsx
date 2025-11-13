@@ -180,10 +180,10 @@ export function Header() {
               <img 
                 src={headerContent.logoImage} 
                 alt="Logo" 
-                className="h-10 w-auto object-contain"
+                className="h-24 w-auto object-contain"
               />
             ) : (
-              <Glasses className="h-10 w-10 text-primary" />
+              <Glasses className="h-24 w-24 text-primary" />
             )}
             {headerContent?.logoText && (
               <span className="text-2xl font-bold">{headerContent.logoText}</span>

@@ -12,15 +12,20 @@ import {
   Heart,
   Share2,
   Star,
-  ArrowLeft,
   Check,
   X,
-  Truck,
-  Shield,
-  RotateCcw,
   MapPin,
   Loader2,
-  Phone
+  Phone,
+  Gauge,
+  BatteryCharging,
+  Zap,
+  ShieldCheck,
+  CalendarCheck,
+  FileText,
+  Wallet,
+  Car,
+  Leaf
 } from 'lucide-react';
 import { getProducts } from '@/lib/firebase-firestore';
 import { toast } from 'sonner';
@@ -30,21 +35,36 @@ import { ProductCard } from '@/components/ProductCard';
 // Mock product data
 const mockProduct = {
   id: '1',
-  name: 'Ray-Ban Aviator Classic',
-  description: 'Kính mát Ray-Ban Aviator Classic với thiết kế thời trang và chất lượng cao cấp. Phù hợp cho mọi hoạt động ngoài trời.',
-  price: 159.99,
-  originalPrice: 199.99,
+  name: 'Sunny Auto Solis X 2025',
+  description:
+    'Sunny Auto Solis X is a flagship electric SUV engineered for long-range adventures with 520 km WLTP efficiency, 250 kW ultra-fast DC charging, and Level 3 autonomous assistance. Aerodynamic design meets spacecraft-inspired interior comfort for a smooth, confident drive.',
+  price: 1250000000,
+  originalPrice: 1350000000,
   images: [
-    'https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=500',
-    'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=500',
-    'https://images.unsplash.com/photo-1556306535-38febf6782e7?w=500',
+    'https://images.unsplash.com/photo-1619767886558-efdc259cde1b?w=1600&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1611526778547-1d41e961f89d?w=1600&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1619768223646-d0b210b8f10d?w=1600&auto=format&fit=crop',
   ],
-  category: 'sunglasses',
-  brand: 'Ray-Ban',
-  features: ['Chống tia UV 100%', 'Tròng kính chống trầy', 'Khung kim loại'],
+  category: 'electric-suv',
+  brand: 'Sunny Auto',
+  features: [
+    'Up to 520 km of real-world range per charge',
+    '250 kW DC fast charging from 10% to 80% in 25 minutes',
+    'Level 3 autonomous driving with 18 smart sensors',
+    'Panoramic smart cockpit with 27-inch curved display',
+    'Solid-state battery with 8-year or 200,000 km warranty',
+  ],
+  evDetails: {
+    range: '520 km WLTP',
+    charge: '10-80% in 25 minutes (DC 250 kW)',
+    acceleration: '0-100 km/h in 3.8 seconds',
+    power: '420 kW (563 hp)',
+    drivetrain: 'Dual Motor AWD',
+    battery: '95 kWh solid-state battery pack',
+  },
   inStock: true,
-  rating: 4.5,
-  reviewsCount: 128,
+  rating: 4.8,
+  reviewsCount: 326,
   createdAt: new Date(),
   updatedAt: new Date(),
 };
@@ -87,12 +107,12 @@ function ProductDetailContent() {
 
           setProduct(processedProduct);
         } else {
-          toast.error('Sản phẩm không tồn tại');
+          toast.error('Product not found');
           // Fallback to mock data
           setProduct(mockProduct as Product);
         }
       } catch (error) {
-        toast.error('Có lỗi xảy ra khi tải sản phẩm');
+        toast.error('Unable to load product details');
         // Fallback to mock data
         setProduct(mockProduct as Product);
       } finally {
@@ -192,13 +212,105 @@ function ProductDetailContent() {
     }
   };
 
+  const defaultEvDetails = {
+    range: '520 km WLTP',
+    charge: '10-80% in 25 minutes (DC 250 kW)',
+    acceleration: '0-100 km/h in 3.8 seconds',
+    power: '420 kW (563 hp)',
+    drivetrain: 'Dual Motor AWD',
+    battery: '95 kWh solid-state battery pack',
+  };
+
+  const evDetails = {
+    range: (product as unknown as { evDetails?: { range?: string } })?.evDetails?.range || defaultEvDetails.range,
+    charge: (product as unknown as { evDetails?: { charge?: string } })?.evDetails?.charge || defaultEvDetails.charge,
+    acceleration: (product as unknown as { evDetails?: { acceleration?: string } })?.evDetails?.acceleration || defaultEvDetails.acceleration,
+    power: (product as unknown as { evDetails?: { power?: string } })?.evDetails?.power || defaultEvDetails.power,
+    drivetrain: (product as unknown as { evDetails?: { drivetrain?: string } })?.evDetails?.drivetrain || defaultEvDetails.drivetrain,
+    battery: (product as unknown as { evDetails?: { battery?: string } })?.evDetails?.battery || defaultEvDetails.battery,
+  };
+
+  const productFeatures = Array.isArray(product.features) && product.features.length > 0
+    ? product.features
+    : [
+        'Up to 520 km of range on a single charge',
+        'DC fast charging to 80% in just 25 minutes',
+        'Level 3 autonomous driving intelligence',
+        'Immersive cabin with panoramic curved display',
+      ];
+
+  const evHighlights = [
+    {
+      label: 'Range',
+      value: evDetails.range,
+      icon: Gauge,
+    },
+    {
+      label: 'Rapid charging',
+      value: evDetails.charge,
+      icon: BatteryCharging,
+    },
+    {
+      label: 'Acceleration',
+      value: evDetails.acceleration,
+      icon: Zap,
+    },
+    {
+      label: 'Power output',
+      value: evDetails.power,
+      icon: Car,
+    },
+    {
+      label: 'Drivetrain',
+      value: evDetails.drivetrain,
+      icon: Leaf,
+    },
+    {
+      label: 'Battery tech',
+      value: evDetails.battery,
+      icon: ShieldCheck,
+    },
+  ];
+
+  const ownershipServices = [
+    {
+      title: 'Schedule a test drive',
+      description: 'Experience instant torque and autonomous assistance on our dedicated EV proving ground.',
+      icon: CalendarCheck,
+    },
+    {
+      title: 'Flexible financing',
+      description: 'Get tailored financing with 0% APR for 12 months for returning Sunny Auto owners.',
+      icon: Wallet,
+    },
+    {
+      title: 'Download brochure',
+      description: "Access deep dives on battery tech, active safety, and Sunny Auto's charging standards.",
+      icon: FileText,
+    },
+  ];
+
+  const formatCurrency = (value: unknown) => {
+    if (typeof value !== 'number') return value;
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'VND',
+      maximumFractionDigits: 0,
+    }).format(value);
+  };
+
+  const displayPrice = formatCurrency(product.price ?? mockProduct.price);
+  const displayOriginalPrice = product.originalPrice ? formatCurrency(product.originalPrice) : null;
+  const categoryLabel = product.category ? product.category.replace(/-/g, ' ') : 'electric vehicle';
+  const stockBadge = product.inStock ? 'Available for test drive' : 'Pre-order now';
+
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Breadcrumb */}
       <nav className="flex items-center space-x-2 text-sm text-gray-600 mb-6">
-        <Link href="/" className="hover:text-primary">Trang chủ</Link>
+        <Link href="/" className="hover:text-primary">Home</Link>
         <span>/</span>
-        <Link href="/products" className="hover:text-primary">Sản phẩm</Link>
+        <Link href="/products" className="hover:text-primary">Electric vehicles</Link>
         <span>/</span>
         <span className="text-gray-900">{product.name}</span>
       </nav>
@@ -244,14 +356,40 @@ function ProductDetailContent() {
         {/* Product Info */}
         <div className="space-y-6">
           <div>
-            <div className="flex items-center gap-2 mb-2">
-              <Badge variant="outline">{product.brand}</Badge>
-              <Badge variant="secondary">{product.category}</Badge>
+            <div className="flex flex-wrap items-center gap-2 mb-3">
+              <Badge variant="outline" className="uppercase tracking-wide text-xs">
+                {product.brand || 'Sunny Auto'}
+              </Badge>
+              <Badge variant="secondary" className="capitalize">
+                {categoryLabel}
+              </Badge>
+              <Badge variant="default" className={product.inStock ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-100' : ''}>
+                {stockBadge}
+              </Badge>
+              <Badge variant="outline" className="border-emerald-500 text-emerald-600">
+                Zero Emission
+              </Badge>
             </div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">{product.name}</h1>
-            
+            <h1 className="text-4xl font-bold text-gray-900 mb-6 leading-tight">{product.name}</h1>
+
+            <div className="bg-slate-900 text-white rounded-2xl p-6 mb-6 shadow-lg">
+              <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+                <div>
+                  <p className="text-sm uppercase tracking-[0.3em] text-slate-400 mb-2">MSRP</p>
+                  <p className="text-4xl font-semibold tracking-tight">{displayPrice}</p>
+                  {displayOriginalPrice && (
+                    <p className="text-sm text-slate-400 line-through mt-1">{displayOriginalPrice}</p>
+                  )}
+                </div>
+                <div className="flex flex-col gap-2 text-sm text-slate-200">
+                  <span>Tax incentives & charging infrastructure support up to 120,000,000 VND</span>
+                  <span>Complimentary 3-year maintenance plan + 12 months of home charging service</span>
+                </div>
+              </div>
+            </div>
+
             {/* Rating */}
-            <div className="flex items-center gap-2 mb-4">
+            <div className="flex items-center gap-3 mb-5">
               <div className="flex items-center">
                 {[...Array(5)].map((_, i) => (
                   <Star
@@ -264,8 +402,8 @@ function ProductDetailContent() {
                   />
                 ))}
               </div>
-              <span className="text-sm text-gray-600">
-                ({product.rating || 4.5}) • {product.reviewsCount || 128} đánh giá
+              <span className="text-sm text-gray-600 font-medium">
+                ({product.rating || 4.5}) • {product.reviewsCount || 128} verified owner reviews
               </span>
             </div>
 
@@ -276,71 +414,78 @@ function ProductDetailContent() {
             </p>
 
             {/* Features */}
-            <div className="space-y-3 mb-6">
-              <h3 className="font-semibold text-gray-900">Tính năng nổi bật:</h3>
-              <ul className="space-y-2">
-                <li className="flex items-center gap-2">
-                  <Check className="h-4 w-4 text-green-500" />
-                  <span className="text-sm">Chống tia UV 100%</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="h-4 w-4 text-green-500" />
-                  <span className="text-sm">Tròng kính chống trầy xước</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="h-4 w-4 text-green-500" />
-                  <span className="text-sm">Khung kim loại cao cấp</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="h-4 w-4 text-green-500" />
-                  <span className="text-sm">Bảo hành 2 năm</span>
-                </li>
+            <div className="space-y-4 mb-8">
+              <h3 className="font-semibold text-gray-900 text-lg">Technology highlights</h3>
+              <ul className="space-y-3">
+                {productFeatures.map((feature, index) => (
+                  <li key={index} className="flex items-start gap-3">
+                    <div className="mt-1">
+                      <Check className="h-4 w-4 text-emerald-500" />
+                    </div>
+                    <span className="text-sm text-gray-700 leading-relaxed">{feature}</span>
+                  </li>
+                ))}
               </ul>
             </div>
 
-            {/* Availability at Store */}
+            {/* EV Highlights */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+              {evHighlights.map(({ label, value, icon: Icon }, index) => (
+                <div
+                  key={index}
+                  className="rounded-xl border border-slate-200 bg-white/60 backdrop-blur-sm p-4 shadow-sm hover:border-emerald-500 transition"
+                >
+                  <div className="flex items-start gap-3">
+                    <div className="rounded-full bg-emerald-100 text-emerald-600 p-2">
+                      <Icon className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <p className="text-xs uppercase tracking-wider text-slate-500">{label}</p>
+                      <p className="text-base font-semibold text-slate-900">{value}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Availability at Experience Center */}
             {product.inStock ? (
-              <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+              <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-5 mb-8">
                 <div className="flex items-start gap-3">
-                  <Check className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                  <Check className="h-5 w-5 text-emerald-600 mt-0.5 flex-shrink-0" />
                   <div>
-                    <h3 className="font-semibold text-green-800 mb-1">Có sẵn tại chi nhánh</h3>
-                    <p className="text-sm text-green-700 mb-2">
-                      Sản phẩm hiện có sẵn tại cửa hàng của chúng tôi
+                    <h3 className="font-semibold text-emerald-800 mb-1">Demo vehicles ready at the experience center</h3>
+                    <p className="text-sm text-emerald-700 mb-2">
+                      Book a session on our private test track and experience the autonomous suite in real traffic scenarios.
                     </p>
-                    <div className="text-sm text-green-600">
-                      <p className="font-medium">📍 Địa chỉ:</p>
-                      <a 
-                        href="https://maps.google.com/maps?q=Spectrum+Eyecare+192+Nguyễn+Văn+Hưởng,+Thảo+Điền,+Thủ+Đức,+Hồ+Chí+Minh+700000,+Việt+Nam"
+                    <div className="text-sm text-emerald-600">
+                      <p className="font-medium flex items-center gap-2"><MapPin className="h-4 w-4" /> Sunny Auto Experience Center</p>
+                      <a
+                        href="https://maps.google.com/maps?q=Sunny+Auto+Experience+Center+HCM"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="hover:text-green-800 underline"
+                        className="hover:text-emerald-800 underline"
                       >
-                        <strong>Spectrum Eyecare</strong><br />
-                        192 Nguyễn Văn Hưởng, Thảo Điền<br />
-                        Thủ Đức, Hồ Chí Minh 700000, Việt Nam
+                        12 D5 Street, Hi-Tech Park, Thu Duc City, Ho Chi Minh City
                       </a>
                     </div>
                   </div>
                 </div>
               </div>
             ) : (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+              <div className="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-8">
                 <div className="flex items-start gap-3">
-                  <X className="h-5 w-5 text-red-600 mt-0.5 flex-shrink-0" />
+                  <X className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" />
                   <div>
-                    <h3 className="font-semibold text-red-800 mb-1">Hết hàng</h3>
-                    <p className="text-sm text-red-700 mb-2">
-                      Sản phẩm hiện đang tạm hết hàng tại cửa hàng
+                    <h3 className="font-semibold text-amber-800 mb-1">Accepting pre-orders</h3>
+                    <p className="text-sm text-amber-700 mb-2">
+                      Estimated delivery within 45-60 days. Contact us for exclusive launch incentives.
                     </p>
-                    <p className="text-sm text-red-600 mb-2">
-                      Vui lòng liên hệ với chúng tôi để đặt hàng trước hoặc kiểm tra thời gian có hàng trở lại.
-                    </p>
-                    <div className="text-sm text-red-600">
-                      <p className="font-medium">📞 Liên hệ:</p>
-                      <a 
+                    <div className="text-sm text-amber-600">
+                      <p className="font-medium">Quick advisory hotline:</p>
+                      <a
                         href={`tel:${phoneNumber}`}
-                        className="hover:text-red-800 underline font-medium"
+                        className="hover:text-amber-800 underline font-medium"
                       >
                         {phoneNumber}
                       </a>
@@ -352,82 +497,72 @@ function ProductDetailContent() {
 
             {/* Action Buttons */}
             <div className="space-y-4">
-              <div className="flex gap-4">
-                <Button 
-                  size="lg" 
-                  className="flex-1"
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Button
+                  size="lg"
+                  className="flex-1 bg-emerald-600 hover:bg-emerald-700"
                   asChild
                 >
                   <a href={`tel:${phoneNumber}`}>
                     <Phone className="h-5 w-5 mr-2" />
-                    Gọi ngay
+                    Book a test drive
                   </a>
                 </Button>
-                <Button 
-                  size="lg" 
+                <Button
+                  size="lg"
                   className="flex-1"
                   variant="outline"
                   asChild
                 >
-                  <a 
-                    href="https://maps.google.com/maps?q=Spectrum+Eyecare+192+Nguyễn+Văn+Hưởng,+Thảo+Điền,+Thủ+Đức,+Hồ+Chí+Minh+700000,+Việt+Nam"
+                  <a
+                    href="https://maps.google.com/maps?q=Sunny+Auto+Experience+Center+HCM"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
                     <MapPin className="h-5 w-5 mr-2" />
-                    Xem bản đồ
+                    Get directions to showroom
                   </a>
                 </Button>
               </div>
-              <div className="flex gap-4">
+              <div className="flex flex-col sm:flex-row gap-4">
                 <Button
                   size="lg"
                   variant="outline"
-                  onClick={handleWishlistToggle}
                   className="flex-1"
+                  onClick={handleWishlistToggle}
                 >
                   <Heart className={`h-5 w-5 mr-2 ${isWishlisted ? 'fill-current text-red-500' : ''}`} />
-                  {isWishlisted ? 'Đã thích' : 'Thích'}
+                  {isWishlisted ? 'Saved to favorites' : 'Add to favorites'}
                 </Button>
                 <Button
                   size="lg"
                   variant="outline"
-                  onClick={handleShare}
                   className="flex-1"
+                  onClick={handleShare}
                 >
                   <Share2 className="h-5 w-5 mr-2" />
-                  Chia sẻ
+                  Share instantly
                 </Button>
               </div>
             </div>
           </div>
 
-          {/* Shipping & Returns */}
-          <Card>
+          {/* Ownership & Services */}
+          <Card className="border-emerald-100 bg-emerald-50/40">
             <CardContent className="p-6">
-              <h3 className="font-semibold text-gray-900 mb-4">Thông tin giao hàng & đổi trả</h3>
-              <div className="space-y-3">
-                <div className="flex items-center gap-3">
-                  <Truck className="h-5 w-5 text-primary" />
-                  <div>
-                    <p className="font-medium">Miễn phí vận chuyển</p>
-                    <p className="text-sm text-gray-600">Đơn hàng từ $50</p>
+              <h3 className="font-semibold text-gray-900 mb-4">Ownership experience & benefits</h3>
+              <div className="space-y-4">
+                {ownershipServices.map(({ title, description, icon: Icon }, index) => (
+                  <div key={index} className="flex items-start gap-3">
+                    <div className="rounded-lg bg-white shadow-sm p-2 text-emerald-600">
+                      <Icon className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-900">{title}</p>
+                      <p className="text-sm text-gray-600 leading-relaxed">{description}</p>
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <RotateCcw className="h-5 w-5 text-primary" />
-                  <div>
-                    <p className="font-medium">Đổi trả miễn phí</p>
-                    <p className="text-sm text-gray-600">Trong vòng 30 ngày</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Shield className="h-5 w-5 text-primary" />
-                  <div>
-                    <p className="font-medium">Bảo hành chính hãng</p>
-                    <p className="text-sm text-gray-600">2 năm toàn diện</p>
-                  </div>
-                </div>
+                ))}
               </div>
             </CardContent>
           </Card>
@@ -437,7 +572,7 @@ function ProductDetailContent() {
       {/* Related Products */}
       {relatedProducts.length > 0 && (
         <div className="mt-16">
-          <h2 className="text-2xl font-bold text-gray-900 mb-8">Sản phẩm liên quan</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-8">Similar electric vehicles</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {relatedProducts.map((relatedProduct) => (
               <ProductCard 

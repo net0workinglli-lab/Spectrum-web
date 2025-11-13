@@ -33,7 +33,13 @@ export default function NewProductPage() {
     reviewsCount: '0',
     features: [] as string[],
     inStock: true,
-    images: [] as string[]
+    images: [] as string[],
+    evRange: '',
+    evCharge: '',
+    evAcceleration: '',
+    evPower: '',
+    evDrivetrain: '',
+    evBattery: ''
   });
   const [newFeature, setNewFeature] = useState('');
 
@@ -121,17 +127,48 @@ export default function NewProductPage() {
     try {
       setIsLoading(true);
       
-      const productData = {
-        ...formData,
-        price: parseFloat(formData.price) || 0,
-        rating: parseFloat(formData.rating) || 5.0,
-        reviewsCount: parseInt(formData.reviewsCount) || 0,
+      const {
+        evRange,
+        evCharge,
+        evAcceleration,
+        evPower,
+        evDrivetrain,
+        evBattery,
+        ...formValues
+      } = formData;
+
+      const evDetailsInput = {
+        range: evRange,
+        charge: evCharge,
+        acceleration: evAcceleration,
+        power: evPower,
+        drivetrain: evDrivetrain,
+        battery: evBattery
+      };
+
+      const evDetails = Object.entries(evDetailsInput).reduce<Record<string, string>>((acc, [key, value]) => {
+        const trimmed = value.trim();
+        if (trimmed) {
+          acc[key] = trimmed;
+        }
+        return acc;
+      }, {});
+
+      const productData: Record<string, unknown> = {
+        ...formValues,
+        price: parseFloat(formValues.price) || 0,
+        rating: parseFloat(formValues.rating) || 5.0,
+        reviewsCount: parseInt(formValues.reviewsCount) || 0,
         author: {
           name: (user as { displayName?: string })?.displayName || 'Admin',
           email: user?.email || 'admin@example.com',
           ...((user as { photoURL?: string })?.photoURL && { avatar: (user as { photoURL?: string }).photoURL })
         }
       };
+
+      if (Object.keys(evDetails).length > 0) {
+        productData.evDetails = evDetails;
+      }
 
       const productId = await createProduct(productData);
       
@@ -272,6 +309,70 @@ export default function NewProductPage() {
                     rows={4}
                     required
                   />
+                </div>
+
+                {/* EV Specifications */}
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="text-lg font-semibold">EV Performance &amp; Specs</h3>
+                    <p className="text-sm text-gray-500">Highlight the key electric vehicle metrics that appear on the product page.</p>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="evRange">Range</Label>
+                      <Input
+                        id="evRange"
+                        value={formData.evRange}
+                        onChange={(e) => safeSetFormData(prev => ({ ...prev, evRange: e.target.value }))}
+                        placeholder="e.g. 520 km WLTP"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="evCharge">Rapid charging</Label>
+                      <Input
+                        id="evCharge"
+                        value={formData.evCharge}
+                        onChange={(e) => safeSetFormData(prev => ({ ...prev, evCharge: e.target.value }))}
+                        placeholder="e.g. 10-80% in 25 minutes (DC 250 kW)"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="evAcceleration">Acceleration</Label>
+                      <Input
+                        id="evAcceleration"
+                        value={formData.evAcceleration}
+                        onChange={(e) => safeSetFormData(prev => ({ ...prev, evAcceleration: e.target.value }))}
+                        placeholder="e.g. 0-100 km/h in 3.8 seconds"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="evPower">Power output</Label>
+                      <Input
+                        id="evPower"
+                        value={formData.evPower}
+                        onChange={(e) => safeSetFormData(prev => ({ ...prev, evPower: e.target.value }))}
+                        placeholder="e.g. 420 kW (563 hp)"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="evDrivetrain">Drivetrain</Label>
+                      <Input
+                        id="evDrivetrain"
+                        value={formData.evDrivetrain}
+                        onChange={(e) => safeSetFormData(prev => ({ ...prev, evDrivetrain: e.target.value }))}
+                        placeholder="e.g. Dual Motor AWD"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="evBattery">Battery tech</Label>
+                      <Input
+                        id="evBattery"
+                        value={formData.evBattery}
+                        onChange={(e) => safeSetFormData(prev => ({ ...prev, evBattery: e.target.value }))}
+                        placeholder="e.g. 95 kWh solid-state battery"
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 {/* Features */}
