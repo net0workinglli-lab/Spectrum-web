@@ -4,8 +4,6 @@ export async function generateStaticParams() {
   // Custom pages will be handled dynamically at runtime
   return [
     { id: 'hero-section' },
-    { id: 'brands-section' },
-    { id: 'certificate-section' },
     { id: 'about-page' },
     { id: 'contact-page' },
     { id: 'products-page' },
@@ -13,11 +11,12 @@ export async function generateStaticParams() {
     { id: 'footer-section' },
     { id: 'featured-products-section' },
     { id: 'stats-section' },
+    { id: 'secondary-hero-section' },
+    { id: 'image-gallery-section' },
     { id: 'categories-section' },
     { id: 'lenses-section' },
     { id: 'cta-section' },
     { id: 'esg-certificate-page' },
-    { id: 'premium-partners-page' },
     { id: 'header-section' }
   ];
 }

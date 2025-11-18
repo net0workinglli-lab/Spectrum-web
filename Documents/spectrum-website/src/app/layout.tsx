@@ -7,6 +7,7 @@ import { AppProvider } from "@/contexts/AppContext";
 import { AuthProvider } from "@/components/AuthProvider";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { CookieConsent } from "@/components/CookieConsent";
 import { PageTransition } from "@/components/PageTransition";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { generateOrganizationSchema, generateWebsiteSchema } from "@/lib/structured-data";
@@ -72,11 +73,11 @@ export default function RootLayout({
         {/* Open Graph Meta Tags */}
         <meta property="og:title" content="Sunny Auto EV - Drive the Future of Zero-Emission Mobility" />
         <meta property="og:description" content="Discover Sunny Auto EV models featuring 520 km range, DC fast charging, and next-gen autonomous tech." />
-        <meta property="og:image" content="https://spec-9233a.web.app/thumnail.png" />
+        <meta property="og:image" content="https://sunnyauto.vn/thumbnail.png" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         <meta property="og:image:alt" content="Sunny Auto EV - Intelligent electric mobility ecosystem" />
-        <meta property="og:url" content="https://spec-9233a.web.app" />
+        <meta property="og:url" content="https://sunnyauto.vn" />
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="Sunny Auto" />
         <meta property="og:locale" content="en_US" />
@@ -85,7 +86,7 @@ export default function RootLayout({
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Sunny Auto EV - Drive the Future of Zero-Emission Mobility" />
         <meta name="twitter:description" content="Stay updated on Sunny Auto EV offers, schedule test drives, and explore the latest electric innovations." />
-        <meta name="twitter:image" content="https://spec-9233a.web.app/thumnail.png" />
+        <meta name="twitter:image" content="https://sunnyauto.vn/thumbnail.png" />
         <meta name="twitter:image:alt" content="Sunny Auto EV - Next generation electric mobility" />
         <meta name="twitter:site" content="@SunnyAutoEV" />
         <meta name="twitter:creator" content="@SunnyAutoEV" />
@@ -170,6 +171,7 @@ export default function RootLayout({
                   </PageTransition>
                 </main>
                 <Footer />
+                <CookieConsent />
                 <ScrollToTop />
               </div>
             </AppProvider>

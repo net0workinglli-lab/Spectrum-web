@@ -3,7 +3,7 @@ import {
   getSectionContent, 
   getSectionContentById,
   getAllSections, 
-  updateSectionContent
+  createOrUpdateSection
 } from '@/lib/firebase-firestore';
 
 // Firestore document interface
@@ -124,6 +124,12 @@ export interface DropdownItem {
   icon?: string;
 }
 
+export interface StatItem {
+  icon: string;
+  value: string;
+  label: string;
+}
+
 export interface ContentData {
   id: string;
   name: string;
@@ -135,6 +141,7 @@ export interface ContentData {
   buttonText: string;
   buttonLink: string;
   imageUrl: string;
+  video?: string; // Video URL for background video
   images?: string[]; // Array of images for sections with multiple images
   slides?: HeroSlide[]; // For hero slider sections
   status: 'published' | 'draft';
@@ -205,6 +212,9 @@ export interface ContentData {
   selectedProductIds?: string[]; // Array of product IDs to display
   maxProducts?: number; // Maximum number of products to show
   
+  // Stats Section specific fields
+  stats?: StatItem[]; // Array of statistics items with icon, value, and label
+  
   // About page specific fields
   stat1?: string;
   stat2?: string;
@@ -231,6 +241,7 @@ export interface HeroSlide {
   title: string;
   subtitle: string;
   image: string;
+  video?: string;
   cta: string;
   href: string;
 }
@@ -254,6 +265,12 @@ export const useContent = (sectionId?: string) => {
         const sectionData = await getSectionContentById(sectionId);
         
         if (sectionData) {
+          console.log(`📦 Loading section: ${sectionId}`, {
+            rawData: sectionData,
+            hasStats: !!(sectionData as any).stats,
+            statsValue: (sectionData as any).stats
+          });
+          
           // Convert Firebase data to ContentData format
           const contentData: ContentData = {
             id: sectionData.id,
@@ -266,6 +283,7 @@ export const useContent = (sectionId?: string) => {
             buttonText: (sectionData as any).buttonText || '',
             buttonLink: (sectionData as any).buttonLink || '',
             imageUrl: (sectionData as any).imageUrl || '',
+            video: (sectionData as any).video || '',
             images: (sectionData as any).images || [],
             slides: (sectionData as any).slides || [],
             status: (sectionData as any).status || 'draft',
@@ -325,6 +343,8 @@ export const useContent = (sectionId?: string) => {
             // Featured Products Section specific fields
             selectedProductIds: sectionData.selectedProductIds || [],
             maxProducts: sectionData.maxProducts || 4,
+            // Stats Section specific fields
+            stats: Array.isArray((sectionData as any).stats) ? (sectionData as any).stats : [],
             // About page specific fields
             stat1: sectionData.stat1 || '',
             stat2: sectionData.stat2 || '',
@@ -397,6 +417,7 @@ export const useContent = (sectionId?: string) => {
             buttonText: sectionId === 'featured-products-section' ? 'View All Products' : '',
             buttonLink: sectionId === 'featured-products-section' ? '/products' : '',
             imageUrl: '',
+            video: '',
             images: [],
             slides: sectionId === 'hero-section' ? [
               { id: 1, title: '', subtitle: '', image: '', cta: '', href: '' },
@@ -506,6 +527,7 @@ export const useContent = (sectionId?: string) => {
           buttonText: '',
           buttonLink: '',
           imageUrl: '',
+          video: '',
           images: [],
           slides: sectionId === 'hero-section' ? [
             { id: 1, title: '', subtitle: '', image: '', cta: '', href: '' },
@@ -549,7 +571,7 @@ export const useContent = (sectionId?: string) => {
           ecoFriendlyLink: sectionId === 'header-section' ? '/eco-friendly' : '',
           communityText: sectionId === 'header-section' ? 'Community' : '',
           communityLink: sectionId === 'header-section' ? '/community' : '',
-          searchPlaceholder: sectionId === 'header-section' ? 'Search glasses, brands...' : '',
+          searchPlaceholder: sectionId === 'header-section' ? 'Search vehicles, models...' : '',
           // New dropdown system
           productsDropdown: sectionId === 'header-section' ? [
             { id: 'sunglasses', name: 'Sunglasses', href: '/products?category=sunglasses', icon: 'Sun' },
@@ -645,25 +667,15 @@ export const useContent = (sectionId?: string) => {
       setIsSaving(true);
       setError(null);
 
-      // Check if document exists by trying to get it first
-      const existingContent = await getSectionContentById(sectionId);
-      
-      if (existingContent) {
-        // Update existing content
-        await updateSectionContent(sectionId, {
-          ...contentData,
-          updatedAt: new Date()
-        });
-      } else {
-        // Create new content using updateSectionContent with setDoc
-        await updateSectionContent(sectionId, {
-          ...contentData,
-          id: sectionId,
-          createdAt: new Date(),
-          updatedAt: new Date()
-        });
-        setContent({ ...contentData, id: sectionId } as ContentData);
-      }
+      // Use createOrUpdateSection which handles both create and update
+      await createOrUpdateSection(sectionId, {
+        ...contentData,
+        id: sectionId,
+        name: contentData.name || getDefaultName(sectionId),
+        type: contentData.type || (sectionId.includes('page') ? 'page' : 'section'),
+        status: contentData.status || 'published',
+        category: contentData.category || (sectionId.includes('page') ? 'pages' : sectionId.includes('header') || sectionId.includes('footer') ? 'global' : 'homepage'),
+      });
 
       // Update local state
       setContent(prev => prev ? { ...prev, ...contentData } : null);
@@ -700,6 +712,7 @@ const getDefaultName = (sectionId: string): string => {
     'hero-section': 'Hero Section',
     'featured-products-section': 'Featured Products Section',
     'stats-section': 'Stats Section',
+    'secondary-hero-section': 'Secondary Hero Section',
     'brands-section': 'Brands Section',
     'certificate-section': 'Certificate Section',
     'categories-section': 'Categories Section',

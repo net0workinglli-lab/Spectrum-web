@@ -6,6 +6,7 @@ export interface HeroSlide {
   title: string;
   subtitle: string;
   image: string;
+  video?: string;
   cta: string;
   href: string;
 }

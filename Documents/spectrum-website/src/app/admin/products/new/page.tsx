@@ -18,6 +18,33 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ImageUpload } from '@/components/ImageUpload';
 
+const formatCurrencyInput = (value: string): string => {
+  if (!value) return '';
+  const digitsOnly = value.replace(/\D/g, '');
+  if (!digitsOnly) return '';
+
+  const numericValue = Number.parseInt(digitsOnly, 10);
+  if (!Number.isFinite(numericValue)) {
+    return '';
+  }
+
+  return numericValue.toLocaleString('vi-VN');
+};
+
+const formatNumberToCurrencyInput = (value?: number | null): string => {
+  if (value === null || value === undefined || !Number.isFinite(value)) return '';
+  return Math.trunc(value).toLocaleString('vi-VN');
+};
+
+const parseCurrencyToNumber = (value: string): number => {
+  if (!value) return 0;
+  const digitsOnly = value.replace(/\D/g, '');
+  if (!digitsOnly) return 0;
+
+  const numericValue = Number.parseInt(digitsOnly, 10);
+  return Number.isNaN(numericValue) ? 0 : numericValue;
+};
+
 export default function NewProductPage() {
   const { isLoggedIn, user } = useApp();
   const router = useRouter();
@@ -39,7 +66,34 @@ export default function NewProductPage() {
     evAcceleration: '',
     evPower: '',
     evDrivetrain: '',
-    evBattery: ''
+    evBattery: '',
+    priceIncentives: '',
+    priceServices: '',
+    specBatteryBrand: '',
+    specBatteryConfig: '',
+    specEAxleType: '',
+    specVehicleController: '',
+    specMotorType: '',
+    specBrakingSystem: '',
+    specChargingSpeed: '',
+    specExteriorDesign: '',
+    specAutonomousLevel: '',
+    specWarranty: '',
+    powerPackPower: '',
+    powerPackEnergyDensity: '',
+    powerMotorRatedPower: '',
+    powerMotorPeakPower: '',
+    powerMotorRatedTorque: '',
+    powerMotorPeakTorque: '',
+    perfCruisingRange: '',
+    perfMaxSpeed: '',
+    perfLoadingCapacity: '',
+    ownershipTitle1: '',
+    ownershipDesc1: '',
+    ownershipTitle2: '',
+    ownershipDesc2: '',
+    ownershipTitle3: '',
+    ownershipDesc3: ''
   });
   const [newFeature, setNewFeature] = useState('');
 
@@ -128,13 +182,43 @@ export default function NewProductPage() {
       setIsLoading(true);
       
       const {
+        price,
+        rating,
+        reviewsCount,
         evRange,
         evCharge,
         evAcceleration,
         evPower,
         evDrivetrain,
         evBattery,
-        ...formValues
+        priceIncentives,
+        priceServices,
+        specBatteryBrand,
+        specBatteryConfig,
+        specEAxleType,
+        specVehicleController,
+        specMotorType,
+        specBrakingSystem,
+        specChargingSpeed,
+        specExteriorDesign,
+        specAutonomousLevel,
+        specWarranty,
+        powerPackPower,
+        powerPackEnergyDensity,
+        powerMotorRatedPower,
+        powerMotorPeakPower,
+        powerMotorRatedTorque,
+        powerMotorPeakTorque,
+        perfCruisingRange,
+        perfMaxSpeed,
+        perfLoadingCapacity,
+        ownershipTitle1,
+        ownershipDesc1,
+        ownershipTitle2,
+        ownershipDesc2,
+        ownershipTitle3,
+        ownershipDesc3,
+        ...rest
       } = formData;
 
       const evDetailsInput = {
@@ -146,6 +230,34 @@ export default function NewProductPage() {
         battery: evBattery
       };
 
+      const evSpecsInput = {
+        batteryBrand: specBatteryBrand,
+        batteryConfig: specBatteryConfig,
+        eAxleType: specEAxleType,
+        vehicleController: specVehicleController,
+        motorType: specMotorType,
+        brakingSystem: specBrakingSystem,
+        chargingSpeed: specChargingSpeed,
+        exteriorDesign: specExteriorDesign,
+        autonomousLevel: specAutonomousLevel,
+        warranty: specWarranty
+      };
+
+      const evPowertrainInput = {
+        packPower: powerPackPower,
+        packEnergyDensity: powerPackEnergyDensity,
+        motorRatedPower: powerMotorRatedPower,
+        motorPeakPower: powerMotorPeakPower,
+        motorRatedTorque: powerMotorRatedTorque,
+        motorPeakTorque: powerMotorPeakTorque
+      };
+
+      const evPerformanceInput = {
+        cruisingRange: perfCruisingRange,
+        maxSpeed: perfMaxSpeed,
+        loadingCapacity: perfLoadingCapacity
+      };
+
       const evDetails = Object.entries(evDetailsInput).reduce<Record<string, string>>((acc, [key, value]) => {
         const trimmed = value.trim();
         if (trimmed) {
@@ -154,11 +266,37 @@ export default function NewProductPage() {
         return acc;
       }, {});
 
+      const evSpecs = Object.entries(evSpecsInput).reduce<Record<string, string>>((acc, [key, value]) => {
+        const trimmed = value.trim();
+        if (trimmed) {
+          acc[key] = trimmed;
+        }
+        return acc;
+      }, {});
+
+      const evPowertrain = Object.entries(evPowertrainInput).reduce<Record<string, string>>((acc, [key, value]) => {
+        const trimmed = value.trim();
+        if (trimmed) {
+          acc[key] = trimmed;
+        }
+        return acc;
+      }, {});
+
+      const evPerformance = Object.entries(evPerformanceInput).reduce<Record<string, string>>((acc, [key, value]) => {
+        const trimmed = value.trim();
+        if (trimmed) {
+          acc[key] = trimmed;
+        }
+        return acc;
+      }, {});
+
       const productData: Record<string, unknown> = {
-        ...formValues,
-        price: parseFloat(formValues.price) || 0,
-        rating: parseFloat(formValues.rating) || 5.0,
-        reviewsCount: parseInt(formValues.reviewsCount) || 0,
+        ...rest,
+        price: parseCurrencyToNumber(price),
+        rating: parseFloat(rating) || 5.0,
+        reviewsCount: parseInt(reviewsCount) || 0,
+        priceIncentives: priceIncentives.trim() || undefined,
+        priceServices: priceServices.trim() || undefined,
         author: {
           name: (user as { displayName?: string })?.displayName || 'Admin',
           email: user?.email || 'admin@example.com',
@@ -168,6 +306,34 @@ export default function NewProductPage() {
 
       if (Object.keys(evDetails).length > 0) {
         productData.evDetails = evDetails;
+      }
+      if (Object.keys(evSpecs).length > 0) {
+        productData.evSpecs = evSpecs;
+      }
+      if (Object.keys(evPowertrain).length > 0) {
+        productData.evPowertrain = evPowertrain;
+      }
+      if (Object.keys(evPerformance).length > 0) {
+        productData.evPerformance = evPerformance;
+      }
+
+      const ownershipHighlights = [
+        {
+          title: ownershipTitle1.trim(),
+          description: ownershipDesc1.trim(),
+        },
+        {
+          title: ownershipTitle2.trim(),
+          description: ownershipDesc2.trim(),
+        },
+        {
+          title: ownershipTitle3.trim(),
+          description: ownershipDesc3.trim(),
+        },
+      ].filter((item) => item.title || item.description);
+
+      if (ownershipHighlights.length > 0) {
+        productData.ownershipHighlights = ownershipHighlights;
       }
 
       const productId = await createProduct(productData);
@@ -291,10 +457,18 @@ export default function NewProductPage() {
                     <Label htmlFor="price">Price (VND)</Label>
                     <Input
                       id="price"
-                      type="number"
+                      type="text"
+                      inputMode="decimal"
                       value={formData.price}
-                      onChange={(e) => setFormData(prev => ({ ...prev, price: e.target.value }))}
-                      placeholder="Enter price"
+                      onChange={(e) => {
+                        const formatted = formatCurrencyInput(e.target.value);
+                        safeSetFormData(prev => ({ ...prev, price: formatted }));
+                      }}
+                      onBlur={(e) => {
+                        const formatted = formatCurrencyInput(e.target.value);
+                        safeSetFormData(prev => ({ ...prev, price: formatted }));
+                      }}
+                      placeholder="e.g. 1.250.000"
                     />
                   </div>
                 </div>
@@ -309,6 +483,36 @@ export default function NewProductPage() {
                     rows={4}
                     required
                   />
+                </div>
+
+                {/* Pricing Highlights */}
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="text-lg font-semibold">Pricing Highlights</h3>
+                    <p className="text-sm text-gray-500">Customize the incentive and service messages displayed beside the price.</p>
+                  </div>
+                  <div className="grid grid-cols-1 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="priceIncentives">Incentive message</Label>
+                      <Textarea
+                        id="priceIncentives"
+                        value={formData.priceIncentives}
+                        onChange={(e) => safeSetFormData(prev => ({ ...prev, priceIncentives: e.target.value }))}
+                        placeholder="e.g. Tax incentives & charging infrastructure support up to 120,000,000 VND"
+                        rows={2}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="priceServices">Service message</Label>
+                      <Textarea
+                        id="priceServices"
+                        value={formData.priceServices}
+                        onChange={(e) => safeSetFormData(prev => ({ ...prev, priceServices: e.target.value }))}
+                        placeholder="e.g. Complimentary 3-year maintenance plan + 12 months of home charging service"
+                        rows={2}
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 {/* EV Specifications */}
@@ -370,6 +574,264 @@ export default function NewProductPage() {
                         value={formData.evBattery}
                         onChange={(e) => safeSetFormData(prev => ({ ...prev, evBattery: e.target.value }))}
                         placeholder="e.g. 95 kWh solid-state battery"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="text-lg font-semibold">Specifications (Thông số kỹ thuật)</h3>
+                    <p className="text-sm text-gray-500">Capture detailed hardware information for Sunny Auto EVs.</p>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="specBatteryBrand">Battery Brand / Type</Label>
+                      <Input
+                        id="specBatteryBrand"
+                        value={formData.specBatteryBrand}
+                        onChange={(e) => safeSetFormData(prev => ({ ...prev, specBatteryBrand: e.target.value }))}
+                        placeholder="e.g. BYD blade battery"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="specBatteryConfig">Battery Configuration</Label>
+                      <Input
+                        id="specBatteryConfig"
+                        value={formData.specBatteryConfig}
+                        onChange={(e) => safeSetFormData(prev => ({ ...prev, specBatteryConfig: e.target.value }))}
+                        placeholder="e.g. Mid-mounted charging and swapping integrated battery"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="specEAxleType">e-Axle Type</Label>
+                      <Input
+                        id="specEAxleType"
+                        value={formData.specEAxleType}
+                        onChange={(e) => safeSetFormData(prev => ({ ...prev, specEAxleType: e.target.value }))}
+                        placeholder="e.g. Integrated e-axle"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="specVehicleController">Vehicle Controller</Label>
+                      <Input
+                        id="specVehicleController"
+                        value={formData.specVehicleController}
+                        onChange={(e) => safeSetFormData(prev => ({ ...prev, specVehicleController: e.target.value }))}
+                        placeholder="e.g. Weichai VCU vehicle controller"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="specMotorType">Motor Type</Label>
+                      <Input
+                        id="specMotorType"
+                        value={formData.specMotorType}
+                        onChange={(e) => safeSetFormData(prev => ({ ...prev, specMotorType: e.target.value }))}
+                        placeholder="e.g. Permanent magnet synchronous motor"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="specBrakingSystem">Braking System</Label>
+                      <Input
+                        id="specBrakingSystem"
+                        value={formData.specBrakingSystem}
+                        onChange={(e) => safeSetFormData(prev => ({ ...prev, specBrakingSystem: e.target.value }))}
+                        placeholder="e.g. Intelligent braking energy feedback system"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="specChargingSpeed">Charging Speed</Label>
+                      <Input
+                        id="specChargingSpeed"
+                        value={formData.specChargingSpeed}
+                        onChange={(e) => safeSetFormData(prev => ({ ...prev, specChargingSpeed: e.target.value }))}
+                        placeholder="e.g. Charge up to 80% in 30 minutes"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="specExteriorDesign">Exterior Design</Label>
+                      <Input
+                        id="specExteriorDesign"
+                        value={formData.specExteriorDesign}
+                        onChange={(e) => safeSetFormData(prev => ({ ...prev, specExteriorDesign: e.target.value }))}
+                        placeholder="e.g. Closed grille design, drag coefficient cd 0.45"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="specAutonomousLevel">Autonomous Driving Level</Label>
+                      <Input
+                        id="specAutonomousLevel"
+                        value={formData.specAutonomousLevel}
+                        onChange={(e) => safeSetFormData(prev => ({ ...prev, specAutonomousLevel: e.target.value }))}
+                        placeholder="e.g. Level 2 autonomous driving"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="specWarranty">Warranty</Label>
+                      <Input
+                        id="specWarranty"
+                        value={formData.specWarranty}
+                        onChange={(e) => safeSetFormData(prev => ({ ...prev, specWarranty: e.target.value }))}
+                        placeholder="e.g. 6 years or 300,000 km three-electric warranty"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="text-lg font-semibold">Battery &amp; Powertrain</h3>
+                    <p className="text-sm text-gray-500">Record detailed battery pack and motor output specifications.</p>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="powerPackPower">PACK Power (kWh)</Label>
+                      <Input
+                        id="powerPackPower"
+                        value={formData.powerPackPower}
+                        onChange={(e) => safeSetFormData(prev => ({ ...prev, powerPackPower: e.target.value }))}
+                        placeholder="e.g. 92 kWh"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="powerPackEnergyDensity">PACK Energy Density (Wh/kg)</Label>
+                      <Input
+                        id="powerPackEnergyDensity"
+                        value={formData.powerPackEnergyDensity}
+                        onChange={(e) => safeSetFormData(prev => ({ ...prev, powerPackEnergyDensity: e.target.value }))}
+                        placeholder="e.g. 210 Wh/kg"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="powerMotorRatedPower">Motor Rated Power (kW)</Label>
+                      <Input
+                        id="powerMotorRatedPower"
+                        value={formData.powerMotorRatedPower}
+                        onChange={(e) => safeSetFormData(prev => ({ ...prev, powerMotorRatedPower: e.target.value }))}
+                        placeholder="e.g. 150 kW"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="powerMotorPeakPower">Motor Peak Power (kW)</Label>
+                      <Input
+                        id="powerMotorPeakPower"
+                        value={formData.powerMotorPeakPower}
+                        onChange={(e) => safeSetFormData(prev => ({ ...prev, powerMotorPeakPower: e.target.value }))}
+                        placeholder="e.g. 320 kW"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="powerMotorRatedTorque">Motor Rated Torque (N·m)</Label>
+                      <Input
+                        id="powerMotorRatedTorque"
+                        value={formData.powerMotorRatedTorque}
+                        onChange={(e) => safeSetFormData(prev => ({ ...prev, powerMotorRatedTorque: e.target.value }))}
+                        placeholder="e.g. 340 N·m"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="powerMotorPeakTorque">Motor Peak Torque (N·m)</Label>
+                      <Input
+                        id="powerMotorPeakTorque"
+                        value={formData.powerMotorPeakTorque}
+                        onChange={(e) => safeSetFormData(prev => ({ ...prev, powerMotorPeakTorque: e.target.value }))}
+                        placeholder="e.g. 650 N·m"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="text-lg font-semibold">Performance</h3>
+                    <p className="text-sm text-gray-500">Outline top-level performance outputs and capabilities.</p>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="perfCruisingRange">Cruising Range (km)</Label>
+                      <Input
+                        id="perfCruisingRange"
+                        value={formData.perfCruisingRange}
+                        onChange={(e) => safeSetFormData(prev => ({ ...prev, perfCruisingRange: e.target.value }))}
+                        placeholder="e.g. 520 km"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="perfMaxSpeed">Maximum Speed (km/h)</Label>
+                      <Input
+                        id="perfMaxSpeed"
+                        value={formData.perfMaxSpeed}
+                        onChange={(e) => safeSetFormData(prev => ({ ...prev, perfMaxSpeed: e.target.value }))}
+                        placeholder="e.g. 200 km/h"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="perfLoadingCapacity">Loading Capacity (tons)</Label>
+                      <Input
+                        id="perfLoadingCapacity"
+                        value={formData.perfLoadingCapacity}
+                        onChange={(e) => safeSetFormData(prev => ({ ...prev, perfLoadingCapacity: e.target.value }))}
+                        placeholder="e.g. 1.2 tons"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="text-lg font-semibold">Ownership Experience &amp; Benefits</h3>
+                    <p className="text-sm text-gray-500">Customize the concierge services showcased in the ownership section.</p>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="ownershipTitle1">Highlight #1 Title</Label>
+                      <Input
+                        id="ownershipTitle1"
+                        value={formData.ownershipTitle1}
+                        onChange={(e) => safeSetFormData(prev => ({ ...prev, ownershipTitle1: e.target.value }))}
+                        placeholder="e.g. Schedule a test drive"
+                      />
+                      <Label htmlFor="ownershipDesc1" className="sr-only">Highlight #1 Description</Label>
+                      <Textarea
+                        id="ownershipDesc1"
+                        value={formData.ownershipDesc1}
+                        onChange={(e) => safeSetFormData(prev => ({ ...prev, ownershipDesc1: e.target.value }))}
+                        placeholder="Describe the benefit in detail"
+                        rows={2}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="ownershipTitle2">Highlight #2 Title</Label>
+                      <Input
+                        id="ownershipTitle2"
+                        value={formData.ownershipTitle2}
+                        onChange={(e) => safeSetFormData(prev => ({ ...prev, ownershipTitle2: e.target.value }))}
+                        placeholder="e.g. Flexible financing"
+                      />
+                      <Label htmlFor="ownershipDesc2" className="sr-only">Highlight #2 Description</Label>
+                      <Textarea
+                        id="ownershipDesc2"
+                        value={formData.ownershipDesc2}
+                        onChange={(e) => safeSetFormData(prev => ({ ...prev, ownershipDesc2: e.target.value }))}
+                        placeholder="Detail financing perks or partner programs"
+                        rows={2}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="ownershipTitle3">Highlight #3 Title</Label>
+                      <Input
+                        id="ownershipTitle3"
+                        value={formData.ownershipTitle3}
+                        onChange={(e) => safeSetFormData(prev => ({ ...prev, ownershipTitle3: e.target.value }))}
+                        placeholder="e.g. Download brochure"
+                      />
+                      <Label htmlFor="ownershipDesc3" className="sr-only">Highlight #3 Description</Label>
+                      <Textarea
+                        id="ownershipDesc3"
+                        value={formData.ownershipDesc3}
+                        onChange={(e) => safeSetFormData(prev => ({ ...prev, ownershipDesc3: e.target.value }))}
+                        placeholder="Describe the documentation or concierge support"
+                        rows={2}
                       />
                     </div>
                   </div>

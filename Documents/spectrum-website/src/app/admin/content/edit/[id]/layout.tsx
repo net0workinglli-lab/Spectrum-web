@@ -5,9 +5,9 @@ export async function generateStaticParams() {
     { id: 'hero-section' },
     { id: 'featured-products-section' },
     { id: 'stats-section' },
-    { id: 'certificate-section' },
+    { id: 'secondary-hero-section' },
+    { id: 'image-gallery-section' },
     { id: 'categories-section' },
-    { id: 'brands-section' },
     { id: 'lenses-section' },
     { id: 'cta-section' },
     // Pages
@@ -16,7 +16,6 @@ export async function generateStaticParams() {
     { id: 'products-page' },
     { id: 'blog-page' },
     { id: 'esg-certificate-page' },
-    { id: 'premium-partners-page' },
     // Global Sections
     { id: 'header-section' },
     { id: 'footer-section' }

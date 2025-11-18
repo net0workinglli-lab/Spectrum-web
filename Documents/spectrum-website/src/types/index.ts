@@ -15,6 +15,12 @@ export interface Product {
   createdAt: Date;
   updatedAt: Date;
   evDetails?: ProductEvDetails;
+  priceIncentives?: string;
+  priceServices?: string;
+  evSpecs?: ProductEvSpecs;
+  evPowertrain?: ProductEvPowertrain;
+  evPerformance?: ProductEvPerformance;
+  ownershipHighlights?: ProductOwnershipHighlight[];
 }
 
 export interface ProductEvDetails {
@@ -24,6 +30,40 @@ export interface ProductEvDetails {
   power?: string;
   drivetrain?: string;
   battery?: string;
+}
+
+export interface ProductEvSpecs {
+  batteryBrand?: string;
+  batteryConfig?: string;
+  eAxleType?: string;
+  vehicleController?: string;
+  motorType?: string;
+  brakingSystem?: string;
+  chargingSpeed?: string;
+  exteriorDesign?: string;
+  autonomousLevel?: string;
+  warranty?: string;
+}
+
+export interface ProductEvPowertrain {
+  packPower?: string;
+  packEnergyDensity?: string;
+  motorRatedPower?: string;
+  motorPeakPower?: string;
+  motorRatedTorque?: string;
+  motorPeakTorque?: string;
+}
+
+export interface ProductEvPerformance {
+  cruisingRange?: string;
+  maxSpeed?: string;
+  loadingCapacity?: string;
+}
+
+export interface ProductOwnershipHighlight {
+  title?: string;
+  description?: string;
+  icon?: string;
 }
 
 export type ProductCategory = 

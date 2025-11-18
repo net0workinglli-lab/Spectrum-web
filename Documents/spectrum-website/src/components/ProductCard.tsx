@@ -38,7 +38,7 @@ export function ProductCard({ product, onAddToComparison, isInComparison, onQuic
       whileHover={{ y: -5, scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
     >
-      <Card className="group relative overflow-hidden hover:shadow-lg transition-shadow duration-300 h-full flex flex-col">
+      <Card className="group relative overflow-hidden hover:shadow-lg transition-shadow duration-300 h-full flex flex-col w-full">
       <div className="relative aspect-square overflow-hidden">
         <Image
           src={product.images?.[0] || '/placeholder-glasses.jpg'}
@@ -79,22 +79,22 @@ export function ProductCard({ product, onAddToComparison, isInComparison, onQuic
         </div>
       </div>
 
-      <CardContent className="p-4 flex-grow flex flex-col">
-        <div className="space-y-2 flex-grow">
-          <div className="flex items-center justify-between">
-            <Badge variant="outline" className="text-xs">
+      <CardContent className="p-4 flex-grow flex flex-col min-w-0">
+        <div className="space-y-2 flex-grow min-w-0">
+          <div className="flex items-center justify-between gap-2 flex-wrap">
+            <Badge variant="outline" className="text-xs shrink-0">
               {product.brand}
             </Badge>
-            <Badge variant="secondary" className="text-xs">
+            <Badge variant="secondary" className="text-xs shrink-0">
               {product.category}
             </Badge>
           </div>
           
-          <h3 className="font-semibold text-sm line-clamp-2 group-hover:text-primary transition-colors">
+          <h3 className="font-semibold text-sm line-clamp-2 group-hover:text-primary transition-colors break-words">
             {product.name}
           </h3>
           
-          <p className="text-xs text-muted-foreground line-clamp-2">
+          <p className="text-xs text-muted-foreground line-clamp-2 break-words">
             {product.description}
           </p>
         </div>

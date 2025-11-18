@@ -76,14 +76,24 @@ export default function ContentManagementPage() {
       icon: 'Settings'
     },
     {
-      id: 'certificate-section',
-      name: 'ESG Certificate Section',
+      id: 'secondary-hero-section',
+      name: 'Secondary Hero Section',
       type: 'section',
-      description: 'ESG certification display with title, description, certificate image, ESG pillars, and CTA buttons',
+      description: 'Secondary hero banner with title, subtitle and CTA buttons',
       lastModified: '2024-01-12',
       status: 'published',
       category: 'homepage',
-      icon: 'Award'
+      icon: 'Type'
+    },
+    {
+      id: 'image-gallery-section',
+      name: 'Image Gallery Section',
+      type: 'section',
+      description: 'Image gallery with hover expand effect and descriptions',
+      lastModified: '2024-01-11',
+      status: 'published',
+      category: 'homepage',
+      icon: 'Image'
     },
     {
       id: 'categories-section',
@@ -91,16 +101,6 @@ export default function ContentManagementPage() {
       type: 'section',
       description: 'Product categories grid display',
       lastModified: '2024-01-11',
-      status: 'published',
-      category: 'homepage',
-      icon: 'Image'
-    },
-    {
-      id: 'brands-section',
-      name: 'Premium Lens Brands Section',
-      type: 'section',
-      description: 'Premium lens brands grid with logos, descriptions, and CTA buttons',
-      lastModified: '2024-01-10',
       status: 'published',
       category: 'homepage',
       icon: 'Image'
@@ -175,16 +175,6 @@ export default function ContentManagementPage() {
       status: 'published',
       category: 'pages',
       icon: 'Award'
-    },
-    {
-      id: 'premium-partners-page',
-      name: 'Premium Partners Page',
-      type: 'page',
-      description: 'Trusted by Leading Eyewear Brands - Premium partners showcase with detailed brand information',
-      lastModified: '2024-01-02',
-      status: 'published',
-      category: 'pages',
-      icon: 'Users'
     },
     // Global Sections
     {
@@ -278,8 +268,8 @@ export default function ContentManagementPage() {
       'hero-section': 'Hero Section',
       'featured-products-section': 'Featured Products Section',
       'stats-section': 'Stats Section',
-      'brands-section': 'Premium Lens Brands Section',
-      'certificate-section': 'ESG Certificate Section',
+      'secondary-hero-section': 'Secondary Hero Section',
+      'image-gallery-section': 'Image Gallery Section',
       'categories-section': 'Categories Section',
       'lenses-section': 'Lenses Section',
       'cta-section': 'CTA Section',
@@ -288,7 +278,6 @@ export default function ContentManagementPage() {
       'products-page': 'Products Page',
       'blog-page': 'Blog Page',
       'esg-certificate-page': 'ESG Certificate Page',
-      'premium-partners-page': 'Premium Partners Page',
       'community-page': 'Community Page',
       'header-section': 'Header Section',
       'footer-section': 'Footer Section'
@@ -301,8 +290,8 @@ export default function ContentManagementPage() {
       'hero-section': 'Main banner with title, subtitle and CTA buttons',
       'featured-products-section': 'Featured products carousel and collection with product selection',
       'stats-section': 'Company statistics and achievements display',
-      'brands-section': 'Premium lens brands grid with logos, descriptions, and CTA buttons',
-      'certificate-section': 'ESG certification display with title, description, certificate image, ESG pillars, and CTA buttons',
+      'secondary-hero-section': 'Secondary hero banner with title, subtitle and CTA buttons',
+      'image-gallery-section': 'Image gallery with hover expand effect and descriptions',
       'categories-section': 'Product categories grid display',
       'lenses-section': 'Premium lens brands and features showcase',
       'cta-section': 'Call-to-action section with buttons',
@@ -311,7 +300,6 @@ export default function ContentManagementPage() {
       'products-page': 'Product catalog and filtering',
       'blog-page': 'Blog posts and articles',
       'esg-certificate-page': 'Environmental, Social & Governance Certification - Synesgy ESG certificate details, impact metrics, and sustainability initiatives',
-      'premium-partners-page': 'Trusted by Leading Eyewear Brands - Premium partners showcase with detailed brand information',
       'community-page': 'Community engagement and social features - Customer stories, reviews, and community interactions',
       'header-section': 'Navigation header with logo, menu items, and dropdowns',
       'footer-section': 'Footer links and company information'
@@ -330,8 +318,8 @@ export default function ContentManagementPage() {
       'hero-section': 'Type',
       'featured-products-section': 'Monitor',
       'stats-section': 'Settings',
-      'brands-section': 'Image',
-      'certificate-section': 'Award',
+      'secondary-hero-section': 'Type',
+      'image-gallery-section': 'Image',
       'categories-section': 'Image',
       'lenses-section': 'Eye',
       'cta-section': 'Type',
@@ -340,7 +328,6 @@ export default function ContentManagementPage() {
       'products-page': 'Monitor',
       'blog-page': 'FileText',
       'esg-certificate-page': 'Award',
-      'premium-partners-page': 'Users',
       'community-page': 'Users',
       'header-section': 'Settings',
       'footer-section': 'Settings'

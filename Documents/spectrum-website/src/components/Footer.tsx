@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Glasses, Facebook, Twitter, Instagram, Youtube, Linkedin, Github, Mail, Phone, MapPin, Globe } from 'lucide-react';
+import { Truck, Facebook, Twitter, Instagram, Youtube, Linkedin, Github, Mail, Phone, MapPin, Globe } from 'lucide-react';
 import { useContent } from '@/hooks/useContent';
 
 export function Footer() {
@@ -49,11 +49,11 @@ export function Footer() {
   // Use content from CMS or fallback to defaults
   const brandName = footerContent?.title;
   const brandLogo = footerContent?.logoImage;
-  const brandDescription = footerContent?.description || 'Discover the perfect eyewear that complements your style and protects your vision. From trendy sunglasses to prescription glasses, we have everything you need.';
+  const brandDescription = footerContent?.description || 'Leading provider of electric commercial vehicles. Experience zero-emission transportation with our premium electric trucks designed for efficiency and sustainability.';
   const newsletterTitle = footerContent?.subtitle || 'Stay Updated';
-  const newsletterDescription = footerContent?.content || 'Subscribe to our newsletter for the latest trends and exclusive offers.';
-  const copyrightText = footerContent?.buttonText || `© ${currentYear} Spectrum. All rights reserved.`;
-  const bottomText = footerContent?.secondaryButtonText || 'Made with ❤️ for your vision';
+  const newsletterDescription = footerContent?.content || 'Subscribe to our newsletter for the latest EV truck models, charging infrastructure updates, and exclusive offers.';
+  const copyrightText = footerContent?.buttonText || `© ${currentYear} Sunny Auto EV Motors. All rights reserved.`;
+  const bottomText = footerContent?.secondaryButtonText || 'Driving the future of sustainable transportation';
 
   // Use footer links from CMS or fallback to defaults
   const footerLinks = {
@@ -96,8 +96,8 @@ export function Footer() {
   }));
 
   return (
-    <footer className="bg-gray-50 border-t">
-      <div className="container mx-auto px-4 py-12">
+    <footer className="bg-white border-t border-slate-200">
+      <div className="container mx-auto px-4 py-12 max-w-[1200px]">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8">
           {/* Brand */}
           <div className="lg:col-span-2">
@@ -106,16 +106,16 @@ export function Footer() {
                 <img 
                   src={brandLogo} 
                   alt={brandName || 'Logo'} 
-                  className="h-24 w-auto object-contain"
+                  className="h-12 w-auto object-contain"
                 />
               ) : (
-                <Glasses className="h-20 w-20 text-primary" />
+                <Truck className="h-12 w-12 text-emerald-600" />
               )}
               {brandName && (
-                <span className="text-2xl font-bold">{brandName}</span>
+                <span className="text-xl font-bold text-slate-900">{brandName}</span>
               )}
             </Link>
-            <p className="text-muted-foreground mb-6 max-w-md">
+            <p className="text-sm text-slate-600 mb-6 max-w-md">
               {brandDescription}
             </p>
             
@@ -127,7 +127,7 @@ export function Footer() {
                   <Link
                     key={social.id || social.name}
                     href={social.href || '#'}
-                    className="p-2 rounded-full bg-white hover:bg-primary hover:text-white transition-colors"
+                    className="p-2 rounded-full bg-slate-100 hover:bg-emerald-600 hover:text-white transition-colors text-slate-700"
                   >
                     {IconComponent && <IconComponent className="h-5 w-5" />}
                   </Link>
@@ -139,13 +139,13 @@ export function Footer() {
           {/* Shop */}
           {footerLinks.shop && footerLinks.shop.length > 0 && (
             <div>
-              <h3 className="font-semibold mb-4">{menuTitles.shop}</h3>
+              <h3 className="text-sm font-semibold mb-3 text-slate-900">{menuTitles.shop}</h3>
               <ul className="space-y-2">
-                {footerLinks.shop.map((link) => (
-                  <li key={link.id || link.name}>
+                {footerLinks.shop.map((link, index) => (
+                  <li key={(link as any).id || link.name || index}>
                     <Link 
                       href={link.href} 
-                      className="text-muted-foreground hover:text-primary transition-colors"
+                      className="text-sm text-slate-600 hover:text-emerald-600 transition-colors"
                     >
                       {link.name}
                     </Link>
@@ -158,13 +158,13 @@ export function Footer() {
           {/* Support */}
           {footerLinks.support && footerLinks.support.length > 0 && (
             <div>
-              <h3 className="font-semibold mb-4">{menuTitles.support}</h3>
+              <h3 className="font-semibold mb-4 text-slate-900">{menuTitles.support}</h3>
               <ul className="space-y-2">
-                {footerLinks.support.map((link) => (
-                  <li key={link.id || link.name}>
+                {footerLinks.support.map((link, index) => (
+                  <li key={(link as any).id || link.name || index}>
                     <Link 
                       href={link.href} 
-                      className="text-muted-foreground hover:text-primary transition-colors"
+                      className="text-sm text-slate-600 hover:text-emerald-600 transition-colors"
                     >
                       {link.name}
                     </Link>
@@ -177,13 +177,13 @@ export function Footer() {
           {/* Company */}
           {footerLinks.company && footerLinks.company.length > 0 && (
             <div>
-              <h3 className="font-semibold mb-4">{menuTitles.company}</h3>
+              <h3 className="font-semibold mb-4 text-slate-900">{menuTitles.company}</h3>
               <ul className="space-y-2">
-                {footerLinks.company.map((link) => (
-                  <li key={link.id || link.name}>
+                {footerLinks.company.map((link, index) => (
+                  <li key={(link as any).id || link.name || index}>
                     <Link 
                       href={link.href} 
-                      className="text-muted-foreground hover:text-primary transition-colors"
+                      className="text-sm text-slate-600 hover:text-emerald-600 transition-colors"
                     >
                       {link.name}
                     </Link>
@@ -196,13 +196,13 @@ export function Footer() {
           {/* Legal */}
           {footerLinks.legal && footerLinks.legal.length > 0 && (
             <div>
-              <h3 className="font-semibold mb-4">{menuTitles.legal}</h3>
+              <h3 className="font-semibold mb-4 text-slate-900">{menuTitles.legal}</h3>
               <ul className="space-y-2">
-                {footerLinks.legal.map((link) => (
-                  <li key={link.id || link.name}>
+                {footerLinks.legal.map((link, index) => (
+                  <li key={(link as any).id || link.name || index}>
                     <Link 
                       href={link.href} 
-                      className="text-muted-foreground hover:text-primary transition-colors"
+                      className="text-sm text-slate-600 hover:text-emerald-600 transition-colors"
                     >
                       {link.name}
                     </Link>
@@ -213,41 +213,25 @@ export function Footer() {
           )}
         </div>
 
-        {/* Newsletter */}
-        <div className="border-t pt-8 mt-8">
-          <div className="max-w-md mx-auto text-center">
-            <h3 className="font-semibold mb-2">{newsletterTitle}</h3>
-            <p className="text-muted-foreground mb-4">
-              {newsletterDescription}
-            </p>
-            <div className="flex gap-2">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-              <button 
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  // Newsletter subscription logic here
-                  console.log('Newsletter subscription clicked');
-                }}
-                className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
-              >
-                Subscribe
-              </button>
-            </div>
-          </div>
-        </div>
-
         {/* Bottom */}
-        <div className="border-t pt-8 mt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-muted-foreground text-sm">
+        <div className="border-t border-slate-200 pt-8 mt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-slate-600 text-sm">
             {copyrightText}
           </p>
-          <div className="flex items-center gap-4 text-sm text-muted-foreground">
-            <span>{bottomText}</span>
+          <div className="flex items-center gap-4 text-sm text-slate-600">
+            <Link href="/privacy-policy" className="hover:text-emerald-600 transition-colors">
+              Privacy Policy
+            </Link>
+            <span className="text-slate-400">|</span>
+            <Link href="/cookie-policy" className="hover:text-emerald-600 transition-colors">
+              Cookie Policy
+            </Link>
+            {bottomText && (
+              <>
+                <span className="text-slate-400">|</span>
+                <span>{bottomText}</span>
+              </>
+            )}
           </div>
         </div>
       </div>

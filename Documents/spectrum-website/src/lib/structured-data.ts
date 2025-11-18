@@ -4,8 +4,8 @@ export function generateOrganizationSchema() {
     '@type': 'Organization',
     name: 'Sunny Auto',
     description: 'Electric vehicle innovator delivering zero-emission mobility with advanced battery technology and a seamless charging ecosystem.',
-    url: 'https://spec-9233a.web.app',
-    logo: 'https://spec-9233a.web.app/logo.png',
+    url: 'https://sunnyauto.vn',
+    logo: 'https://sunnyauto.vn/logo.png',
     contactPoint: {
       '@type': 'ContactPoint',
       telephone: '+84-28-8888-6868',
@@ -34,11 +34,11 @@ export function generateWebsiteSchema() {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: 'Sunny Auto',
-    url: 'https://spec-9233a.web.app',
+    url: 'https://sunnyauto.vn',
     description: "Explore Sunny Auto's electric ecosystem featuring zero-emission SUVs, solid-state batteries, and smart charging services.",
     potentialAction: {
       '@type': 'SearchAction',
-      target: 'https://spec-9233a.web.app/search?q={search_term_string}',
+      target: 'https://sunnyauto.vn/search?q={search_term_string}',
       'query-input': 'required name=search_term_string'
     }
   }
@@ -108,7 +108,7 @@ export function generateBlogPostSchema(post: {
       name: 'Sunny Auto',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://spec-9233a.web.app/logo.png'
+        url: 'https://sunnyauto.vn/logo.png'
       }
     },
     datePublished: post.publishedAt.toISOString(),
@@ -116,7 +116,7 @@ export function generateBlogPostSchema(post: {
     keywords: post.tags.join(', '),
     mainEntityOfPage: {
       '@type': 'WebPage',
-      '@id': `https://spec-9233a.web.app/blog/${post.title.toLowerCase().replace(/\s+/g, '-')}`
+      '@id': `https://sunnyauto.vn/blog/${post.title.toLowerCase().replace(/\s+/g, '-')}`
     }
   }
 }

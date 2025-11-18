@@ -10,7 +10,7 @@ import {
   Plus, Edit, Trash2, Eye, Search,
   Filter, Download, Upload, RefreshCw,
   TrendingUp, ShoppingCart, Heart, Star,
-  FileText, Tag, Type, Monitor, MessageSquare
+  FileText, Tag, Type, Monitor, MessageSquare, Car
 } from 'lucide-react';
 import { useApp } from '@/contexts/AppContext';
 import { getUsers, getCategories, getBlogPosts, getContacts, getProducts } from '@/lib/firebase-firestore';
@@ -522,6 +522,12 @@ export default function AdminPage() {
                   <Link href="/admin/contacts">
                     <MessageSquare className="h-4 w-4 mr-2" />
                     View Messages
+                  </Link>
+                </Button>
+                <Button variant="outline" className="w-full justify-start" asChild>
+                  <Link href="/admin/test-rides">
+                    <Car className="h-4 w-4 mr-2" />
+                    Test Ride Bookings
                   </Link>
                 </Button>
                 <Button variant="outline" className="w-full justify-start">

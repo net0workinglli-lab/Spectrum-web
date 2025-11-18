@@ -41,20 +41,20 @@ export function CertificateSection() {
   }
 
   return (
-    <section className="py-16 bg-gradient-to-br from-gray-50 to-gray-100">
+    <section className="py-20 bg-gradient-to-br from-emerald-50 via-teal-50 to-slate-50">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
           <div className="text-center mb-12">
-            <Badge variant="outline" className="mb-4 bg-green-100 text-green-800 border-green-200">
+            <Badge variant="outline" className="mb-4 border-emerald-500 bg-emerald-100 text-emerald-800 border-emerald-300">
               <Award className="h-4 w-4 mr-2" />
-              Chứng nhận ESG
+              ESG Certified Excellence
             </Badge>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              {content.certificate.title}
+              {content.certificate.title || 'Certified Sustainable Excellence'}
             </h2>
             <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              {content.certificate.description}
+              {content.certificate.description || 'Our commitment to environmental responsibility, social impact, and ethical governance is recognized through our ESG certification.'}
             </p>
           </div>
 
@@ -64,12 +64,12 @@ export function CertificateSection() {
             <div className="relative">
               <Card className="overflow-hidden shadow-xl">
                 <CardContent className="p-0">
-                  <div className="aspect-[3/4] relative">
+                  <div className="aspect-[4/3] relative">
                     <Image
                       src={content.certificate.imageUrl || "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=600&h=800&fit=crop"}
-                      alt="Synesgy ESG Certificate - Spectrum Eyecare"
+                      alt="Synesgy ESG Certificate - Sunny Auto"
                       fill
-                      className="object-contain"
+                      className="object-cover"
                       priority
                     />
                     {/* Overlay with certificate info */}
@@ -79,7 +79,7 @@ export function CertificateSection() {
                           Synesgy ESG Certificate
                         </h3>
                         <p className="text-lg mb-1">
-                          Awarded to Spectrum Eyecare
+                          Awarded to Sunny Auto
                         </p>
                         <p className="text-sm opacity-90">
                           May 5, 2025
@@ -88,7 +88,7 @@ export function CertificateSection() {
                     </div>
                     {/* Certificate badge */}
                     <div className="absolute top-4 right-4">
-                      <Badge className="bg-green-600 text-white shadow-lg">
+                      <Badge className="bg-emerald-600 text-white shadow-lg">
                         <Award className="h-4 w-4 mr-1" />
                         Certified
                       </Badge>
@@ -107,34 +107,35 @@ export function CertificateSection() {
                 <p className="text-gray-600 leading-relaxed">
                   This certification demonstrates our commitment to sustainable practices, 
                   ethical business operations, and environmental responsibility in the 
-                  eyewear industry.
+                  electric vehicle industry. When you choose Sunny Auto, you're supporting 
+                  a company that prioritizes the planet and your future.
                 </p>
               </div>
 
               {/* ESG Pillars */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="text-center p-4 bg-white rounded-lg shadow-sm">
-                  <div className="w-12 h-12 mx-auto mb-3 bg-green-100 rounded-full flex items-center justify-center">
-                    <Leaf className="h-6 w-6 text-green-600" />
+                <div className="text-center p-6 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl border border-emerald-200/50 shadow-sm hover:shadow-md transition-shadow">
+                  <div className="w-14 h-14 mx-auto mb-4 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-2xl flex items-center justify-center shadow-lg">
+                    <Leaf className="h-7 w-7 text-white" />
                   </div>
-                  <h4 className="font-semibold text-gray-900 mb-1">Environmental</h4>
-                  <p className="text-sm text-gray-600">Sustainable materials & processes</p>
+                  <h4 className="font-semibold text-gray-900 mb-2">Environmental</h4>
+                  <p className="text-sm text-gray-600">Zero-emission vehicles & sustainable practices</p>
                 </div>
 
-                <div className="text-center p-4 bg-white rounded-lg shadow-sm">
-                  <div className="w-12 h-12 mx-auto mb-3 bg-gray-100 rounded-full flex items-center justify-center">
-                    <Users className="h-6 w-6 text-gray-600" />
+                <div className="text-center p-6 bg-gradient-to-br from-slate-50 to-gray-50 rounded-2xl border border-slate-200/50 shadow-sm hover:shadow-md transition-shadow">
+                  <div className="w-14 h-14 mx-auto mb-4 bg-gradient-to-br from-slate-600 to-gray-600 rounded-2xl flex items-center justify-center shadow-lg">
+                    <Users className="h-7 w-7 text-white" />
                   </div>
-                  <h4 className="font-semibold text-gray-900 mb-1">Social</h4>
-                  <p className="text-sm text-gray-600">Fair labor & community impact</p>
+                  <h4 className="font-semibold text-gray-900 mb-2">Social</h4>
+                  <p className="text-sm text-gray-600">Community impact & customer satisfaction</p>
                 </div>
 
-                <div className="text-center p-4 bg-white rounded-lg shadow-sm">
-                  <div className="w-12 h-12 mx-auto mb-3 bg-purple-100 rounded-full flex items-center justify-center">
-                    <Shield className="h-6 w-6 text-purple-600" />
+                <div className="text-center p-6 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl border border-emerald-200/50 shadow-sm hover:shadow-md transition-shadow">
+                  <div className="w-14 h-14 mx-auto mb-4 bg-gradient-to-br from-emerald-600 to-teal-600 rounded-2xl flex items-center justify-center shadow-lg">
+                    <Shield className="h-7 w-7 text-white" />
                   </div>
-                  <h4 className="font-semibold text-gray-900 mb-1">Governance</h4>
-                  <p className="text-sm text-gray-600">Transparent & ethical practices</p>
+                  <h4 className="font-semibold text-gray-900 mb-2">Governance</h4>
+                  <p className="text-sm text-gray-600">Transparent & ethical business practices</p>
                 </div>
               </div>
 
@@ -142,17 +143,17 @@ export function CertificateSection() {
               <div className="pt-4">
                 <p className="text-sm text-gray-600 mb-4">
                   Learn more about our sustainability initiatives and how we&apos;re 
-                  making a positive impact on the environment and community.
+                  making a positive impact on the environment and community through electric mobility.
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  <Badge variant="secondary" className="bg-green-100 text-green-800">
-                    Eco-friendly packaging
+                  <Badge variant="secondary" className="bg-emerald-100 text-emerald-800 border border-emerald-200">
+                    Zero-emission vehicles
                   </Badge>
-                  <Badge variant="secondary" className="bg-gray-100 text-gray-800">
-                    Carbon neutral shipping
+                  <Badge variant="secondary" className="bg-teal-100 text-teal-800 border border-teal-200">
+                    Carbon neutral operations
                   </Badge>
-                  <Badge variant="secondary" className="bg-purple-100 text-purple-800">
-                    Ethical sourcing
+                  <Badge variant="secondary" className="bg-slate-100 text-slate-800 border border-slate-200">
+                    Ethical business practices
                   </Badge>
                 </div>
               </div>
@@ -161,16 +162,23 @@ export function CertificateSection() {
 
           {/* Bottom CTA */}
           <div className="text-center mt-12">
-            <p className="text-gray-600 mb-4">
-              Join us in our mission to create a more sustainable future for eyewear.
+            <p className="text-gray-600 mb-4 text-lg">
+              Join us in our mission to create a more sustainable future through electric mobility.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button asChild className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium">
-                <Link href={content.certificate.buttonLink}>
-                  {content.certificate.buttonText}
+              <Button 
+                asChild 
+                className="px-6 py-3 bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-500 text-white rounded-xl hover:shadow-lg shadow-emerald-600/30 transition-all font-medium"
+              >
+                <Link href={content.certificate.buttonLink || '/esg-certificate'}>
+                  {content.certificate.buttonText || 'Learn More'}
                 </Link>
               </Button>
-              <Button asChild variant="outline" className="px-6 py-3 border border-green-600 text-green-600 rounded-lg hover:bg-green-50 transition-colors font-medium">
+              <Button 
+                asChild 
+                variant="outline" 
+                className="px-6 py-3 border-2 border-emerald-600 text-emerald-600 rounded-xl hover:bg-emerald-50 transition-colors font-medium"
+              >
                 <Link href="/esg-certificate">
                   View Full Report
                 </Link>

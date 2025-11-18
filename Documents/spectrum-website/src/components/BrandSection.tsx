@@ -3,6 +3,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Zap } from 'lucide-react';
 import { useHomeContent } from '@/hooks/useHomeContent';
 
 export function BrandSection() {
@@ -26,7 +28,7 @@ export function BrandSection() {
 
   if (isLoading) {
     return (
-      <section className="py-16 bg-gray-50">
+      <section className="py-20 bg-gradient-to-b from-white to-slate-50">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
@@ -46,19 +48,20 @@ export function BrandSection() {
   }
 
   return (
-    <section className="py-16 bg-gray-50">
+    <section className="py-20 bg-gradient-to-b from-white to-slate-50">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
           <div className="text-center mb-16">
-            <div className="inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-xs font-medium w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground mb-4">
-              {content.brands.badgeText || '✨ Premium Partners'}
-            </div>
+            <Badge variant="outline" className="mb-4 border-emerald-400/60 bg-emerald-400/10 text-emerald-700">
+              <Zap className="h-3 w-3 mr-1" />
+              {content.brands.badgeText || 'Premium EV Partners'}
+            </Badge>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-              {content.brands.title || 'Discover Our Premium Lens Brands'}
+              {content.brands.title || 'Trusted Electric Vehicle Brands'}
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
-              {content.brands.description || 'Explore our curated collection of premium eyewear from the world\'s most trusted brands.'}
+              {content.brands.description || 'Explore our curated collection of premium electric vehicles from the world\'s most trusted manufacturers.'}
             </p>
           </div>
 
@@ -67,23 +70,23 @@ export function BrandSection() {
             {brands.map((brand, index) => (
               <div
                 key={brand.name || `brand-${index}`}
-                className="group flex flex-col items-center justify-center p-6 bg-white rounded-xl border border-gray-100 hover:border-gray-200 hover:shadow-lg transition-all duration-500 ease-out"
+                className="group flex flex-col items-center justify-center p-6 bg-white rounded-2xl border border-slate-200 hover:border-emerald-400/60 hover:shadow-xl transition-all duration-300 ease-out hover:-translate-y-1"
               >
-                <div className="relative w-16 h-10 mb-4">
+                <div className="relative w-20 h-12 mb-4">
                   <Image
                     src={brand.logo}
                     alt={brand.name || 'Brand logo'}
                     fill
-                    className="object-contain transition-transform duration-500 ease-out group-hover:scale-105"
+                    className="object-contain transition-transform duration-300 ease-out group-hover:scale-110"
                   />
                 </div>
                 {brand.name && (
-                  <h3 className="text-sm font-medium text-gray-800 text-center transition-colors duration-300 group-hover:text-gray-900">
+                  <h3 className="text-sm font-medium text-gray-800 text-center transition-colors duration-300 group-hover:text-emerald-700">
                     {brand.name}
                   </h3>
                 )}
                 {brand.description && (
-                  <div className="mt-2 h-0 overflow-hidden transition-all duration-500 ease-out group-hover:h-8">
+                  <div className="mt-2 h-0 overflow-hidden transition-all duration-300 ease-out group-hover:h-8">
                     <p className="text-xs text-gray-500 text-center leading-tight">
                       {brand.description}
                     </p>
@@ -96,18 +99,25 @@ export function BrandSection() {
           {/* Bottom CTA */}
           <div className="text-center mt-16">
             <p className="text-gray-600 mb-8 text-lg">
-              {content.brands.bottomCtaText || 'Discover our complete collection of premium eyewear from these trusted brands'}
+              {content.brands.bottomCtaText || 'Discover our complete collection of premium electric vehicles from these trusted manufacturers'}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               {content.brands.buttonText && (
-                <Button asChild className="px-8 py-4 bg-gray-900 text-white rounded-xl hover:bg-gray-800 transition-all duration-300 font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                <Button 
+                  asChild 
+                  className="px-8 py-4 bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-500 text-white rounded-xl hover:shadow-xl shadow-lg shadow-emerald-600/30 hover:shadow-emerald-600/40 transition-all duration-300 font-medium transform hover:-translate-y-0.5"
+                >
                   <Link href={content.brands.buttonLink || '/products'}>
                     {content.brands.buttonText}
                   </Link>
                 </Button>
               )}
               {content.brands.secondaryButtonText && (
-                <Button asChild variant="outline" className="px-8 py-4 border-2 border-gray-200 text-gray-700 rounded-xl hover:border-gray-900 hover:text-gray-900 hover:bg-gray-50 transition-all duration-300 font-medium">
+                <Button 
+                  asChild 
+                  variant="outline" 
+                  className="px-8 py-4 border-2 border-emerald-400/60 text-emerald-700 rounded-xl hover:border-emerald-600 hover:text-emerald-800 hover:bg-emerald-50 transition-all duration-300 font-medium"
+                >
                   <Link href={content.brands.secondaryButtonLink || '/premium-partners'}>
                     {content.brands.secondaryButtonText}
                   </Link>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -17,19 +17,21 @@ import Link from 'next/link';
 import { useApp } from '@/contexts/AppContext';
 import { useContent, ContentData, DropdownItem } from '@/hooks/useContent';
 import { ImageUpload } from '@/components/ImageUpload';
+import { VideoUpload } from '@/components/VideoUpload';
 import DropdownManager from '@/components/admin/DropdownManager';
+import StatsManager from '@/components/admin/StatsManager';
 import ProductSelector from '@/components/admin/ProductSelector';
 
 // ContentData interface is imported from hook
 
 // generateStaticParams is in separate file
 
-export default function EditContentPage({ params }: { params: { id: string } }) {
+export default function EditContentPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
   const { isLoggedIn, user } = useApp();
-  const { content, isLoading, isSaving, error, saveContent, updateContent } = useContent(params.id);
+  const { content, isLoading, isSaving, error, saveContent, updateContent } = useContent(id);
   const [hasChanges, setHasChanges] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
-  const [newLogoUrl, setNewLogoUrl] = useState('');
 
   // Check if user is admin
   const isAdmin = user?.email === 'admin@spectrum.com' || user?.email === 'nguyenphuocsang@gmail.com';
@@ -58,63 +60,6 @@ export default function EditContentPage({ params }: { params: { id: string } }) 
     }
   };
 
-  // Brand logos management functions
-  const addBrandLogo = () => {
-    if (!newLogoUrl.trim() || !content) return;
-    
-    const currentLogos = content.brandLogos || [];
-    if (currentLogos.length >= 8) {
-      alert('Maximum 8 brand logos allowed');
-      return;
-    }
-    
-    if (currentLogos.includes(newLogoUrl.trim())) {
-      alert('This logo URL is already added');
-      return;
-    }
-    
-    const updatedLogos = [...currentLogos, newLogoUrl.trim()];
-    updateContent({ brandLogos: updatedLogos });
-    setNewLogoUrl('');
-    setHasChanges(true);
-  };
-
-  const removeBrandLogo = (index: number) => {
-    if (!content) return;
-    
-    const currentLogos = content.brandLogos || [];
-    const updatedLogos = currentLogos.filter((_, i) => i !== index);
-    updateContent({ brandLogos: updatedLogos });
-    setHasChanges(true);
-  };
-
-  const addPresetLogo = (url: string) => {
-    if (!content) return;
-    
-    const currentLogos = content.brandLogos || [];
-    if (currentLogos.length >= 8) {
-      alert('Maximum 8 brand logos allowed');
-      return;
-    }
-    
-    if (currentLogos.includes(url)) {
-      alert('This logo is already added');
-      return;
-    }
-    
-    const updatedLogos = [...currentLogos, url];
-    updateContent({ brandLogos: updatedLogos });
-    setHasChanges(true);
-  };
-
-  const clearAllLogos = () => {
-    if (!content) return;
-    
-    if (confirm('Are you sure you want to remove all brand logos?')) {
-      updateContent({ brandLogos: [] });
-      setHasChanges(true);
-    }
-  };
 
   if (!isLoggedIn || !isAdmin) {
     return (
@@ -265,31 +210,26 @@ export default function EditContentPage({ params }: { params: { id: string } }) 
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <Type className="h-5 w-5" />
-                          <CardTitle>Hero Slides Management</CardTitle>
+                          <CardTitle>Hero Content</CardTitle>
                         </div>
-                        <Badge variant="outline">{content.slides?.length || 0} / 6 slides</Badge>
+                        <Badge variant="outline" className="bg-blue-100 text-blue-800">Single Content</Badge>
                       </div>
                     </CardHeader>
                     <CardContent className="space-y-6">
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                        {[1, 2, 3, 4, 5, 6].map((slideId) => {
-                        const slide = content.slides?.find(s => s.id === slideId) || {
-                          id: slideId,
+                      {(() => {
+                        const slide = content.slides?.find(s => s.id === 1) || {
+                          id: 1,
                           title: '',
                           subtitle: '',
                           image: '',
+                          video: '',
                           cta: '',
                           href: ''
                         };
                         
                         return (
-                          <Card key={slideId} className="p-4">
+                          <Card className="p-4">
                             <div className="space-y-3">
-                              <div className="flex items-center gap-2">
-                                <Badge variant="outline">Slide {slideId}</Badge>
-                                {slideId === 1 && <Badge className="bg-blue-100 text-blue-800">Dynamic from CMS</Badge>}
-                                {slideId > 1 && <Badge className="bg-gray-100 text-gray-800">Static</Badge>}
-                              </div>
                               
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                 <div>
@@ -298,15 +238,15 @@ export default function EditContentPage({ params }: { params: { id: string } }) 
                                     value={slide.title}
                                     onChange={(e) => {
                                       const newSlides = [...(content.slides || [])];
-                                      const existingIndex = newSlides.findIndex(s => s.id === slideId);
+                                      const existingIndex = newSlides.findIndex(s => s.id === 1);
                                       if (existingIndex >= 0) {
                                         newSlides[existingIndex] = { ...newSlides[existingIndex], title: e.target.value };
                                       } else {
-                                        newSlides.push({ ...slide, title: e.target.value });
+                                        newSlides.push({ ...slide, title: e.target.value, id: 1 });
                                       }
                                       handleInputChange('slides', newSlides);
                                     }}
-                                    placeholder="Slide title..."
+                                    placeholder="Hero title..."
                                   />
                                 </div>
                                 <div>
@@ -315,34 +255,54 @@ export default function EditContentPage({ params }: { params: { id: string } }) 
                                     value={slide.subtitle}
                                     onChange={(e) => {
                                       const newSlides = [...(content.slides || [])];
-                                      const existingIndex = newSlides.findIndex(s => s.id === slideId);
+                                      const existingIndex = newSlides.findIndex(s => s.id === 1);
                                       if (existingIndex >= 0) {
                                         newSlides[existingIndex] = { ...newSlides[existingIndex], subtitle: e.target.value };
                                       } else {
-                                        newSlides.push({ ...slide, subtitle: e.target.value });
+                                        newSlides.push({ ...slide, subtitle: e.target.value, id: 1 });
                                       }
                                       handleInputChange('slides', newSlides);
                                     }}
-                                    placeholder="Slide subtitle..."
+                                    placeholder="Hero subtitle..."
                                   />
                                 </div>
                               </div>
                               
-                              <div>
-                                <ImageUpload
-                                  value={slide.image}
-                                  onChange={(url) => {
-                                    const newSlides = [...(content.slides || [])];
-                                    const existingIndex = newSlides.findIndex(s => s.id === slideId);
-                                    if (existingIndex >= 0) {
-                                      newSlides[existingIndex] = { ...newSlides[existingIndex], image: url };
-                                    } else {
-                                      newSlides.push({ ...slide, image: url });
-                                    }
-                                    handleInputChange('slides', newSlides);
-                                  }}
-                                  placeholder="https://example.com/slide-image.jpg"
-                                />
+                              <div className="space-y-3">
+                                <div>
+                                  <ImageUpload
+                                    value={slide.image}
+                                    onChange={(url) => {
+                                      const newSlides = [...(content.slides || [])];
+                                      const existingIndex = newSlides.findIndex(s => s.id === 1);
+                                      if (existingIndex >= 0) {
+                                        newSlides[existingIndex] = { ...newSlides[existingIndex], image: url };
+                                      } else {
+                                        newSlides.push({ ...slide, image: url, id: 1 });
+                                      }
+                                      handleInputChange('slides', newSlides);
+                                    }}
+                                    placeholder="https://example.com/slide-image.jpg"
+                                    label="Background Image"
+                                  />
+                                </div>
+                                <div>
+                                  <VideoUpload
+                                    value={slide.video}
+                                    onChange={(url) => {
+                                      const newSlides = [...(content.slides || [])];
+                                      const existingIndex = newSlides.findIndex(s => s.id === 1);
+                                      if (existingIndex >= 0) {
+                                        newSlides[existingIndex] = { ...newSlides[existingIndex], video: url };
+                                      } else {
+                                        newSlides.push({ ...slide, video: url, id: 1 });
+                                      }
+                                      handleInputChange('slides', newSlides);
+                                    }}
+                                    placeholder="https://example.com/slide-video.mp4 or YouTube/Vimeo URL"
+                                    label="Background Video (Optional - will override image if provided)"
+                                  />
+                                </div>
                               </div>
                               
                               <div className="grid grid-cols-2 gap-3">
@@ -352,11 +312,11 @@ export default function EditContentPage({ params }: { params: { id: string } }) 
                                     value={slide.cta}
                                     onChange={(e) => {
                                       const newSlides = [...(content.slides || [])];
-                                      const existingIndex = newSlides.findIndex(s => s.id === slideId);
+                                      const existingIndex = newSlides.findIndex(s => s.id === 1);
                                       if (existingIndex >= 0) {
                                         newSlides[existingIndex] = { ...newSlides[existingIndex], cta: e.target.value };
                                       } else {
-                                        newSlides.push({ ...slide, cta: e.target.value });
+                                        newSlides.push({ ...slide, cta: e.target.value, id: 1 });
                                       }
                                       handleInputChange('slides', newSlides);
                                     }}
@@ -369,11 +329,11 @@ export default function EditContentPage({ params }: { params: { id: string } }) 
                                     value={slide.href}
                                     onChange={(e) => {
                                       const newSlides = [...(content.slides || [])];
-                                      const existingIndex = newSlides.findIndex(s => s.id === slideId);
+                                      const existingIndex = newSlides.findIndex(s => s.id === 1);
                                       if (existingIndex >= 0) {
                                         newSlides[existingIndex] = { ...newSlides[existingIndex], href: e.target.value };
                                       } else {
-                                        newSlides.push({ ...slide, href: e.target.value });
+                                        newSlides.push({ ...slide, href: e.target.value, id: 1 });
                                       }
                                       handleInputChange('slides', newSlides);
                                     }}
@@ -384,8 +344,7 @@ export default function EditContentPage({ params }: { params: { id: string } }) 
                             </div>
                           </Card>
                         );
-                      })}
-                      </div>
+                      })()}
                     </CardContent>
                   </Card>
 
@@ -408,222 +367,6 @@ export default function EditContentPage({ params }: { params: { id: string } }) 
                     </CardContent>
                   </Card>
                 </div>
-              ) : content.id === 'brands-section' ? (
-                /* Brands Section Editor */
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Type className="h-5 w-5" />
-                      Premium Lens Brands Section Editor
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    <div className="space-y-2">
-                      <Label>Badge Text</Label>
-                      <Input
-                        value={content.badgeText || '✨ Premium Partners'}
-                        onChange={(e) => handleInputChange('badgeText', e.target.value)}
-                        placeholder="Badge text..."
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Title</Label>
-                      <Input
-                        value={content.title}
-                        onChange={(e) => handleInputChange('title', e.target.value)}
-                        placeholder="Enter title..."
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Description</Label>
-                      <textarea
-                        value={content.description}
-                        onChange={(e) => handleInputChange('description', e.target.value)}
-                        placeholder="Enter description..."
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        rows={3}
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Bottom CTA Text</Label>
-                      <Input
-                        value={content.bottomCtaText || 'Discover our complete collection of premium eyewear from these trusted brands'}
-                        onChange={(e) => handleInputChange('bottomCtaText', e.target.value)}
-                        placeholder="Bottom CTA text..."
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label>Primary Button Text</Label>
-                        <Input
-                          value={content.buttonText}
-                          onChange={(e) => handleInputChange('buttonText', e.target.value)}
-                          placeholder="Primary button text..."
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label>Primary Button Link</Label>
-                        <Input
-                          value={content.buttonLink}
-                          onChange={(e) => handleInputChange('buttonLink', e.target.value)}
-                          placeholder="/link"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label>Secondary Button Text</Label>
-                        <Input
-                          value={content.secondaryButtonText || 'View Brand Stories'}
-                          onChange={(e) => handleInputChange('secondaryButtonText', e.target.value)}
-                          placeholder="Secondary button text..."
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label>Secondary Button Link</Label>
-                        <Input
-                          value={content.secondaryButtonLink || '/premium-partners'}
-                          onChange={(e) => handleInputChange('secondaryButtonLink', e.target.value)}
-                          placeholder="/link"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-4">
-                      <Label>Brand Logos</Label>
-                      
-                      {/* Add New Logo */}
-                      <div className="space-y-2">
-                        <div className="flex gap-2">
-                          <Input
-                            placeholder="https://example.com/brand-logo.jpg"
-                            value={newLogoUrl}
-                            onChange={(e) => setNewLogoUrl(e.target.value)}
-                            onKeyPress={(e) => {
-                              if (e.key === 'Enter') {
-                                e.preventDefault();
-                                addBrandLogo();
-                              }
-                            }}
-                            className="flex-1"
-                          />
-                          <Button
-                            type="button"
-                            onClick={addBrandLogo}
-                            disabled={!newLogoUrl.trim()}
-                            size="sm"
-                          >
-                            Add Logo
-                          </Button>
-                        </div>
-                        <p className="text-xs text-gray-500">
-                          Enter a brand logo URL and click "Add Logo" to add it to the grid.
-                        </p>
-                      </div>
-
-                      {/* Brand Logos Grid */}
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm font-medium">Current Brand Logos ({content.brandLogos?.length || 0}/8)</span>
-                          {content.brandLogos && content.brandLogos.length > 0 && (
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={clearAllLogos}
-                            >
-                              Clear All
-                            </Button>
-                          )}
-                        </div>
-                        
-                        {content.brandLogos && content.brandLogos.length > 0 ? (
-                          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                            {content.brandLogos.map((logoUrl, index) => (
-                              <div key={index} className="relative group">
-                                <div className="border rounded-lg p-3 bg-white hover:shadow-md transition-shadow">
-                                  <div className="aspect-video bg-gray-100 rounded mb-2 overflow-hidden">
-                                    <img
-                                      src={logoUrl}
-                                      alt={`Brand ${index + 1}`}
-                                      className="w-full h-full object-contain"
-                                      onError={(e) => {
-                                        e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjUwIiB2aWV3Qm94PSIwIDAgMTAwIDUwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iNTAiIGZpbGw9IiNmM2Y0ZjYiLz48dGV4dCB4PSI1MCIgeT0iMjgiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzk5YTNhZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+SW52YWxpZDwvdGV4dD48L3N2Zz4=';
-                                      }}
-                                    />
-                                  </div>
-                                  <div className="text-center">
-                                    <p className="text-xs text-gray-600 truncate">Brand {index + 1}</p>
-                                    <p className="text-xs text-gray-400 truncate">{logoUrl.split('/').pop()}</p>
-                                  </div>
-                                </div>
-                                <Button
-                                  type="button"
-                                  variant="destructive"
-                                  size="sm"
-                                  className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                                  onClick={() => removeBrandLogo(index)}
-                                >
-                                  <X className="h-3 w-3" />
-                                </Button>
-                              </div>
-                            ))}
-                          </div>
-                        ) : (
-                          <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-                            <Image className="h-12 w-12 mx-auto mb-4 text-gray-400" />
-                            <p className="text-sm text-gray-500 mb-2">No brand logos added yet</p>
-                            <p className="text-xs text-gray-400">Add your first brand logo above</p>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Quick Add Presets */}
-                      <div className="space-y-2">
-                        <Label className="text-sm">Quick Add Popular Brands</Label>
-                        <div className="flex flex-wrap gap-2">
-                          {[
-                            { name: 'Ray-Ban', url: 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=200&h=100&fit=crop' },
-                            { name: 'Oakley', url: 'https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=200&h=100&fit=crop' },
-                            { name: 'Persol', url: 'https://images.unsplash.com/photo-1556306535-38febf6782e7?w=200&h=100&fit=crop' },
-                            { name: 'Warby Parker', url: 'https://images.unsplash.com/photo-1574258495973-f010dfbb5371?w=200&h=100&fit=crop' },
-                            { name: 'Tom Ford', url: 'https://images.unsplash.com/photo-1506629905607-7b1b0b0b0b0b?w=200&h=100&fit=crop' },
-                            { name: 'Gucci', url: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=200&h=100&fit=crop' }
-                          ].map((brand) => (
-                            <Button
-                              key={brand.name}
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={() => addPresetLogo(brand.url)}
-                              disabled={content.brandLogos?.includes(brand.url) || (content.brandLogos?.length || 0) >= 8}
-                              className="text-xs"
-                            >
-                              {brand.name}
-                            </Button>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Status</Label>
-                      <select
-                        value={content.status}
-                        onChange={(e) => handleInputChange('status', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      >
-                        <option value="draft">Draft</option>
-                        <option value="published">Published</option>
-                      </select>
-                    </div>
-                  </CardContent>
-                </Card>
               ) : content.id === 'header-section' ? (
                 /* Header Section Editor - 2 Column Layout */
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -641,9 +384,9 @@ export default function EditContentPage({ params }: { params: { id: string } }) 
                         <div className="space-y-2">
                           <Label>Logo Text</Label>
                           <Input
-                            value={content.logoText || 'Spectrum'}
+                            value={content.logoText || ''}
                             onChange={(e) => handleInputChange('logoText', e.target.value)}
-                            placeholder="Spectrum"
+                            placeholder="Logo text..."
                           />
                         </div>
                         
@@ -660,18 +403,18 @@ export default function EditContentPage({ params }: { params: { id: string } }) 
                         <div className="space-y-2">
                           <Label>Top Bar Left Text</Label>
                           <Input
-                            value={content.topBarLeft || 'Free consultation and eye exam'}
+                            value={content.topBarLeft || ''}
                             onChange={(e) => handleInputChange('topBarLeft', e.target.value)}
-                            placeholder="Free consultation and eye exam"
+                            placeholder="Top bar left text..."
                           />
                         </div>
 
                         <div className="space-y-2">
                           <Label>Top Bar Right Text</Label>
                           <Input
-                            value={content.topBarRight || '30-day return policy'}
+                            value={content.topBarRight || ''}
                             onChange={(e) => handleInputChange('topBarRight', e.target.value)}
-                            placeholder="30-day return policy"
+                            placeholder="Top bar right text..."
                           />
                         </div>
 
@@ -679,18 +422,18 @@ export default function EditContentPage({ params }: { params: { id: string } }) 
                         <div className="space-y-2">
                           <Label>Blog Link Text</Label>
                           <Input
-                            value={content.blogLinkText || 'Blog'}
+                            value={content.blogLinkText || ''}
                             onChange={(e) => handleInputChange('blogLinkText', e.target.value)}
-                            placeholder="Blog"
+                            placeholder="Blog link text..."
                           />
                         </div>
 
                         <div className="space-y-2">
                           <Label>Contact Link Text</Label>
                           <Input
-                            value={content.contactLinkText || 'Contact'}
+                            value={content.contactLinkText || ''}
                             onChange={(e) => handleInputChange('contactLinkText', e.target.value)}
-                            placeholder="Contact"
+                            placeholder="Contact link text..."
                           />
                         </div>
 
@@ -698,9 +441,9 @@ export default function EditContentPage({ params }: { params: { id: string } }) 
                         <div className="space-y-2">
                           <Label>Search Placeholder</Label>
                           <Input
-                            value={content.searchPlaceholder || 'Search glasses, brands...'}
+                            value={content.searchPlaceholder || ''}
                             onChange={(e) => handleInputChange('searchPlaceholder', e.target.value)}
-                            placeholder="Search glasses, brands..."
+                            placeholder="Search placeholder text..."
                           />
                         </div>
 
@@ -712,7 +455,7 @@ export default function EditContentPage({ params }: { params: { id: string } }) 
                             <div className="space-y-2">
                               <Label className="text-sm">Dropdown Menu 1 Title</Label>
                               <Input
-                                value={content.productsDropdownTitle || 'Products'}
+                                value={content.productsDropdownTitle || ''}
                                 onChange={(e) => handleInputChange('productsDropdownTitle', e.target.value)}
                                 placeholder="e.g. Products, Shop, Categories"
                               />
@@ -721,7 +464,7 @@ export default function EditContentPage({ params }: { params: { id: string } }) 
                             <div className="space-y-2">
                               <Label className="text-sm">Dropdown Menu 2 Title</Label>
                               <Input
-                                value={content.brandsDropdownTitle || 'Brands'}
+                                value={content.brandsDropdownTitle || ''}
                                 onChange={(e) => handleInputChange('brandsDropdownTitle', e.target.value)}
                                 placeholder="e.g. Brands, Partners, Collections"
                               />
@@ -730,7 +473,7 @@ export default function EditContentPage({ params }: { params: { id: string } }) 
                             <div className="space-y-2">
                               <Label className="text-sm">Dropdown Menu 3 Title</Label>
                               <Input
-                                value={content.lensesDropdownTitle || 'Lenses'}
+                                value={content.lensesDropdownTitle || ''}
                                 onChange={(e) => handleInputChange('lensesDropdownTitle', e.target.value)}
                                 placeholder="e.g. Lenses, Technology, Solutions"
                               />
@@ -872,7 +615,7 @@ export default function EditContentPage({ params }: { params: { id: string } }) 
                     <div className="space-y-2">
                       <Label>Hero Title</Label>
                       <Input
-                        value={content.heroTitle || 'Among Vietnam\'s First Sustainable Eyewear Retailers'}
+                        value={content.heroTitle || ''}
                         onChange={(e) => handleInputChange('heroTitle', e.target.value)}
                         placeholder="Hero title..."
                       />
@@ -1026,152 +769,6 @@ export default function EditContentPage({ params }: { params: { id: string } }) 
                           value={content.secondaryButtonLink || '/eco-friendly'}
                           onChange={(e) => handleInputChange('secondaryButtonLink', e.target.value)}
                           placeholder="/eco-friendly"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Status</Label>
-                      <select
-                        value={content.status}
-                        onChange={(e) => handleInputChange('status', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      >
-                        <option value="draft">Draft</option>
-                        <option value="published">Published</option>
-                      </select>
-                    </div>
-                  </CardContent>
-                </Card>
-              ) : content.id === 'premium-partners-page' ? (
-                /* Premium Partners Page Editor */
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Type className="h-5 w-5" />
-                      Premium Partners Page Editor
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    <div className="space-y-2">
-                      <Label>Page Title</Label>
-                      <Input
-                        value={content.title}
-                        onChange={(e) => handleInputChange('title', e.target.value)}
-                        placeholder="Premium Partners"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Page Subtitle</Label>
-                      <Input
-                        value={content.subtitle}
-                        onChange={(e) => handleInputChange('subtitle', e.target.value)}
-                        placeholder="Trusted by Leading Eyewear Brands"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Hero Badge Text</Label>
-                      <Input
-                        value={content.badgeText || 'Premium Partners'}
-                        onChange={(e) => handleInputChange('badgeText', e.target.value)}
-                        placeholder="Premium Partners"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Hero Title</Label>
-                      <Input
-                        value={content.heroTitle || 'Trusted by Leading Brands'}
-                        onChange={(e) => handleInputChange('heroTitle', e.target.value)}
-                        placeholder="Trusted by Leading Brands"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Hero Description</Label>
-                      <textarea
-                        value={content.heroDescription || 'We partner with the world\'s most prestigious eyewear brands to bring you the finest selection of sunglasses and eyeglasses. Our exclusive partnerships ensure you have access to the latest collections and limited editions.'}
-                        onChange={(e) => handleInputChange('heroDescription', e.target.value)}
-                        placeholder="Hero description..."
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        rows={4}
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Partnership Benefits Title</Label>
-                      <Input
-                        value={content.benefitsTitle || 'Why Partner with Us?'}
-                        onChange={(e) => handleInputChange('benefitsTitle', e.target.value)}
-                        placeholder="Why Partner with Us?"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Partnership Stats Title</Label>
-                      <Input
-                        value={content.statsTitle || 'Partnership Statistics'}
-                        onChange={(e) => handleInputChange('statsTitle', e.target.value)}
-                        placeholder="Partnership Statistics"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>CTA Section Title</Label>
-                      <Input
-                        value={content.ctaTitle || 'Interested in Partnership?'}
-                        onChange={(e) => handleInputChange('ctaTitle', e.target.value)}
-                        placeholder="Interested in Partnership?"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>CTA Description</Label>
-                      <textarea
-                        value={content.ctaDescription || 'We\'re always looking for new premium brands to partner with. Join our exclusive network and reach discerning customers worldwide.'}
-                        onChange={(e) => handleInputChange('ctaDescription', e.target.value)}
-                        placeholder="CTA description..."
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        rows={3}
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label>Primary CTA Text</Label>
-                        <Input
-                          value={content.buttonText}
-                          onChange={(e) => handleInputChange('buttonText', e.target.value)}
-                          placeholder="Contact Partnership Team"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label>Primary CTA Link</Label>
-                        <Input
-                          value={content.buttonLink}
-                          onChange={(e) => handleInputChange('buttonLink', e.target.value)}
-                          placeholder="/contact"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label>Secondary CTA Text</Label>
-                        <Input
-                          value={content.secondaryButtonText || 'Browse All Products'}
-                          onChange={(e) => handleInputChange('secondaryButtonText', e.target.value)}
-                          placeholder="Browse All Products"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label>Secondary CTA Link</Label>
-                        <Input
-                          value={content.secondaryButtonLink || '/products'}
-                          onChange={(e) => handleInputChange('secondaryButtonLink', e.target.value)}
-                          placeholder="/products"
                         />
                       </div>
                     </div>
@@ -1348,161 +945,228 @@ export default function EditContentPage({ params }: { params: { id: string } }) 
                     />
                   </div>
                 </div>
-              ) : content.id === 'certificate-section' ? (
-                /* Certificate Section Editor */
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Type className="h-5 w-5" />
-                      ESG Certificate Section Editor
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    <div className="space-y-2">
-                      <Label>Badge Text</Label>
-                      <Input
-                        value={content.badgeText || 'Chứng nhận ESG'}
-                        onChange={(e) => handleInputChange('badgeText', e.target.value)}
-                        placeholder="Badge text..."
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Title</Label>
-                      <Input
-                        value={content.title}
-                        onChange={(e) => handleInputChange('title', e.target.value)}
-                        placeholder="Enter title..."
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Description</Label>
-                      <textarea
-                        value={content.description}
-                        onChange={(e) => handleInputChange('description', e.target.value)}
-                        placeholder="Enter description..."
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        rows={3}
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <ImageUpload
-                        value={content.imageUrl}
-                        onChange={(url) => handleInputChange('imageUrl', url)}
-                        placeholder="https://example.com/certificate-image.jpg"
-                        label="Certificate Image"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Certificate Title (Overlay)</Label>
-                      <Input
-                        value={content.certificateTitle || 'Synesgy ESG Certificate'}
-                        onChange={(e) => handleInputChange('certificateTitle', e.target.value)}
-                        placeholder="Certificate title..."
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Certificate Subtitle (Overlay)</Label>
-                      <Input
-                        value={content.certificateSubtitle || 'Awarded to Spectrum Eyecare'}
-                        onChange={(e) => handleInputChange('certificateSubtitle', e.target.value)}
-                        placeholder="Certificate subtitle..."
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Certificate Date (Overlay)</Label>
-                      <Input
-                        value={content.certificateDate || 'May 5, 2025'}
-                        onChange={(e) => handleInputChange('certificateDate', e.target.value)}
-                        placeholder="Certificate date..."
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>What This Means Title</Label>
-                      <Input
-                        value={content.whatThisMeansTitle || 'What This Means for You'}
-                        onChange={(e) => handleInputChange('whatThisMeansTitle', e.target.value)}
-                        placeholder="What this means title..."
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>What This Means Description</Label>
-                      <textarea
-                        value={content.whatThisMeansDescription || 'This certification demonstrates our commitment to sustainable practices, ethical business operations, and environmental responsibility in the eyewear industry.'}
-                        onChange={(e) => handleInputChange('whatThisMeansDescription', e.target.value)}
-                        placeholder="What this means description..."
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        rows={3}
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Bottom CTA Text</Label>
-                      <Input
-                        value={content.bottomCtaText || 'Join us in our mission to create a more sustainable future for eyewear.'}
-                        onChange={(e) => handleInputChange('bottomCtaText', e.target.value)}
-                        placeholder="Bottom CTA text..."
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label>Primary Button Text</Label>
-                        <Input
-                          value={content.buttonText}
-                          onChange={(e) => handleInputChange('buttonText', e.target.value)}
-                          placeholder="Primary button text..."
-                        />
+              ) : content.id === 'secondary-hero-section' ? (
+                <div className="space-y-6">
+                  <Card>
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <Type className="h-5 w-5" />
+                          <CardTitle>Secondary Hero Content</CardTitle>
+                        </div>
+                        <Badge variant="outline" className="bg-blue-100 text-blue-800">Single Content</Badge>
                       </div>
-                      <div className="space-y-2">
-                        <Label>Primary Button Link</Label>
-                        <Input
-                          value={content.buttonLink}
-                          onChange={(e) => handleInputChange('buttonLink', e.target.value)}
-                          placeholder="/link"
-                        />
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div>
+                          <Label className="text-sm">Title</Label>
+                          <Input
+                            value={content.title || ''}
+                            onChange={(e) => handleInputChange('title', e.target.value)}
+                            placeholder="Hero title..."
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-sm">Subtitle</Label>
+                          <Input
+                            value={content.subtitle || ''}
+                            onChange={(e) => handleInputChange('subtitle', e.target.value)}
+                            placeholder="Hero subtitle..."
+                          />
+                        </div>
                       </div>
-                    </div>
+                      
+                      <div className="space-y-3">
+                        <div>
+                          <ImageUpload
+                            value={content.imageUrl || ''}
+                            onChange={(url) => handleInputChange('imageUrl', url)}
+                            placeholder="https://example.com/hero-image.jpg"
+                            label="Background Image"
+                          />
+                        </div>
+                        <div>
+                          <VideoUpload
+                            value={content.video || ''}
+                            onChange={(url) => handleInputChange('video', url)}
+                            placeholder="https://example.com/hero-video.mp4 or YouTube/Vimeo URL"
+                            label="Background Video (Optional - will override image if provided)"
+                          />
+                        </div>
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <Label className="text-sm">Button Text</Label>
+                          <Input
+                            value={content.buttonText || ''}
+                            onChange={(e) => handleInputChange('buttonText', e.target.value)}
+                            placeholder="Button text..."
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-sm">Button Link</Label>
+                          <Input
+                            value={content.buttonLink || ''}
+                            onChange={(e) => handleInputChange('buttonLink', e.target.value)}
+                            placeholder="/link"
+                          />
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
 
-                    <div className="grid grid-cols-2 gap-4">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Publication Status</CardTitle>
+                    </CardHeader>
+                    <CardContent>
                       <div className="space-y-2">
-                        <Label>Secondary Button Text</Label>
-                        <Input
-                          value={content.secondaryButtonText || 'View Full Report'}
-                          onChange={(e) => handleInputChange('secondaryButtonText', e.target.value)}
-                          placeholder="Secondary button text..."
-                        />
+                        <Label>Status</Label>
+                        <select
+                          value={content.status}
+                          onChange={(e) => handleInputChange('status', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        >
+                          <option value="draft">Draft</option>
+                          <option value="published">Published</option>
+                        </select>
                       </div>
-                      <div className="space-y-2">
-                        <Label>Secondary Button Link</Label>
-                        <Input
-                          value={content.secondaryButtonLink || '/esg-certificate'}
-                          onChange={(e) => handleInputChange('secondaryButtonLink', e.target.value)}
-                          placeholder="/link"
-                        />
+                    </CardContent>
+                  </Card>
+                </div>
+              ) : content.id === 'image-gallery-section' ? (
+                <div className="space-y-6">
+                  <Card>
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <Type className="h-5 w-5" />
+                          <CardTitle>Image Gallery Content</CardTitle>
+                        </div>
+                        <Badge variant="outline" className="bg-blue-100 text-blue-800">Max 3 Images</Badge>
                       </div>
-                    </div>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div>
+                          <Label className="text-sm">Section Title (Optional)</Label>
+                          <Input
+                            value={content.title || ''}
+                            onChange={(e) => handleInputChange('title', e.target.value)}
+                            placeholder="Section title..."
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-sm">Section Subtitle (Optional)</Label>
+                          <Input
+                            value={content.subtitle || ''}
+                            onChange={(e) => handleInputChange('subtitle', e.target.value)}
+                            placeholder="Section subtitle..."
+                          />
+                        </div>
+                      </div>
 
-                    <div className="space-y-2">
-                      <Label>Status</Label>
-                      <select
-                        value={content.status}
-                        onChange={(e) => handleInputChange('status', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      >
-                        <option value="draft">Draft</option>
-                        <option value="published">Published</option>
-                      </select>
-                    </div>
-                  </CardContent>
-                </Card>
+                      <div className="space-y-4">
+                        <Label className="text-sm">Gallery Images (Maximum 3)</Label>
+                        {(() => {
+                          // Process images - support both array of strings and array of objects
+                          const processImages = () => {
+                            if (!content.images || content.images.length === 0) {
+                              return [
+                                { image: '', title: '', description: '' },
+                                { image: '', title: '', description: '' },
+                                { image: '', title: '', description: '' }
+                              ];
+                            }
+
+                            return content.images.map((item: any, index: number) => {
+                              if (typeof item === 'string') {
+                                return { image: item, title: '', description: '' };
+                              } else {
+                                return {
+                                  image: item.image || item.url || '',
+                                  title: item.title || '',
+                                  description: item.description || ''
+                                };
+                              }
+                            }).slice(0, 3);
+                          };
+
+                          const imageItems = processImages();
+                          // Ensure we always have 3 items
+                          while (imageItems.length < 3) {
+                            imageItems.push({ image: '', title: '', description: '' });
+                          }
+
+                          return imageItems.map((item: any, index: number) => (
+                            <Card key={index} className="p-4">
+                              <div className="space-y-3">
+                                <Label className="text-sm">Image {index + 1}</Label>
+                                <ImageUpload
+                                  value={item.image}
+                                  onChange={(url) => {
+                                    const newImages = [...imageItems];
+                                    newImages[index] = { ...newImages[index], image: url };
+                                    handleInputChange('images', newImages);
+                                  }}
+                                  placeholder="https://example.com/image.jpg"
+                                  label="Image URL"
+                                />
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                  <div>
+                                    <Label className="text-sm">Title</Label>
+                                    <Input
+                                      value={item.title}
+                                      onChange={(e) => {
+                                        const newImages = [...imageItems];
+                                        newImages[index] = { ...newImages[index], title: e.target.value };
+                                        handleInputChange('images', newImages);
+                                      }}
+                                      placeholder="Image title..."
+                                    />
+                                  </div>
+                                  <div>
+                                    <Label className="text-sm">Description</Label>
+                                    <Input
+                                      value={item.description}
+                                      onChange={(e) => {
+                                        const newImages = [...imageItems];
+                                        newImages[index] = { ...newImages[index], description: e.target.value };
+                                        handleInputChange('images', newImages);
+                                      }}
+                                      placeholder="Image description..."
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            </Card>
+                          ));
+                        })()}
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Publication Status</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-2">
+                        <Label>Status</Label>
+                        <select
+                          value={content.status}
+                          onChange={(e) => handleInputChange('status', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        >
+                          <option value="draft">Draft</option>
+                          <option value="published">Published</option>
+                        </select>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
               ) : content.id === 'featured-products-section' ? (
                 /* Featured Products Section Editor */
                 <Card>
@@ -1595,6 +1259,56 @@ export default function EditContentPage({ params }: { params: { id: string } }) 
                     </div>
                   </CardContent>
                 </Card>
+              ) : content.id === 'stats-section' ? (
+                /* Stats Section Editor */
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Type className="h-5 w-5" />
+                      Stats Section Editor
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    <div className="space-y-2">
+                      <Label>Section Title (Optional)</Label>
+                      <Input
+                        value={content.title || ''}
+                        onChange={(e) => handleInputChange('title', e.target.value)}
+                        placeholder="Leave empty to hide title"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>Section Description (Optional)</Label>
+                      <textarea
+                        value={content.description || ''}
+                        onChange={(e) => handleInputChange('description', e.target.value)}
+                        placeholder="Leave empty to hide description"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        rows={3}
+                      />
+                    </div>
+
+                    <StatsManager
+                      title="Statistics Items"
+                      items={content.stats || []}
+                      onItemsChange={(items) => handleInputChange('stats', items)}
+                      maxItems={10}
+                    />
+
+                    <div className="space-y-2">
+                      <Label>Status</Label>
+                      <select
+                        value={content.status}
+                        onChange={(e) => handleInputChange('status', e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      >
+                        <option value="draft">Draft</option>
+                        <option value="published">Published</option>
+                      </select>
+                    </div>
+                  </CardContent>
+                </Card>
               ) : content.id === 'about-page' ? (
                 /* About Page Editor */
                 <div className="space-y-6">
@@ -1610,29 +1324,30 @@ export default function EditContentPage({ params }: { params: { id: string } }) 
                       <div className="space-y-2">
                         <Label>Page Title</Label>
                         <Input
-                          value={content.title || 'About Spectrum Eyecare'}
+                          value={content.title || 'Pioneering Solutions for Industrial & Logistics Excellence'}
                           onChange={(e) => handleInputChange('title', e.target.value)}
-                          placeholder="About Spectrum Eyecare"
+                          placeholder="Pioneering Solutions for Industrial & Logistics Excellence"
                         />
                       </div>
 
                       <div className="space-y-2">
                         <Label>Subtitle</Label>
                         <Input
-                          value={content.subtitle || 'Your Vision, Our Passion'}
+                          value={content.subtitle || 'Established under the esteemed umbrella of Leong Lee International Limited, SUNNY AUTO emerges as a pioneering solution provider in the realm of transportation and equipment, specializing in serving the industrial and logistics sectors.'}
                           onChange={(e) => handleInputChange('subtitle', e.target.value)}
-                          placeholder="Your Vision, Our Passion"
+                          placeholder="Established under the esteemed umbrella of Leong Lee International Limited..."
+                          className="w-full"
                         />
                       </div>
 
                       <div className="space-y-2">
                         <Label>Main Description</Label>
                         <textarea
-                          value={content.description || 'Since our founding, Spectrum has been dedicated to providing premium eyewear solutions that combine style, comfort, and cutting-edge technology.'}
+                          value={content.description || 'As a prominent member of the Leong Lee Group, SUNNY AUTO is driven by a steadfast commitment to innovation, sustainability, and unparalleled service excellence. At SUNNY AUTO, our primary focus lies in the dynamic landscape of electric vehicles (EVs), where we harness cutting-edge technology to deliver next-generation solutions. With an unwavering dedication to advancing the EV segment, we proudly offer a comprehensive range of EV products, including electric trucks, electric forklifts, state-of-the-art charging station systems, and a diverse array of battery types.'}
                           onChange={(e) => handleInputChange('description', e.target.value)}
-                          placeholder="Main description..."
+                          placeholder="Main description about SUNNY AUTO and Leong Lee Group..."
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                          rows={4}
+                          rows={6}
                         />
                       </div>
 
@@ -1642,16 +1357,6 @@ export default function EditContentPage({ params }: { params: { id: string } }) 
                           onChange={(url) => handleInputChange('imageUrl', url)}
                           placeholder="https://example.com/hero-image.jpg"
                           label="Hero Image"
-                          className="max-w-xs"
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <ImageUpload
-                          value={content.secondaryButtonText || ''}
-                          onChange={(url) => handleInputChange('secondaryButtonText', url)}
-                          placeholder="https://example.com/background-image.jpg"
-                          label="Background Image (Mission & Vision)"
                           className="max-w-xs"
                         />
                       </div>
@@ -1719,35 +1424,112 @@ export default function EditContentPage({ params }: { params: { id: string } }) 
                     </CardContent>
                   </Card>
 
-                  {/* Mission & Vision */}
+                  {/* Vision & Mission */}
                   <Card>
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
                         <Award className="h-5 w-5" />
-                        Mission & Vision
+                        Vision & Mission
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
                       <div className="space-y-2">
-                        <Label>Mission Statement</Label>
+                        <Label>Vision Title</Label>
+                        <Input
+                          value={content.visionTitle || 'OUR VISION'}
+                          onChange={(e) => handleInputChange('visionTitle', e.target.value)}
+                          placeholder="OUR VISION"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Vision Statement</Label>
                         <textarea
-                          value={content.content || 'To provide exceptional eyewear that enhances both vision and style, while maintaining our commitment to sustainability and customer satisfaction.'}
-                          onChange={(e) => handleInputChange('content', e.target.value)}
-                          placeholder="Mission statement..."
+                          value={content.visionContent || 'To pioneer innovative logistics solutions, providing cutting-edge, sustainable transportation and services that meet client needs and contribute to a greener planet.'}
+                          onChange={(e) => handleInputChange('visionContent', e.target.value)}
+                          placeholder="Vision statement..."
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                           rows={3}
                         />
                       </div>
 
                       <div className="space-y-2">
-                        <Label>Vision Statement</Label>
+                        <Label>Mission Title</Label>
+                        <Input
+                          value={content.missionTitle || 'OUR MISSION'}
+                          onChange={(e) => handleInputChange('missionTitle', e.target.value)}
+                          placeholder="OUR MISSION"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Mission Statement</Label>
                         <textarea
-                          value={content.buttonText || 'To be the leading eyewear retailer in Vietnam, known for quality, innovation, and environmental responsibility.'}
-                          onChange={(e) => handleInputChange('buttonText', e.target.value)}
-                          placeholder="Vision statement..."
+                          value={content.missionContent || 'Leading the electric vehicle revolution with efficient, eco-friendly, and accessible transportation solutions, we aim to create a sustainable future for all.'}
+                          onChange={(e) => handleInputChange('missionContent', e.target.value)}
+                          placeholder="Mission statement..."
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                           rows={3}
                         />
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Products Section */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Monitor className="h-5 w-5" />
+                        Products Section
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                      <div className="space-y-4">
+                        {/* Product 1: Electric Trucks */}
+                        <div className="border rounded-lg p-4 space-y-3">
+                          <Label className="text-base font-semibold">Electric Trucks</Label>
+                          <textarea
+                            value={content.product1Description || 'Heavy-duty electric trucks designed for industrial and logistics operations'}
+                            onChange={(e) => handleInputChange('product1Description', e.target.value)}
+                            placeholder="Product description..."
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            rows={2}
+                          />
+                        </div>
+
+                        {/* Product 2: Electric Forklifts */}
+                        <div className="border rounded-lg p-4 space-y-3">
+                          <Label className="text-base font-semibold">Electric Forklifts</Label>
+                          <textarea
+                            value={content.product2Description || 'State-of-the-art electric forklifts for warehouse and material handling'}
+                            onChange={(e) => handleInputChange('product2Description', e.target.value)}
+                            placeholder="Product description..."
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            rows={2}
+                          />
+                        </div>
+
+                        {/* Product 3: Charging Stations */}
+                        <div className="border rounded-lg p-4 space-y-3">
+                          <Label className="text-base font-semibold">Charging Stations</Label>
+                          <textarea
+                            value={content.product3Description || 'Advanced charging station systems for efficient EV infrastructure'}
+                            onChange={(e) => handleInputChange('product3Description', e.target.value)}
+                            placeholder="Product description..."
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            rows={2}
+                          />
+                        </div>
+
+                        {/* Product 4: Battery Solutions */}
+                        <div className="border rounded-lg p-4 space-y-3">
+                          <Label className="text-base font-semibold">Battery Solutions</Label>
+                          <textarea
+                            value={content.product4Description || 'Diverse array of battery types for various industrial applications'}
+                            onChange={(e) => handleInputChange('product4Description', e.target.value)}
+                            placeholder="Product description..."
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            rows={2}
+                          />
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
@@ -1763,35 +1545,55 @@ export default function EditContentPage({ params }: { params: { id: string } }) 
                     <CardContent className="space-y-4">
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <Label>Happy Customers</Label>
+                          <Label>Stat 1 Label</Label>
                           <Input
-                            value={content.stat1 || '10,000+'}
-                            onChange={(e) => handleInputChange('stat1', e.target.value)}
-                            placeholder="10,000+"
+                            value={content.stat1Label || 'EVs Delivered'}
+                            onChange={(e) => handleInputChange('stat1Label', e.target.value)}
+                            placeholder="EVs Delivered"
                           />
-                        </div>
-                        <div className="space-y-2">
-                          <Label>Premium Products</Label>
                           <Input
-                            value={content.stat2 || '500+'}
-                            onChange={(e) => handleInputChange('stat2', e.target.value)}
+                            value={content.stat1 || '500+'}
+                            onChange={(e) => handleInputChange('stat1', e.target.value)}
                             placeholder="500+"
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label>Brand Partners</Label>
+                          <Label>Stat 2 Label</Label>
                           <Input
-                            value={content.stat3 || '15+'}
-                            onChange={(e) => handleInputChange('stat3', e.target.value)}
-                            placeholder="15+"
+                            value={content.stat2Label || 'Charging Stations'}
+                            onChange={(e) => handleInputChange('stat2Label', e.target.value)}
+                            placeholder="Charging Stations"
+                          />
+                          <Input
+                            value={content.stat2 || '1000+'}
+                            onChange={(e) => handleInputChange('stat2', e.target.value)}
+                            placeholder="1000+"
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label>Years Experience</Label>
+                          <Label>Stat 3 Label</Label>
                           <Input
-                            value={content.stat4 || '5+'}
+                            value={content.stat3Label || 'Tons CO₂ Saved'}
+                            onChange={(e) => handleInputChange('stat3Label', e.target.value)}
+                            placeholder="Tons CO₂ Saved"
+                          />
+                          <Input
+                            value={content.stat3 || '50K+'}
+                            onChange={(e) => handleInputChange('stat3', e.target.value)}
+                            placeholder="50K+"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Stat 4 Label</Label>
+                          <Input
+                            value={content.stat4Label || 'Happy Owners'}
+                            onChange={(e) => handleInputChange('stat4Label', e.target.value)}
+                            placeholder="Happy Owners"
+                          />
+                          <Input
+                            value={content.stat4 || '10K+'}
                             onChange={(e) => handleInputChange('stat4', e.target.value)}
-                            placeholder="5+"
+                            placeholder="10K+"
                           />
                         </div>
                       </div>
@@ -1807,63 +1609,78 @@ export default function EditContentPage({ params }: { params: { id: string } }) 
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-6">
-                      {/* Value 1: Quality First */}
-                      <div className="border rounded-lg p-4 space-y-3">
-                        <div className="flex items-center gap-2">
-                          <Shield className="h-4 w-4 text-primary" />
-                          <Label className="text-base font-semibold">Quality First</Label>
-                        </div>
-                        <textarea
-                          value={content.value1 || 'We source only the finest materials and work with premium brands to ensure exceptional quality.'}
-                          onChange={(e) => handleInputChange('value1', e.target.value)}
-                          placeholder="Quality description..."
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                          rows={2}
-                        />
-                      </div>
-
-                      {/* Value 2: Customer Focus */}
-                      <div className="border rounded-lg p-4 space-y-3">
-                        <div className="flex items-center gap-2">
-                          <Users className="h-4 w-4 text-primary" />
-                          <Label className="text-base font-semibold">Customer Focus</Label>
-                        </div>
-                        <textarea
-                          value={content.value2 || 'Your satisfaction is our priority. We provide personalized service and expert guidance.'}
-                          onChange={(e) => handleInputChange('value2', e.target.value)}
-                          placeholder="Customer focus description..."
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                          rows={2}
-                        />
-                      </div>
-
-                      {/* Value 3: Innovation */}
+                      {/* Value 1: Innovation */}
                       <div className="border rounded-lg p-4 space-y-3">
                         <div className="flex items-center gap-2">
                           <Type className="h-4 w-4 text-primary" />
                           <Label className="text-base font-semibold">Innovation</Label>
                         </div>
                         <textarea
-                          value={content.value3 || 'We embrace the latest technology and trends to offer cutting-edge eyewear solutions.'}
-                          onChange={(e) => handleInputChange('value3', e.target.value)}
+                          value={content.value1 || 'We harness cutting-edge technology to deliver next-generation solutions that transform industrial and logistics operations.'}
+                          onChange={(e) => handleInputChange('value1', e.target.value)}
                           placeholder="Innovation description..."
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                          rows={2}
+                          rows={3}
                         />
                       </div>
 
-                      {/* Value 4: Sustainability */}
+                      {/* Value 2: Sustainability */}
                       <div className="border rounded-lg p-4 space-y-3">
                         <div className="flex items-center gap-2">
                           <Leaf className="h-4 w-4 text-primary" />
                           <Label className="text-base font-semibold">Sustainability</Label>
                         </div>
                         <textarea
-                          value={content.value4 || 'Committed to eco-friendly practices and responsible business operations.'}
-                          onChange={(e) => handleInputChange('value4', e.target.value)}
+                          value={content.value2 || 'Committed to eco-friendly solutions that contribute to a greener planet while meeting client needs.'}
+                          onChange={(e) => handleInputChange('value2', e.target.value)}
                           placeholder="Sustainability description..."
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                          rows={2}
+                          rows={3}
+                        />
+                      </div>
+
+                      {/* Value 3: Excellence */}
+                      <div className="border rounded-lg p-4 space-y-3">
+                        <div className="flex items-center gap-2">
+                          <Award className="h-4 w-4 text-primary" />
+                          <Label className="text-base font-semibold">Excellence</Label>
+                        </div>
+                        <textarea
+                          value={content.value3 || 'Unparalleled service excellence driven by our steadfast commitment to quality and customer satisfaction.'}
+                          onChange={(e) => handleInputChange('value3', e.target.value)}
+                          placeholder="Excellence description..."
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          rows={3}
+                        />
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Corporate Story */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Building2 className="h-5 w-5" />
+                        Corporate Story
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="space-y-2">
+                        <Label>Story Title</Label>
+                        <Input
+                          value={content.storyTitle || 'About SUNNY AUTO'}
+                          onChange={(e) => handleInputChange('storyTitle', e.target.value)}
+                          placeholder="About SUNNY AUTO"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Story Content</Label>
+                        <textarea
+                          value={content.storyContent || 'Established under the esteemed umbrella of Leong Lee International Limited, SUNNY AUTO emerges as a pioneering solution provider in the realm of transportation and equipment, specializing in serving the industrial and logistics sectors. As a prominent member of the Leong Lee Group, we are driven by a steadfast commitment to innovation, sustainability, and unparalleled service excellence.'}
+                          onChange={(e) => handleInputChange('storyContent', e.target.value)}
+                          placeholder="Corporate story content..."
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          rows={5}
                         />
                       </div>
                     </CardContent>
@@ -1882,16 +1699,16 @@ export default function EditContentPage({ params }: { params: { id: string } }) 
                         <div className="space-y-2">
                           <Label>Team Section Title</Label>
                           <Input
-                            value={content.teamTitle || 'Our Expert Team'}
+                            value={content.teamTitle || 'Core Management Team'}
                             onChange={(e) => handleInputChange('teamTitle', e.target.value)}
-                            placeholder="Our Expert Team"
+                            placeholder="Core Management Team"
                           />
                         </div>
 
                         <div className="space-y-2">
                           <Label>Team Section Description</Label>
                           <textarea
-                            value={content.teamDescription || 'Meet the passionate professionals who make Spectrum exceptional.'}
+                            value={content.teamDescription || 'Sunny Auto boasts unique DNA with a strong and diverse management team.'}
                             onChange={(e) => handleInputChange('teamDescription', e.target.value)}
                             placeholder="Team description..."
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -1914,24 +1731,24 @@ export default function EditContentPage({ params }: { params: { id: string } }) 
                             <div className="space-y-2">
                               <Label>Name</Label>
                               <Input
-                                value={content.member1Name || 'Dr. Nguyen Phuoc Sang'}
+                                value={content.member1Name || 'Nguyen Phuoc Sang'}
                                 onChange={(e) => handleInputChange('member1Name', e.target.value)}
-                                placeholder="Dr. Nguyen Phuoc Sang"
+                                placeholder="Nguyen Phuoc Sang"
                               />
                             </div>
                             <div className="space-y-2">
                               <Label>Role</Label>
                               <Input
-                                value={content.member1Role || 'Founder & CEO'}
+                                value={content.member1Role || 'Chairman & CEO'}
                                 onChange={(e) => handleInputChange('member1Role', e.target.value)}
-                                placeholder="Founder & CEO"
+                                placeholder="Chairman & CEO"
                               />
                             </div>
                           </div>
                           <div className="space-y-2">
                             <Label>Description</Label>
                             <textarea
-                              value={content.member1Description || 'Visionary leader with 15+ years in optical industry'}
+                              value={content.member1Description || 'Responsible for the overall strategic planning, organizational development, and management operations.'}
                               onChange={(e) => handleInputChange('member1Description', e.target.value)}
                               placeholder="Member description..."
                               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -1959,24 +1776,24 @@ export default function EditContentPage({ params }: { params: { id: string } }) 
                             <div className="space-y-2">
                               <Label>Name</Label>
                               <Input
-                                value={content.member2Name || 'Dr. Tran Minh Duc'}
+                                value={content.member2Name || 'Tran Minh Duc'}
                                 onChange={(e) => handleInputChange('member2Name', e.target.value)}
-                                placeholder="Dr. Tran Minh Duc"
+                                placeholder="Tran Minh Duc"
                               />
                             </div>
                             <div className="space-y-2">
                               <Label>Role</Label>
                               <Input
-                                value={content.member2Role || 'Chief Optometrist'}
+                                value={content.member2Role || 'President'}
                                 onChange={(e) => handleInputChange('member2Role', e.target.value)}
-                                placeholder="Chief Optometrist"
+                                placeholder="President"
                               />
                             </div>
                           </div>
                           <div className="space-y-2">
                             <Label>Description</Label>
                             <textarea
-                              value={content.member2Description || 'Expert in vision care with international certifications'}
+                              value={content.member2Description || 'Responsible for the company\'s product planning, product portfolio management and sales operations.'}
                               onChange={(e) => handleInputChange('member2Description', e.target.value)}
                               placeholder="Member description..."
                               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -2012,16 +1829,16 @@ export default function EditContentPage({ params }: { params: { id: string } }) 
                             <div className="space-y-2">
                               <Label>Role</Label>
                               <Input
-                                value={content.member3Role || 'Customer Experience Manager'}
+                                value={content.member3Role || 'Vice President'}
                                 onChange={(e) => handleInputChange('member3Role', e.target.value)}
-                                placeholder="Customer Experience Manager"
+                                placeholder="Vice President"
                               />
                             </div>
                           </div>
                           <div className="space-y-2">
                             <Label>Description</Label>
                             <textarea
-                              value={content.member3Description || 'Ensuring every customer receives exceptional service'}
+                              value={content.member3Description || 'Responsible for the company\'s strategy, finance, fundraising, investments, and globalization efforts.'}
                               onChange={(e) => handleInputChange('member3Description', e.target.value)}
                               placeholder="Member description..."
                               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -2071,9 +1888,9 @@ export default function EditContentPage({ params }: { params: { id: string } }) 
                         <div className="space-y-2">
                           <Label>Email</Label>
                           <Input
-                            value={content.email || 'info@spectrum.com'}
+                            value={content.email || 'info@sunnyautoev.com'}
                             onChange={(e) => handleInputChange('email', e.target.value)}
-                            placeholder="info@spectrum.com"
+                            placeholder="info@sunnyautoev.com"
                           />
                         </div>
                       </div>
@@ -2082,15 +1899,15 @@ export default function EditContentPage({ params }: { params: { id: string } }) 
                         <div className="space-y-2">
                           <Label>CTA Title</Label>
                           <Input
-                            value={content.ctaTitle || 'Ready to Find Your Perfect Eyewear?'}
+                            value={content.ctaTitle || 'Ready to Transform Your Operations?'}
                             onChange={(e) => handleInputChange('ctaTitle', e.target.value)}
-                            placeholder="CTA title..."
+                            placeholder="Ready to Transform Your Operations?"
                           />
                         </div>
                         <div className="space-y-2">
                           <Label>CTA Description</Label>
                           <textarea
-                            value={content.ctaDescription || 'Visit our store or browse our collection online. Our expert team is here to help you find the perfect glasses for your style and needs.'}
+                            value={content.ctaDescription || 'Discover our comprehensive range of electric vehicles and solutions for industrial and logistics excellence.'}
                             onChange={(e) => handleInputChange('ctaDescription', e.target.value)}
                             placeholder="CTA description..."
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -2766,7 +2583,7 @@ export default function EditContentPage({ params }: { params: { id: string } }) 
                     </CardContent>
                   </Card>
                 </div>
-              ) : !['hero-section', 'certificate-section', 'brands-section', 'premium-partners-page', 'esg-certificate-page', 'header-section', 'footer-section', 'featured-products-section', 'about-page', 'products-page', 'contact-page'].includes(content.id) ? (
+              ) : !['hero-section', 'secondary-hero-section', 'image-gallery-section', 'esg-certificate-page', 'header-section', 'footer-section', 'featured-products-section', 'about-page', 'products-page', 'contact-page'].includes(content.id) ? (
                 /* Standard Content Editor for other sections */
                 <Card>
                   <CardHeader>
